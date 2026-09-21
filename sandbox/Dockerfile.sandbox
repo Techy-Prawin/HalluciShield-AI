@@ -1,0 +1,30 @@
+# HalluciShield Isolated Container Sandbox Specification
+# Multi-language support: Python, JavaScript/Node.js, Java
+FROM python:3.11-slim
+
+# Install Node.js and Java for multi-language support
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nodejs \
+    npm \
+    default-jdk \
+    git \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir semgrep
+
+# Prevent root privilege escalation & restrict environment
+RUN useradd -m -u 10001 sandboxuser
+
+WORKDIR /sandbox
+
+# The archive-transfer mode mounts no host directory at /workspace.
+RUN mkdir -p /workspace && chown sandboxuser:sandboxuser /workspace
+
+# Copy runner script into container
+COPY runner.py /sandbox/runner.py
+
+RUN chmod -R 755 /sandbox
+
+USER sandboxuser
+
+# Default command runs isolated validation harness
+CMD ["python", "runner.py"]

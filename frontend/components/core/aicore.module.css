@@ -1,0 +1,313 @@
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.core {
+  position: relative;
+  width: min(520px, 100%);
+  aspect-ratio: 1;
+  max-width: 100%;
+}
+
+.compact .core {
+  width: min(360px, 100%);
+}
+
+/* breathing halo behind core */
+.coreGlow {
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(34, 211, 238, 0.22) 0%, rgba(59, 130, 246, 0.1) 38%, transparent 66%);
+  filter: blur(30px);
+  animation: coreBreathe 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes coreBreathe {
+  0%, 100% { transform: scale(0.96); opacity: 0.75; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+.net {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.spoke {
+  stroke-width: 0.4;
+}
+
+.spokeFlow {
+  stroke-width: 0.8;
+  opacity: 0.9;
+  animation: dashflow 4.5s linear infinite;
+}
+
+.ringStatic {
+  fill: none;
+  stroke: rgba(34, 211, 238, 0.14);
+  stroke-width: 0.4;
+  stroke-dasharray: 1.5 2;
+}
+
+.ringStaticStrong {
+  fill: none;
+  stroke: rgba(59, 130, 246, 0.28);
+  stroke-width: 0.5;
+}
+
+/* rotating dashed borders */
+.ring,
+.ringRev {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px dashed rgba(34, 211, 238, 0.38);
+  animation: ringRot linear infinite;
+  pointer-events: none;
+}
+
+.ringRev {
+  animation-name: ringRotRev;
+  border-style: dotted;
+}
+
+/* centre */
+.center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 42%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.centerHalo {
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.3), rgba(59, 130, 246, 0.08) 55%, transparent 75%);
+  filter: blur(16px);
+  animation: glowpulse 4s ease-in-out infinite;
+}
+
+.centerHex {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 0.94;
+}
+
+.hexSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 14px rgba(34, 211, 238, 0.5));
+  animation: breathe 5.5s ease-in-out infinite;
+}
+
+.centerInner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  text-align: center;
+}
+
+.centerStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  color: var(--green);
+}
+
+.centerStatusDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 6px var(--green);
+  animation: blinkSoft 2.4s ease-in-out infinite;
+}
+
+.centerName {
+  font-size: clamp(11px, 2.4vw, 17px);
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: var(--text-0);
+  background: linear-gradient(90deg, #eafdff, #7dd3fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 0 18px rgba(34, 211, 238, 0.4);
+}
+
+.centerSub {
+  font-family: var(--mono);
+  font-size: clamp(8px, 1.6vw, 11px);
+  letter-spacing: 0.5em;
+  text-indent: 0.5em;
+  color: var(--cyan);
+}
+
+.centerId {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+/* ---- agent nodes ---- */
+.node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nodePing {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1px solid;
+  opacity: 0;
+  animation: nodePingScale 3.6s ease-out infinite;
+}
+
+@keyframes nodePingScale {
+  0% { transform: scale(0.7); opacity: 0.85; }
+  70%, 100% { transform: scale(2); opacity: 0; }
+}
+
+.nodeIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 16, 32, 0.9);
+  border: 1px solid currentColor;
+  box-shadow: 0 0 12px -2px currentColor, inset 0 0 8px -2px currentColor;
+  animation: breathe 4.8s ease-in-out infinite;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.node:hover .nodeIcon {
+  transform: scale(1.18);
+}
+
+.nodeLabel {
+  position: absolute;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--node-color, var(--text-2));
+  text-shadow: 0 0 6px var(--node-color, transparent);
+  white-space: nowrap;
+  line-height: 1.25;
+  width: 88px;
+}
+
+.label-right {
+  left: calc(100% + 8px);
+}
+
+.label-left {
+  right: calc(100% + 8px);
+  align-items: flex-end;
+  text-align: right;
+}
+
+.label-top {
+  bottom: calc(100% + 6px);
+  align-items: center;
+  text-align: center;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.label-bottom {
+  top: calc(100% + 6px);
+  align-items: center;
+  text-align: center;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nodeMission {
+  font-size: 6.5px;
+  letter-spacing: 0.2em;
+  opacity: 0.7;
+}
+
+/* doctrine bar */
+.doctrine {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.doctrineItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  padding: 5px 12px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: rgba(7, 16, 32, 0.6);
+  box-shadow: 0 0 14px -6px currentColor;
+}
+
+.doctrineItem i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 6px currentColor;
+}
+
+@media (max-width: 680px) {
+  .nodeIcon {
+    width: 26px;
+    height: 26px;
+  }
+  .nodeLabel {
+    font-size: 7px;
+    width: 64px;
+  }
+}

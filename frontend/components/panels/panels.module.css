@@ -1,0 +1,981 @@
+/* ============================================================
+   Command Center panels
+   ============================================================ */
+
+/* ---------------- shared bits ---------------- */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.spread {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.monoValue {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--cyan);
+}
+
+.tag {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.emptyBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 26px 16px;
+  text-align: center;
+  border: 1px dashed var(--line-dim);
+  border-radius: var(--radius-sm);
+  background: rgba(10, 20, 40, 0.4);
+  color: var(--text-3);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.simBadge {
+  font-family: var(--mono);
+  font-size: 7.5px;
+  letter-spacing: 0.14em;
+  color: var(--violet);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  background: var(--violet-dim);
+  border-radius: 999px;
+  padding: 1px 7px;
+}
+
+.glowBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #031522;
+  background: linear-gradient(135deg, #7df3ff, #22d3ee 55%, #3b82f6);
+  box-shadow: 0 0 18px -4px var(--cyan), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transition: all 0.2s ease;
+}
+
+.glowBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 26px -2px var(--cyan), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.ghostBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-1);
+  border: 1px solid var(--line-strong);
+  background: rgba(13, 26, 50, 0.45);
+  transition: all 0.2s ease;
+}
+
+.ghostBtn:hover {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 14px -4px var(--cyan);
+}
+
+/* ============================================================
+   1. THREAT INTELLIGENCE
+   ============================================================ */
+.threatList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 340px;
+  overflow-y: auto;
+}
+
+.threatRow {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border: 1px solid var(--line-dim);
+  border-radius: 8px;
+  background: rgba(10, 20, 40, 0.45);
+  transition: all 0.2s ease;
+  animation: fadeUp 0.4s ease both;
+}
+
+.threatRow:hover {
+  border-color: var(--line-strong);
+  background: rgba(16, 32, 60, 0.65);
+}
+
+.threatIcon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+
+.threatMain {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.threatTitle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-0);
+}
+
+.threatDesc {
+  font-size: 11px;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.threatTime {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+.threatRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+.riskScore {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-2);
+}
+
+/* ============================================================
+   2. CODE ANALYSIS
+   ============================================================ */
+.codeLayout {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 14px;
+}
+
+.codeFileBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 10px;
+  border: 1px solid var(--line-dim);
+  border-radius: 8px 8px 0 0;
+  background: rgba(8, 16, 32, 0.9);
+}
+
+.codeFileName {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-0);
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.codeFileBadge {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: var(--violet);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.codePre {
+  border: 1px solid var(--line-dim);
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  background: rgba(5, 10, 22, 0.92);
+  overflow: hidden;
+}
+
+.codeScroll {
+  overflow-x: auto;
+}
+
+.codeLine {
+  position: relative;
+  display: flex;
+  min-height: 22px;
+  line-height: 22px;
+  font-size: 12px;
+  white-space: pre;
+}
+
+.codeNum {
+  width: 44px;
+  flex-shrink: 0;
+  text-align: right;
+  padding-right: 12px;
+  color: var(--text-3);
+  user-select: none;
+  border-right: 1px solid rgba(120, 160, 230, 0.1);
+  margin-right: 12px;
+}
+
+.codeSrc {
+  font-family: var(--mono);
+  color: var(--text-1);
+}
+
+.codeVuln {
+  background: linear-gradient(90deg, rgba(248, 113, 113, 0.16), rgba(248, 113, 113, 0.04));
+  box-shadow: inset 3px 0 0 var(--red), inset 0 0 18px -4px rgba(248, 113, 113, 0.5);
+}
+
+.vulnMarker {
+  position: absolute;
+  right: 8px;
+  top: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #ffdada;
+  background: rgba(248, 113, 113, 0.22);
+  border: 1px solid rgba(248, 113, 113, 0.55);
+  border-radius: 5px;
+  padding: 2px 7px;
+}
+
+.tk-kw { color: #c084fc; }
+.tk-fn { color: #7dd3fc; }
+.tk-str { color: #86efac; }
+.tk-num { color: #fbbf24; }
+.tk-cmt { color: #5b769c; font-style: italic; }
+.tk-op { color: #818cf8; }
+.tk-def { color: #f472b6; }
+
+/* AI reasoning column */
+.reasonCol {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.reasonTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.reasonTitleBar {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--line-strong), transparent);
+}
+
+.reasonCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-dim);
+  border-radius: 8px;
+  background: rgba(10, 20, 40, 0.5);
+}
+
+.reasonCardLabel {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.reasonCardValue {
+  font-size: 11.5px;
+  color: var(--text-1);
+  line-height: 1.5;
+}
+
+.findingBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--red-dim), rgba(248, 113, 113, 0.04));
+}
+
+.findingCWE {
+  font-family: var(--mono);
+  font-weight: 800;
+  font-size: 13px;
+  color: #ffdada;
+}
+
+.findingSev {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--red);
+  border: 1px solid var(--red);
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.confLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.confBar {
+  flex: 1;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(120, 160, 230, 0.14);
+  overflow: hidden;
+}
+
+.confBarFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  box-shadow: 0 0 8px var(--violet);
+}
+
+/* ============================================================
+   3. SYSTEM LOGS
+   ============================================================ */
+.logTabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.logTab {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  padding: 5px 11px;
+  border-radius: 6px;
+  border: 1px solid var(--line-dim);
+  color: var(--text-3);
+  background: rgba(10, 20, 40, 0.5);
+  transition: all 0.18s ease;
+}
+
+.logTabActive {
+  color: var(--cyan);
+  border-color: var(--line-strong);
+  background: var(--cyan-dim);
+  box-shadow: 0 0 12px -5px var(--cyan);
+}
+
+.logRows {
+  display: flex;
+  flex-direction: column;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: var(--mono);
+  font-size: 10.5px;
+}
+
+.logRow {
+  display: grid;
+  grid-template-columns: 74px 62px 130px 1fr;
+  gap: 10px;
+  padding: 5px 8px;
+  border-bottom: 1px solid rgba(120, 160, 230, 0.06);
+  color: var(--text-2);
+  line-height: 1.5;
+  transition: background 0.15s ease;
+}
+
+.logRow:hover {
+  background: rgba(34, 211, 238, 0.05);
+}
+
+.logTime {
+  color: var(--text-3);
+}
+
+.logSrc {
+  color: var(--sky);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logMsg {
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logMeta {
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.sevTag {
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+/* ============================================================
+   4. SECURITY PIPELINE
+   ============================================================ */
+.pipeWrap {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 4px 2px 10px;
+  scrollbar-width: thin;
+}
+
+.pipeStage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1 1 0;
+  min-width: 74px;
+}
+
+.pipeNodeWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.pipeNode {
+  position: relative;
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  background: rgba(8, 16, 32, 0.95);
+  border: 1px solid rgba(120, 160, 230, 0.16);
+  color: var(--text-3);
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.pipeNodeDone {
+  border-color: rgba(52, 211, 153, 0.6);
+  color: var(--green);
+  box-shadow: 0 0 14px -4px var(--green);
+}
+
+.pipeNodeActive {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 20px -4px var(--cyan), inset 0 0 12px -4px var(--cyan);
+  animation: breathe 1.6s ease-in-out infinite;
+}
+
+.pipeNodeIdle {
+  border-color: rgba(120, 160, 230, 0.16);
+  color: var(--text-3);
+}
+
+.pipeLink {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 1px;
+  transform: translateX(0);
+  background: linear-gradient(90deg, rgba(120, 160, 230, 0.2), rgba(120, 160, 230, 0.05));
+  z-index: 1;
+}
+
+.pipeLinkDone {
+  background: linear-gradient(90deg, var(--green), rgba(52, 211, 153, 0.1));
+  box-shadow: 0 0 6px -1px var(--green);
+}
+
+.pipeLinkActive {
+  background: linear-gradient(90deg, var(--cyan), rgba(34, 211, 238, 0.2));
+  box-shadow: 0 0 8px -1px var(--cyan);
+}
+
+.pipeName {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  color: var(--text-2);
+  text-align: center;
+  line-height: 1.35;
+}
+
+.pipePct {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-3);
+}
+
+.pipeStatus {
+  font-size: 7.5px;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
+.pipeStats {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line-dim);
+}
+
+/* ============================================================
+   5. GLOBAL THREAT VISUALIZATION
+   ============================================================ */
+.tviz {
+  width: 100%;
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(10, 32, 66, 0.6), rgba(4, 8, 18, 0.9));
+  border: 1px solid var(--line-dim);
+}
+
+.tvizMetrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.tvizMetric {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 10px;
+  border: 1px solid var(--line-dim);
+  border-radius: 8px;
+  background: rgba(10, 20, 40, 0.5);
+}
+
+.tvizMetricLabel {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.tvizMetricValue {
+  font-family: var(--mono);
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text-0);
+}
+
+/* ============================================================
+   6. NETWORK TOPOLOGY
+   ============================================================ */
+.netSvg {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--line-dim);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(8, 24, 50, 0.75), rgba(4, 8, 18, 0.95));
+}
+
+/* ============================================================
+   7. SYSTEM HEALTH
+   ============================================================ */
+.healthGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.healthRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 11px;
+  border: 1px solid var(--line-dim);
+  border-radius: 8px;
+  background: rgba(10, 20, 40, 0.45);
+}
+
+.healthName {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.healthState {
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.uptimeWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 0 2px;
+}
+
+.uptimeMeta {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-3);
+  letter-spacing: 0.08em;
+}
+
+/* ============================================================
+   8. ACTIVE AGENTS
+   ============================================================ */
+.agentsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.agentRow {
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border: 1px solid var(--line-dim);
+  border-radius: 8px;
+  background: rgba(10, 20, 40, 0.45);
+  transition: border-color 0.2s ease;
+}
+
+.agentRow:hover {
+  border-color: var(--line-strong);
+}
+
+.agentIcon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid currentColor;
+  box-shadow: 0 0 10px -3px currentColor;
+}
+
+.agentName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-0);
+}
+
+.agentAct {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 190px;
+}
+
+/* ============================================================
+   9. CONFIDENCE METRICS
+   ============================================================ */
+.confTop {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.confMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-3);
+}
+
+.confFeatures {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 100%;
+}
+
+.confFeat {
+  display: grid;
+  grid-template-columns: 118px 1fr 46px;
+  align-items: center;
+  gap: 10px;
+}
+
+.confFeatLabel {
+  font-size: 11px;
+  color: var(--text-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.confFeatTrack {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(120, 160, 230, 0.13);
+  overflow: hidden;
+}
+
+.confFeatFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  box-shadow: 0 0 8px -1px var(--cyan);
+  transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.confFeatValue {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-1);
+  text-align: right;
+}
+
+/* ============================================================
+   Registry tables (vulnerabilities / patches)
+   ============================================================ */
+.regTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 10.5px;
+}
+
+.regTable th {
+  text-align: left;
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.regTable td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line-dim);
+  color: var(--text-1);
+  vertical-align: top;
+}
+
+.regTable tbody tr:hover td {
+  background: rgba(34, 211, 238, 0.045);
+}
+
+.regCode {
+  color: var(--cyan);
+  font-size: 10px;
+  word-break: break-all;
+}
+
+.regFile {
+  color: var(--text-2);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.regMsg {
+  color: var(--text-2);
+  max-width: 320px;
+  line-height: 1.45;
+}
+
+.regBadge {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.summaryChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.summaryChip {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  border: 1px solid var(--line-dim);
+  border-radius: 8px;
+  background: rgba(10, 20, 40, 0.5);
+}
+
+.summaryChipValue {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.summaryChipLabel {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  color: var(--text-3);
+}
+
+.patchCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line-dim);
+  border-radius: 10px;
+  background: rgba(10, 20, 40, 0.5);
+  transition: border-color 0.2s ease;
+}
+
+.patchCard:hover {
+  border-color: var(--line-strong);
+}
+
+.patchTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.patchId {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--green);
+}
+
+.patchVuln {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-3);
+}
+
+.patchMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  color: var(--text-3);
+}
+
+.patchDesc {
+  font-size: 11.5px;
+  color: var(--text-1);
+  line-height: 1.55;
+}
+
+/* ============================================================
+   Responsive panel adjustments
+   ============================================================ */
+@media (max-width: 1180px) {
+  .codeLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .tvizMetrics {
+    grid-template-columns: 1fr 1fr;
+  }
+  .healthGrid {
+    grid-template-columns: 1fr;
+  }
+  .logRow {
+    grid-template-columns: 68px 1fr;
+  }
+  .logSrc,
+  .logMeta {
+    display: none;
+  }
+  .threatRow {
+    grid-template-columns: 30px 1fr auto;
+  }
+}

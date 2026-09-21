@@ -1,0 +1,80 @@
+{
+  "STATIC_SCANNER": {
+    "test_count": 9,
+    "tp": 5,
+    "fp": 1,
+    "fn": 1,
+    "tn": 2,
+    "precision": 0.8333,
+    "recall": 0.8333,
+    "f1": 0.8333,
+    "accuracy": 0.7778,
+    "avg_confidence": 0.0,
+    "avg_latency_ms": 169.8
+  },
+  "LLM_ONLY": {
+    "test_count": 9,
+    "tp": 0,
+    "fp": 1,
+    "fn": 6,
+    "tn": 2,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "accuracy": 0.2222,
+    "avg_confidence": 0.0,
+    "avg_latency_ms": 147.2
+  },
+  "MULTI_PATCH_LLM": {
+    "test_count": 9,
+    "tp": 0,
+    "fp": 1,
+    "fn": 6,
+    "tn": 2,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "accuracy": 0.2222,
+    "avg_confidence": 82.5,
+    "avg_latency_ms": 1813
+  },
+  "MULTI_PATCH_VALIDATION": {
+    "test_count": 9,
+    "tp": 5,
+    "fp": 1,
+    "fn": 1,
+    "tn": 2,
+    "precision": 0.8333,
+    "recall": 0.8333,
+    "f1": 0.8333,
+    "accuracy": 0.7778,
+    "avg_confidence": 82.5,
+    "avg_latency_ms": 1153.6
+  },
+  "SINGLE_PATCH_LLM": {
+    "test_count": 9,
+    "tp": 0,
+    "fp": 1,
+    "fn": 6,
+    "tn": 2,
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1": 0.0,
+    "accuracy": 0.2222,
+    "avg_confidence": 82.5,
+    "avg_latency_ms": 1507.8
+  },
+  "HALLUCISHIELD": {
+    "test_count": 9,
+    "tp": 5,
+    "fp": 1,
+    "fn": 1,
+    "tn": 2,
+    "precision": 0.8333,
+    "recall": 0.8333,
+    "f1": 0.8333,
+    "accuracy": 0.7778,
+    "avg_confidence": 82.5,
+    "avg_latency_ms": 1183.1
+  }
+}

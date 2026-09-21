@@ -1,0 +1,205 @@
+.panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: linear-gradient(180deg, var(--panel-hi), var(--panel));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(120, 200, 255, 0.05);
+  overflow: hidden;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.panel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line-glow), transparent);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.panel:hover {
+  border-color: var(--line-strong);
+  box-shadow: 0 12px 34px -16px rgba(0, 0, 0, 0.9), 0 0 18px -6px var(--cyan-dim), inset 0 1px 0 rgba(120, 200, 255, 0.08);
+}
+
+.accent-blue:hover { border-color: rgba(59, 130, 246, 0.38); box-shadow: 0 12px 34px -16px rgba(0, 0, 0, 0.9), 0 0 18px -6px var(--blue-dim); }
+.accent-violet:hover { border-color: rgba(139, 92, 246, 0.4); box-shadow: 0 12px 34px -16px rgba(0, 0, 0, 0.9), 0 0 18px -6px var(--violet-dim); }
+.accent-magenta:hover { border-color: rgba(232, 121, 249, 0.4); box-shadow: 0 12px 34px -16px rgba(0, 0, 0, 0.9), 0 0 18px -6px var(--magenta-dim); }
+.accent-green:hover { border-color: rgba(52, 211, 153, 0.4); box-shadow: 0 12px 34px -16px rgba(0, 0, 0, 0.9), 0 0 18px -6px var(--green-dim); }
+.accent-amber:hover { border-color: rgba(251, 191, 36, 0.4); box-shadow: 0 12px 34px -16px rgba(0, 0, 0, 0.9), 0 0 18px -6px var(--amber-dim); }
+.accent-red:hover { border-color: rgba(248, 113, 113, 0.42); box-shadow: 0 12px 34px -16px rgba(0, 0, 0, 0.9), 0 0 18px -6px var(--red-dim); }
+
+.grow {
+  flex: 1;
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line-dim);
+  background: linear-gradient(180deg, rgba(30, 58, 112, 0.28), transparent);
+  flex-shrink: 0;
+}
+
+.panelHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.panelIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  color: var(--cyan);
+  background: var(--cyan-dim);
+  border: 1px solid rgba(34, 211, 238, 0.22);
+  flex-shrink: 0;
+}
+
+.panelTitle {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-1);
+  white-space: nowrap;
+}
+
+.panelLive {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: var(--green-dim);
+  border: 1px solid rgba(52, 211, 153, 0.22);
+  border-radius: 999px;
+  padding: 2px 9px;
+  flex-shrink: 0;
+}
+
+.panelLiveDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: livePulse 2.2s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+.panelBody {
+  position: relative;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+  flex: 1;
+}
+
+.panelScroll {
+  overflow-y: auto;
+  max-height: 460px;
+}
+
+/* Status dot */
+.dotWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+}
+
+.dotPing {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid;
+  animation: dotPing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.dotCore {
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@keyframes dotPing {
+  0% { transform: scale(0.55); opacity: 0.95; }
+  80%, 100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Ring gauge */
+.ringWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ringCenter {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+
+.ringValue {
+  font-family: var(--mono);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.ringLabel {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.ringSub {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text-3);
+}
+
+/* Spark wave */
+.sparkWave {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.04), rgba(59, 130, 246, 0.02));
+  border: 1px solid var(--line-dim);
+}

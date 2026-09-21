@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HalluciShield - Runtime Security Monitoring</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #0a0e27; color: #e0e0e0; }
+.header { background: linear-gradient(135deg, #1a1f4e, #2d1b69); padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #6c3fcf; }
+.header h1 { font-size: 24px; color: #a78bfa; }
+.header .status { display: flex; gap: 12px; align-items: center; }
+.header .dot { width: 10px; height: 10px; border-radius: 50%; background: #22c55e; display: inline-block; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+.stat-card { background: #111638; border-radius: 12px; padding: 20px; border: 1px solid #1e2a5a; }
+.stat-card .label { font-size: 12px; color: #8888aa; text-transform: uppercase; letter-spacing: 1px; }
+.stat-card .value { font-size: 32px; font-weight: bold; margin-top: 8px; }
+.stat-card .value.critical { color: #ef4444; }
+.stat-card .value.high { color: #f97316; }
+.stat-card .value.medium { color: #eab308; }
+.stat-card .value.info { color: #3b82f6; }
+.panel { background: #111638; border-radius: 12px; padding: 20px; border: 1px solid #1e2a5a; margin-bottom: 20px; }
+.panel h2 { color: #a78bfa; margin-bottom: 16px; font-size: 18px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #1e2a5a; font-size: 13px; }
+th { color: #8888aa; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; }
+.severity-badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+.severity-CRITICAL { background: #450a0a; color: #fca5a5; }
+.severity-HIGH { background: #431407; color: #fdba74; }
+.severity-MEDIUM { background: #422006; color: #fde047; }
+.severity-LOW { background: #0c1a3d; color: #93c5fd; }
+.severity-INFO { background: #0c2d48; color: #67e8f9; }
+.type-badge { padding: 3px 10px; border-radius: 12px; font-size: 11px; background: #1e1b4b; color: #c4b5fd; }
+.btn { padding: 8px 20px; border-radius: 8px; border: none; cursor: pointer; font-size: 13px; font-weight: 600; }
+.btn-primary { background: #6c3fcf; color: white; }
+.btn-primary:hover { background: #7c4dff; }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #ef4444; }
+.controls { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; }
+select, input { background: #1a1f4e; border: 1px solid #2d2b6b; color: #e0e0e0; padding: 8px 12px; border-radius: 8px; font-size: 13px; }
+.risk-bar { height: 8px; border-radius: 4px; background: #1a1f4e; overflow: hidden; margin-top: 6px; }
+.risk-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+.risk-bar-fill.critical { background: linear-gradient(90deg, #ef4444, #dc2626); }
+.risk-bar-fill.high { background: linear-gradient(90deg, #f97316, #ea580c); }
+.risk-bar-fill.medium { background: linear-gradient(90deg, #eab308, #ca8a04); }
+.risk-bar-fill.low { background: linear-gradient(90deg, #3b82f6, #2563eb); }
+.empty-state { text-align: center; padding: 40px; color: #666; }
+.pipeline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+.pipeline-step { background: #1a1f4e; padding: 8px 14px; border-radius: 8px; font-size: 12px; border: 1px solid #2d2b6b; }
+.pipeline-step.active { border-color: #6c3fcf; background: #1e1b4b; color: #a78bfa; }
+.pipeline-arrow { color: #4a4a7a; }
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>Runtime Security Monitoring</h1>
+  <div class="status">
+    <span><span class="dot"></span></span>
+    <span id="uptime">Uptime: 0s</span>
+    <span id="lastEvent">Last event: None</span>
+  </div>
+</div>
+<div class="container">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="label">Total Events</div><div class="value info" id="totalEvents">0</div></div>
+    <div class="stat-card"><div class="label">Total Alerts</div><div class="value critical" id="totalAlerts">0</div></div>
+    <div class="stat-card"><div class="label">Critical Alerts</div><div class="value critical" id="criticalAlerts">0</div></div>
+    <div class="stat-card"><div class="label">High Alerts</div><div class="value high" id="highAlerts">0</div></div>
+  </div>
+  <div class="panel">
+    <h2>Event Processing Pipeline</h2>
+    <div class="pipeline">
+      <div class="pipeline-step active">Runtime Event</div><span class="pipeline-arrow">></span>
+      <div class="pipeline-step active">Security Analysis</div><span class="pipeline-arrow">></span>
+      <div class="pipeline-step active">Re-analysis</div><span class="pipeline-arrow">></span>
+      <div class="pipeline-step active">Patch Generation</div><span class="pipeline-arrow">></span>
+      <div class="pipeline-step active">Sandbox Validation</div><span class="pipeline-arrow">></span>
+      <div class="pipeline-step active">Confidence Ranking</div><span class="pipeline-arrow">></span>
+      <div class="pipeline-step active">Developer Approval</div>
+    </div>
+  </div>
+  <div class="controls">
+    <button class="btn btn-primary" onclick="simulateEvents()">Simulate Events</button>
+    <input type="number" id="simCount" value="10" min="1" max="100" style="width:80px;">
+    <select id="filterType"><option value="">All Types</option>
+      <option value="API_ANOMALY">API Anomaly</option><option value="REPEATED_SUSPICIOUS_REQUEST">Repeated Suspicious</option>
+      <option value="ERROR_SPIKE">Error Spike</option><option value="AUTH_ANOMALY">Auth Anomaly</option>
+      <option value="SECURITY_EVENT">Security Event</option><option value="PERFORMANCE_REGRESSION">Perf Regression</option>
+    </select>
+    <select id="filterSeverity"><option value="">All Severities</option>
+      <option value="CRITICAL">Critical</option><option value="HIGH">High</option>
+      <option value="MEDIUM">Medium</option><option value="LOW">Low</option>
+    </select>
+    <button class="btn btn-primary" onclick="loadData()">Refresh</button>
+  </div>
+  <div class="grid-2">
+    <div class="panel">
+      <h2>Recent Events</h2>
+      <div id="eventsTable"><div class="empty-state">No events yet. Click Simulate to generate events.</div></div>
+    </div>
+    <div class="panel">
+      <h2>Security Alerts</h2>
+      <div id="alertsTable"><div class="empty-state">No alerts triggered yet.</div></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>Events by Type</h2>
+    <div id="eventsByType"></div>
+  </div>
+  <div class="panel">
+    <h2>Top Anomaly Endpoints</h2>
+    <div id="topEndpoints"><div class="empty-state">No endpoint data yet.</div></div>
+  </div>
+</div>
+<script>
+const BASE = '/api/v1/monitoring';
+async function loadData() {
+  try {
+    const res = await fetch(BASE + '/summary');
+    const data = await res.json();
+    document.getElementById('totalEvents').textContent = data.total_events || 0;
+    document.getElementById('totalAlerts').textContent = data.total_alerts || 0;
+    document.getElementById('criticalAlerts').textContent = (data.alerts_by_severity || {}).CRITICAL || 0;
+    document.getElementById('highAlerts').textContent = (data.alerts_by_severity || {}).HIGH || 0;
+    document.getElementById('uptime').textContent = 'Uptime: ' + (data.uptime_seconds || 0) + 's';
+    document.getElementById('lastEvent').textContent = 'Last event: ' + (data.last_event_at || 'None');
+    renderEvents(data.recent_events || []);
+    renderAlerts(data.recent_alerts || []);
+    renderEventsByType(data.events_by_type || {});
+    renderTopEndpoints(data.top_anomaly_endpoints || []);
+  } catch(e) { console.error('Failed to load data:', e); }
+}
+function renderEvents(events) {
+  if (!events.length) { document.getElementById('eventsTable').innerHTML = '<div class="empty-state">No events yet.</div>'; return; }
+  let html = '<table><tr><th>Type</th><th>Severity</th><th>Endpoint</th><th>Status</th><th>Time</th></tr>';
+  events.slice().reverse().slice(0, 15).forEach(e => {
+    html += '<tr><td><span class="type-badge">' + e.event_type + '</span></td>';
+    html += '<td><span class="severity-badge severity-' + e.severity + '">' + e.severity + '</span></td>';
+    html += '<td>' + (e.endpoint || '-') + '</td>';
+    html += '<td>' + (e.status_code || '-') + '</td>';
+    html += '<td>' + (e.detected_at ? new Date(e.detected_at).toLocaleTimeString() : '-') + '</td></tr>';
+  });
+  html += '</table>';
+  document.getElementById('eventsTable').innerHTML = html;
+}
+function renderAlerts(alerts) {
+  if (!alerts.length) { document.getElementById('alertsTable').innerHTML = '<div class="empty-state">No alerts yet.</div>'; return; }
+  let html = '<table><tr><th>Severity</th><th>Type</th><th>Vuln Type</th><th>Risk</th><th>Endpoint</th></tr>';
+  alerts.slice().reverse().slice(0, 15).forEach(a => {
+    html += '<tr><td><span class="severity-badge severity-' + a.severity + '">' + a.severity + '</span></td>';
+    html += '<td>' + a.event_type + '</td>';
+    html += '<td>' + (a.vulnerability_type || '-') + '</td>';
+    html += '<td><div class="risk-bar"><div class="risk-bar-fill ' + a.severity.toLowerCase() + '" style="width:' + a.risk_score + '%"></div></div>' + a.risk_score.toFixed(0) + '%</td>';
+    html += '<td>' + (a.affected_endpoint || '-') + '</td></tr>';
+  });
+  html += '</table>';
+  document.getElementById('alertsTable').innerHTML = html;
+}
+function renderEventsByType(types) {
+  const el = document.getElementById('eventsByType');
+  const entries = Object.entries(types);
+  if (!entries.length) { el.innerHTML = '<div class="empty-state">No data.</div>'; return; }
+  let html = '<div style="display:flex;gap:16px;flex-wrap:wrap;">';
+  entries.forEach(([k, v]) => {
+    html += '<div style="background:#1a1f4e;padding:12px 20px;border-radius:8px;text-align:center;min-width:120px;">';
+    html += '<div style="font-size:24px;font-weight:bold;color:#a78bfa;">' + v + '</div>';
+    html += '<div style="font-size:11px;color:#8888aa;margin-top:4px;">' + k.replace(/_/g, ' ') + '</div></div>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+function renderTopEndpoints(endpoints) {
+  const el = document.getElementById('topEndpoints');
+  if (!endpoints.length) { el.innerHTML = '<div class="empty-state">No endpoint data.</div>'; return; }
+  let html = '<table><tr><th>Endpoint</th><th>Event Count</th></tr>';
+  endpoints.forEach(ep => {
+    html += '<tr><td>' + ep.endpoint + '</td><td>' + ep.count + '</td></tr>';
+  });
+  html += '</table>';
+  el.innerHTML = html;
+}
+async function simulateEvents() {
+  const count = parseInt(document.getElementById('simCount').value) || 10;
+  await fetch(BASE + '/simulate', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({count: count}) });
+  loadData();
+}
+loadData();
+setInterval(loadData, 10000);
+</script>
+</body>
+</html>

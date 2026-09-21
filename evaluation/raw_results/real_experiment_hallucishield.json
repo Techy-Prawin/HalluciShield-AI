@@ -1,0 +1,153 @@
+{
+  "per_category": {
+    "SQL_INJECTION": {
+      "test_count": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "avg_confidence": 82.5,
+      "avg_latency_ms": 3089,
+      "detections": [
+        "SQL_INJECTION"
+      ]
+    },
+    "XSS": {
+      "test_count": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "avg_confidence": 82.5,
+      "avg_latency_ms": 3656,
+      "detections": [
+        "CROSS_SITE_SCRIPTING"
+      ]
+    },
+    "COMMAND_INJECTION": {
+      "test_count": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "avg_confidence": 82.5,
+      "avg_latency_ms": 1005,
+      "detections": [
+        "COMMAND_INJECTION"
+      ]
+    },
+    "PATH_TRAVERSAL": {
+      "test_count": 1,
+      "tp": 0,
+      "fp": 0,
+      "fn": 1,
+      "tn": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "avg_confidence": 82.5,
+      "avg_latency_ms": 1022,
+      "detections": [
+        "none"
+      ]
+    },
+    "HARDCODED_SECRETS": {
+      "test_count": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "avg_confidence": 82.5,
+      "avg_latency_ms": 1024,
+      "detections": [
+        "HARDCODED_SECRET; HARDCODED_SECRET; HARDCODED_SECRET; HARDCODED_SECRET"
+      ]
+    },
+    "INSECURE_JWT": {
+      "test_count": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "tn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "avg_confidence": 82.5,
+      "avg_latency_ms": 1017,
+      "detections": [
+        "INSECURE_JWT"
+      ]
+    },
+    "AUTH_FLAW": {
+      "test_count": 1,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "avg_confidence": 82.5,
+      "avg_latency_ms": 1021,
+      "detections": [
+        "none"
+      ]
+    },
+    "HALLUCINATED_API": {
+      "test_count": 1,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "tn": 1,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "avg_confidence": 82.5,
+      "avg_latency_ms": 955,
+      "detections": [
+        "none"
+      ]
+    },
+    "HALLUCINATED_PACKAGE": {
+      "test_count": 1,
+      "tp": 0,
+      "fp": 1,
+      "fn": 0,
+      "tn": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "avg_confidence": 82.5,
+      "avg_latency_ms": 2467,
+      "detections": [
+        "quantum-crypto(HALLUCINATED_PACKAGE)"
+      ]
+    }
+  },
+  "overall": {
+    "tp": 5,
+    "fp": 1,
+    "fn": 1,
+    "tn": 2,
+    "total": 9,
+    "precision": 0.8333,
+    "recall": 0.8333,
+    "f1": 0.8333,
+    "accuracy": 0.7778,
+    "fpr": 0.3333,
+    "avg_confidence": 82.5,
+    "avg_latency_ms": 1695.1
+  }
+}

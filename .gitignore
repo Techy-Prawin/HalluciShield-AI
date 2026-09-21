@@ -1,0 +1,28 @@
+# Node
+node_modules/
+dist/
+build/
+.next/
+out/
+*.log
+npm-debug.log*
+coverage/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+venv/
+.venv/
+*.egg-info/
+
+# Environment & Secrets
+.env
+!.env.example
+*.pem
+*.key
+
+# Docker & OS
+.DS_Store
+Thumbs.db
