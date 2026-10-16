@@ -6,13 +6,18 @@ Supports both SIMULATION and REAL experiment data with explicit labeling.
 from collections import defaultdict
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from app.agents.experiment_runner import experiment_runner, _filter_test_cases
 from app.agents.models import VulnerabilityTestCategory, ExperimentMode, ExperimentDataSource
 from app.agents.test_dataset import ALL_TEST_CASES, ALL_TEST_CASES_BY_CATEGORY
+from app.security import require_api_key
 
-router = APIRouter(prefix="/api/analytics", tags=["analytics"])
+router = APIRouter(
+    prefix="/api/analytics",
+    tags=["analytics"],
+    dependencies=[Depends(require_api_key)],
+)
 
 
 def _build_analytics_payload(experiment_id: str) -> dict:

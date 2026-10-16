@@ -1,0 +1,530 @@
+{
+  "semgrep": {
+    "go": {
+      "total_samples": 106,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 16,
+        "fn": 90
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.1509,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 106,
+        "completed": 106,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "java": {
+      "total_samples": 76,
+      "confusion_matrix": {
+        "tp": 24,
+        "fp": 0,
+        "tn": 19,
+        "fn": 33
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.4211,
+        "f1": 0.5926,
+        "accuracy": 0.5658,
+        "fpr": 0.0,
+        "fnr": 0.5789,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 76,
+        "completed": 76,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "javascript": {
+      "total_samples": 108,
+      "confusion_matrix": {
+        "tp": 27,
+        "fp": 0,
+        "tn": 24,
+        "fn": 57
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.3214,
+        "f1": 0.4865,
+        "accuracy": 0.4722,
+        "fpr": 0.0,
+        "fnr": 0.6786,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 108,
+        "completed": 108,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "python": {
+      "total_samples": 75,
+      "confusion_matrix": {
+        "tp": 19,
+        "fp": 0,
+        "tn": 24,
+        "fn": 32
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.3725,
+        "f1": 0.5429,
+        "accuracy": 0.5733,
+        "fpr": 0.0,
+        "fnr": 0.6275,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 75,
+        "completed": 75,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "typescript": {
+      "total_samples": 135,
+      "confusion_matrix": {
+        "tp": 24,
+        "fp": 0,
+        "tn": 30,
+        "fn": 81
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.2286,
+        "f1": 0.3721,
+        "accuracy": 0.4,
+        "fpr": 0.0,
+        "fnr": 0.7714,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 135,
+        "completed": 135,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    }
+  },
+  "llm_zero_shot": {
+    "go": {
+      "total_samples": 106,
+      "confusion_matrix": {
+        "tp": 16,
+        "fp": 1,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.9412,
+        "recall": 1.0,
+        "f1": 0.9697,
+        "accuracy": 0.9412,
+        "fpr": 1.0,
+        "fnr": 0.0,
+        "coverage": 0.1604
+      },
+      "execution_counts": {
+        "attempted": 106,
+        "completed": 17,
+        "failed": 89,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "java": {
+      "total_samples": 76,
+      "confusion_matrix": {
+        "tp": 12,
+        "fp": 1,
+        "tn": 5,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.9231,
+        "recall": 1.0,
+        "f1": 0.96,
+        "accuracy": 0.9444,
+        "fpr": 0.1667,
+        "fnr": 0.0,
+        "coverage": 0.2368
+      },
+      "execution_counts": {
+        "attempted": 76,
+        "completed": 18,
+        "failed": 58,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "javascript": {
+      "total_samples": 108,
+      "confusion_matrix": {
+        "tp": 17,
+        "fp": 0,
+        "tn": 6,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.213
+      },
+      "execution_counts": {
+        "attempted": 108,
+        "completed": 23,
+        "failed": 85,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "python": {
+      "total_samples": 75,
+      "confusion_matrix": {
+        "tp": 11,
+        "fp": 3,
+        "tn": 3,
+        "fn": 1
+      },
+      "metrics": {
+        "precision": 0.7857,
+        "recall": 0.9167,
+        "f1": 0.8462,
+        "accuracy": 0.7778,
+        "fpr": 0.5,
+        "fnr": 0.0833,
+        "coverage": 0.24
+      },
+      "execution_counts": {
+        "attempted": 75,
+        "completed": 18,
+        "failed": 57,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "typescript": {
+      "total_samples": 135,
+      "confusion_matrix": {
+        "tp": 21,
+        "fp": 0,
+        "tn": 4,
+        "fn": 1
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.9545,
+        "f1": 0.9767,
+        "accuracy": 0.9615,
+        "fpr": 0.0,
+        "fnr": 0.0455,
+        "coverage": 0.1926
+      },
+      "execution_counts": {
+        "attempted": 135,
+        "completed": 26,
+        "failed": 109,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    }
+  },
+  "sandbox": {
+    "go": {
+      "total_samples": 106,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 106,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 106,
+        "timeout": 0
+      }
+    },
+    "java": {
+      "total_samples": 76,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 76,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 76,
+        "timeout": 0
+      }
+    },
+    "javascript": {
+      "total_samples": 108,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 108,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 108,
+        "timeout": 0
+      }
+    },
+    "python": {
+      "total_samples": 75,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 75,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 75,
+        "timeout": 0
+      }
+    },
+    "typescript": {
+      "total_samples": 135,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 135,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 135,
+        "timeout": 0
+      }
+    }
+  },
+  "full_ace": {
+    "go": {
+      "total_samples": 106,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 16,
+        "fn": 90
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.1509,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 106,
+        "completed": 106,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "java": {
+      "total_samples": 76,
+      "confusion_matrix": {
+        "tp": 24,
+        "fp": 0,
+        "tn": 19,
+        "fn": 33
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.4211,
+        "f1": 0.5926,
+        "accuracy": 0.5658,
+        "fpr": 0.0,
+        "fnr": 0.5789,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 76,
+        "completed": 76,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "javascript": {
+      "total_samples": 108,
+      "confusion_matrix": {
+        "tp": 27,
+        "fp": 0,
+        "tn": 24,
+        "fn": 57
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.3214,
+        "f1": 0.4865,
+        "accuracy": 0.4722,
+        "fpr": 0.0,
+        "fnr": 0.6786,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 108,
+        "completed": 108,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "python": {
+      "total_samples": 75,
+      "confusion_matrix": {
+        "tp": 19,
+        "fp": 0,
+        "tn": 24,
+        "fn": 32
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.3725,
+        "f1": 0.5429,
+        "accuracy": 0.5733,
+        "fpr": 0.0,
+        "fnr": 0.6275,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 75,
+        "completed": 75,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "typescript": {
+      "total_samples": 135,
+      "confusion_matrix": {
+        "tp": 24,
+        "fp": 0,
+        "tn": 30,
+        "fn": 81
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.2286,
+        "f1": 0.3721,
+        "accuracy": 0.4,
+        "fpr": 0.0,
+        "fnr": 0.7714,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 135,
+        "completed": 135,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    }
+  }
+}

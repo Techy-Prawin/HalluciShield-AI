@@ -1,0 +1,36 @@
+{
+  "status": "COMPLETED",
+  "benchmark_commit": "8b67a88d73b2594570fc21150705283de884620b",
+  "total_test_cases": 20,
+  "oracle_positive": 1415,
+  "oracle_negative": 1325,
+  "metrics": {
+    "precision": 1.0,
+    "recall": 0.2941,
+    "f1": 0.4545,
+    "accuracy": 0.4,
+    "fpr": 0.0,
+    "fnr": 0.7059,
+    "coverage": 1.0
+  },
+  "confusion_matrix": {
+    "tp": 5,
+    "fp": 0,
+    "tn": 3,
+    "fn": 12
+  },
+  "execution_counts": {
+    "attempted": 20,
+    "completed": 20,
+    "failed": 0,
+    "not_applicable": 0
+  },
+  "confidence_statistics": {
+    "count": 0
+  },
+  "latency_ms": {
+    "mean": 2576.25,
+    "median": 50.4,
+    "total_samples": 20
+  }
+}

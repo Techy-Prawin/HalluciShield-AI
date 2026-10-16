@@ -1,0 +1,26 @@
+{
+  "per_sample_provenance": {
+    "DS-B-0002": {
+      "hallucination": {"status": "NOT_AVAILABLE", "provenance": "NOT_AVAILABLE"},
+      "dependency": {"status": "NOT_AVAILABLE", "provenance": "NOT_AVAILABLE"},
+      "security": {"status": "NOT_AVAILABLE", "provenance": "NOT_AVAILABLE"},
+      "risk": {"status": "NOT_AVAILABLE", "provenance": "NOT_AVAILABLE"}
+    },
+    "DS-B-0004": {
+      "hallucination": {"status": "AVAILABLE", "provenance": "REAL"},
+      "dependency": {"status": "AVAILABLE", "provenance": "REAL"},
+      "security": {"status": "AVAILABLE", "provenance": "REAL"},
+      "risk": {"status": "AVAILABLE", "provenance": "REAL"}
+    }
+  },
+  "provenance_distribution": {
+    "NOT_AVAILABLE": 500,
+    "REAL": 94,
+    "SYNTHETIC_TEST": 0
+  },
+  "real_evidence_count": 94,
+  "not_available_count": 406,
+  "synthetic_test_count": 0,
+  "total_samples": 500,
+  "integrity_rule": "No SYNTHETIC_TEST evidence in empirical results; only REAL (94 samples where Docker not required for compilation) or NOT_AVAILABLE (406 samples where Docker sandbox unavailable) evidence present"
+}

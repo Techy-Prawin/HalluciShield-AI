@@ -1,0 +1,1 @@
+const query = `SELECT * FROM orders WHERE order_id = ${orderId}`; db.query(query)

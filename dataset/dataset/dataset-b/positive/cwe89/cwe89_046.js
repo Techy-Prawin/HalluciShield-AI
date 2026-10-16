@@ -1,0 +1,1 @@
+db.query('INSERT INTO logs(msg) VALUES(' + msg + ')')

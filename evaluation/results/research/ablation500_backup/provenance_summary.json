@@ -1,0 +1,61 @@
+{
+  "experiment_id": "ablation500-empirical-evaluation",
+  "total_configurations": 10,
+  "records_per_configuration": 500,
+  "total_records": 5000,
+  "provenance_by_configuration": {
+    "A": {
+      "REAL": 285,
+      "NOT_AVAILABLE": 285,
+      "SYNTHETIC_TEST": 0
+    },
+    "B": {
+      "REAL": 306,
+      "NOT_AVAILABLE": 306,
+      "SYNTHETIC_TEST": 0
+    },
+    "C": {
+      "REAL": 342,
+      "NOT_AVAILABLE": 342,
+      "SYNTHETIC_TEST": 0
+    },
+    "D": {
+      "REAL": 252,
+      "NOT_AVAILABLE": 450,
+      "SYNTHETIC_TEST": 0
+    },
+    "E": {
+      "REAL": 387,
+      "NOT_AVAILABLE": 387,
+      "SYNTHETIC_TEST": 0
+    },
+    "F": {
+      "REAL": 177,
+      "NOT_AVAILABLE": 375,
+      "SYNTHETIC_TEST": 0
+    },
+    "G": {
+      "REAL": 0,
+      "NOT_AVAILABLE": 0,
+      "SYNTHETIC_TEST": 0
+    },
+    "H": {
+      "REAL": 414,
+      "NOT_AVAILABLE": 414,
+      "SYNTHETIC_TEST": 0
+    },
+    "I": {
+      "REAL": 0,
+      "NOT_AVAILABLE": 0,
+      "SYNTHETIC_TEST": 0
+    },
+    "J": {
+      "REAL": 414,
+      "NOT_AVAILABLE": 414,
+      "SYNTHETIC_TEST": 0
+    }
+  },
+  "synthetic_test_evidence_count": 0,
+  "zero_synthetic_evidence_verified": true,
+  "docker_unavailable_status": "NOT_AVAILABLE with explicit provenance NOT_AVAILABLE"
+}

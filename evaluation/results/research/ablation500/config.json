@@ -1,0 +1,125 @@
+{
+  "experiment_id": "ablation500-empirical-evaluation",
+  "timestamp": "2026-10-07T13:14:39.320823+00:00",
+  "evaluation_mode": "real_production",
+  "total_samples": 500,
+  "total_configurations": 10,
+  "configurations": {
+    "A": {
+      "hallucination_detection": true,
+      "dependency_analysis": true,
+      "security_analysis": true,
+      "risk_assessment": true,
+      "patch_generation": true,
+      "validation": true,
+      "legacy_ace": true,
+      "aece": true,
+      "multi_patch": true
+    },
+    "B": {
+      "hallucination_detection": false,
+      "dependency_analysis": true,
+      "security_analysis": true,
+      "risk_assessment": true,
+      "patch_generation": true,
+      "validation": true,
+      "legacy_ace": true,
+      "aece": true,
+      "multi_patch": true
+    },
+    "C": {
+      "hallucination_detection": true,
+      "dependency_analysis": false,
+      "security_analysis": true,
+      "risk_assessment": true,
+      "patch_generation": true,
+      "validation": true,
+      "legacy_ace": true,
+      "aece": true,
+      "multi_patch": true
+    },
+    "D": {
+      "hallucination_detection": true,
+      "dependency_analysis": true,
+      "security_analysis": false,
+      "risk_assessment": true,
+      "patch_generation": true,
+      "validation": true,
+      "legacy_ace": true,
+      "aece": true,
+      "multi_patch": true
+    },
+    "E": {
+      "hallucination_detection": true,
+      "dependency_analysis": true,
+      "security_analysis": true,
+      "risk_assessment": false,
+      "patch_generation": true,
+      "validation": true,
+      "legacy_ace": true,
+      "aece": true,
+      "multi_patch": true
+    },
+    "F": {
+      "hallucination_detection": true,
+      "dependency_analysis": true,
+      "security_analysis": true,
+      "risk_assessment": true,
+      "patch_generation": false,
+      "validation": true,
+      "legacy_ace": true,
+      "aece": true,
+      "multi_patch": true
+    },
+    "G": {
+      "hallucination_detection": true,
+      "dependency_analysis": true,
+      "security_analysis": true,
+      "risk_assessment": true,
+      "patch_generation": true,
+      "validation": false,
+      "legacy_ace": true,
+      "aece": true,
+      "multi_patch": true
+    },
+    "H": {
+      "hallucination_detection": true,
+      "dependency_analysis": true,
+      "security_analysis": true,
+      "risk_assessment": true,
+      "patch_generation": true,
+      "validation": true,
+      "legacy_ace": false,
+      "aece": true,
+      "multi_patch": true
+    },
+    "I": {
+      "hallucination_detection": true,
+      "dependency_analysis": true,
+      "security_analysis": true,
+      "risk_assessment": true,
+      "patch_generation": true,
+      "validation": true,
+      "legacy_ace": true,
+      "aece": false,
+      "multi_patch": true
+    },
+    "J": {
+      "hallucination_detection": true,
+      "dependency_analysis": true,
+      "security_analysis": true,
+      "risk_assessment": true,
+      "patch_generation": true,
+      "validation": true,
+      "legacy_ace": true,
+      "aece": true,
+      "multi_patch": false
+    }
+  },
+  "environment": {
+    "os": "windows",
+    "docker_status": "unavailable (handled gracefully with explicit NOT_AVAILABLE)",
+    "model": "qwen/qwen3.8-27b (Groq API)"
+  },
+  "gate_verdict": "READY_FOR_RESEARCH_ABLATION_ANALYSIS"
+}

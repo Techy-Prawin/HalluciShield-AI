@@ -1,0 +1,7 @@
+{
+  "hallucinated_sample_count": 94,
+  "causal_analysis_counts_only": 94,
+  "no_evidence_attribution_count": 406,
+  "unknown_attribution_count": 0,
+  "note": "Causal analysis counts only where real evidence supports attribution; no generalization from limited sample size. 94 samples had hallucination detected with REAL evidence provenance supporting causal claims. 406 samples have NOT_AVAILABLE evidence provenance - causal analysis not possible without real evidence. No synthetic causal claims made from limited samples."
+}

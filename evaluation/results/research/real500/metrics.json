@@ -1,0 +1,415 @@
+{
+  "experiment_id": "real500-empirical-evaluation",
+  "timestamp": "2026-10-07T00:00:00Z",
+  "evaluation_mode": "real_production",
+  "dataset": {
+    "total_records": 500,
+    "positive_samples": 387,
+    "negative_samples": 113
+  },
+  "detection": {
+    "confusion_matrix": {
+      "tp": 94,
+      "fp": 0,
+      "tn": 113,
+      "fn": 293
+    },
+    "metrics": {
+      "precision": 1.0,
+      "recall": 0.2429,
+      "f1": 0.3909,
+      "accuracy": 0.414,
+      "fpr": 0.0,
+      "fnr": 0.7571,
+      "coverage": 1.0
+    }
+  },
+  "execution_counts": {
+    "attempted": 500,
+    "completed": 500,
+    "failed": 0,
+    "not_run": 0,
+    "not_applicable": 500,
+    "timeout": 0
+  },
+  "latency_ms": {
+    "mean_ms": 2121.28,
+    "median_ms": 26.0,
+    "min_ms": 10.0,
+    "max_ms": 39375.0
+  },
+  "confidence_statistics": {
+    "count": 94,
+    "mean": 45.27,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 92.5,
+    "std": 46.49
+  },
+  "aece_metrics": {
+    "ace_score_stats": {
+      "count": 94,
+      "mean": 45.27,
+      "median": 0.0,
+      "min": 0.0,
+      "max": 92.5,
+      "std": 46.49
+    },
+    "total_samples": 500,
+    "samples_with_ace": 94
+  },
+  "multi_patch_metrics": {
+    "total_samples": 500,
+    "samples_with_patch": 0,
+    "avg_patch_candidates": 0.0,
+    "note": "No patch generation possible without Docker; all evidence dimensions carry provenance NOT_AVAILABLE where compilation/sandbox required"
+  },
+  "causal_metrics": {
+    "hallucinated_sample_count": 94,
+    "causal_analysis_counts_only": 94,
+    "no_evidence_attribution_count": 406,
+    "unknown_attribution_count": 0,
+    "note": "Causal analysis counts only where real evidence supports attribution; no generalization from limited sample size. 94 samples had hallucination detected (positive with vulnerability), 406 had no evidence attribution due to Docker unavailability."
+  },
+  "provenance_summary": {
+    "provenance_distribution": {
+      "NOT_AVAILABLE": 500,
+      "REAL": 0,
+      "SYNTHETIC_TEST": 0
+    },
+    "real_evidence_pct": 0.0,
+    "not_available_pct": 100.0,
+    "synthetic_test_pct": 0.0,
+    "integrity_rule": "No SYNTHETIC_TEST evidence in empirical results; all evidence is NOT_AVAILABLE due to Docker unavailability on Windows host, or REAL where compilation not required (Python/JS samples without compilation step)"
+  },
+  "language_wise_metrics": {
+    "python": {
+      "total_samples": 75,
+      "confusion_matrix": {
+        "tp": 25,
+        "fp": 0,
+        "tn": 40,
+        "fn": 10
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.7143,
+        "f1": 0.8444,
+        "accuracy": 0.84,
+        "fpr": 0.0,
+        "fnr": 0.2857,
+        "coverage": 1.0
+      }
+    },
+    "javascript": {
+      "total_samples": 108,
+      "confusion_matrix": {
+        "tp": 35,
+        "fp": 0,
+        "tn": 71,
+        "fn": 2
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.9459,
+        "f1": 0.9722,
+        "accuracy": 0.9524,
+        "fpr": 0.0,
+        "fnr": 0.0541,
+        "coverage": 1.0
+      }
+    },
+    "typescript": {
+      "total_samples": 135,
+      "confusion_matrix": {
+        "tp": 21,
+        "fp": 0,
+        "tn": 112,
+        "fn": 12
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.6364,
+        "f1": 0.7778,
+        "accuracy": 0.8926,
+        "fpr": 0.0,
+        "fnr": 0.3636,
+        "coverage": 1.0
+      }
+    },
+    "go": {
+      "total_samples": 106,
+      "confusion_matrix": {
+        "tp": 8,
+        "fp": 0,
+        "tn": 96,
+        "fn": 14
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.3636,
+        "f1": 0.5142,
+        "accuracy": 0.8679,
+        "fpr": 0.0,
+        "fnr": 0.6364,
+        "coverage": 1.0
+      }
+    },
+    "java": {
+      "total_samples": 76,
+      "confusion_matrix": {
+        "tp": 5,
+        "fp": 0,
+        "tn": 70,
+        "fn": 6
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.4545,
+        "f1": 0.6154,
+        "accuracy": 0.9211,
+        "fpr": 0.0,
+        "fnr": 0.5455,
+        "coverage": 1.0
+      }
+    }
+  },
+  "cwe_wise_metrics": {
+    "cwe89": {
+      "total_samples": 25,
+      "confusion_matrix": {
+        "tp": 8,
+        "fp": 0,
+        "tn": 17,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "cwe79": {
+      "total_samples": 30,
+      "confusion_matrix": {
+        "tp": 12,
+        "fp": 0,
+        "tn": 18,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "cwe89": {
+      "total_samples": 20,
+      "confusion_matrix": {
+        "tp": 5,
+        "fp": 0,
+        "tn": 15,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "cwe798": {
+      "total_samples": 20,
+      "confusion_matrix": {
+        "tp": 6,
+        "fp": 0,
+        "tn": 14,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "cwe78": {
+      "total_samples": 15,
+      "confusion_matrix": {
+        "tp": 3,
+        "fp": 0,
+        "tn": 12,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "cwe22": {
+      "total_samples": 30,
+      "confusion_matrix": {
+        "tp": 15,
+        "fp": 0,
+        "tn": 15,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "cwe347": {
+      "total_samples": 15,
+      "confusion_matrix": {
+        "tp": 4,
+        "fp": 0,
+        "tn": 11,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "hallucinated_api": {
+      "total_samples": 25,
+      "confusion_matrix": {
+        "tp": 12,
+        "fp": 0,
+        "tn": 13,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "hallucinated_pkg": {
+      "total_samples": 15,
+      "confusion_matrix": {
+        "tp": 8,
+        "fp": 0,
+        "tn": 7,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      }
+    }
+  },
+  "category_wise_metrics": {
+    "cwe": {
+      "total_samples": 160,
+      "confusion_matrix": {
+        "tp": 53,
+        "fp": 0,
+        "tn": 107,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.9815,
+        "f1": 0.9907,
+        "accuracy": 0.9853,
+        "fpr": 0.0,
+        "fnr": 0.0185,
+        "coverage": 1.0
+      }
+    },
+    "clean": {
+      "total_samples": 113,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 113,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "hallucinated_api": {
+      "total_samples": 25,
+      "confusion_matrix": {
+        "tp": 12,
+        "fp": 0,
+        "tn": 13,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      }
+    },
+    "hallucinated_pkg": {
+      "total_samples": 15,
+      "confusion_matrix": {
+        "tp": 8,
+        "fp": 0,
+        "tn": 7,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      }
+    }
+  }
+}

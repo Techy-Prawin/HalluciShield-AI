@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import styles from './heroWorkflow.module.css';
 import { StatusDot } from '@/components/hud/hud';
@@ -8,7 +8,15 @@ import { Icon, type IconName } from '@/components/icons';
 import { useCommandCenter } from './CommandCenterContext';
 import { cx, threatLevel, timeAgo } from '@/lib/hud';
 import { UploadPortal } from '@/app/components/UploadPortal';
-import { extractFindings, totalVulnerabilities, type ScanStages, type ScanStatusPayload } from '@/lib/api';
+import {
+  extractFindings,
+  totalVulnerabilities,
+  acknowledgeUnverifiedDownload,
+  downloadSecuredFile,
+  type DownloadEligibility,
+  type ScanStages,
+  type ScanStatusPayload,
+} from '@/lib/api';
 
 /* ------------------------------------------------------------------ */
 /* WelcomeHero — command center masthead                              */
@@ -114,6 +122,7 @@ export function ScanWorkflow() {
   const secureCode =
     terminal &&
     scan?.status === 'COMPLETED' &&
+    scan.artifactAuthorization === 'AUTHORIZED' &&
     (vulnTotalValid === 0) &&
     findStageState(scan, 'patch') === 'NOT_APPLICABLE';
 
@@ -250,39 +259,16 @@ export function ScanWorkflow() {
                 </div>
               )}
 
-              {(scan.hasOutputFile || scan.downloadUrl) && scan.status === 'COMPLETED' && (
-                <button
-                  className={cx(styles.heroBtn, styles.heroBtnPrimary)}
-                  onClick={requestDownload}
-                  disabled={ctx.downloadState.busy}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '8px',
-                    width: '100%',
-                    padding: '10px 16px',
-                    backgroundColor: 'var(--green)',
-                    color: '#0a0d14',
-                    fontWeight: 700,
-                    borderRadius: '6px',
-                    textDecoration: 'none',
-                    letterSpacing: '0.05em',
-                    cursor: ctx.downloadState.busy ? 'wait' : 'pointer',
-                    opacity: ctx.downloadState.busy ? 0.7 : 1,
-                  }}
-                  title={ctx.downloadState.busy ? 'Downloading…' : 'Download the secured output file'}
-                >
-                  <Icon name={ctx.downloadState.busy ? 'refresh' : 'download'} size={16} />
-                  {ctx.downloadState.busy
-                    ? 'DOWNLOADING…'
-                    : `DOWNLOAD SECURED ${scan.uploadType === 'single_file' ? 'FILE' : 'REPOSITORY'}`}
-                </button>
-              )}
+              {scan.status === 'COMPLETED' && (scan.downloadUrl || scan.downloadEligibility?.level === 'INELIGIBLE' || scan.artifactAuthorization === 'BLOCKED') && <DownloadControl scan={scan} />}
 
               {ctx.downloadState.error && (
                 <div className={styles.consoleError}>
                   <Icon name="alert" size={14} /> {ctx.downloadState.error}
+                </div>
+              )}
+              {ctx.acknowledgementState.error && (
+                <div className={styles.consoleError}>
+                  <Icon name="alert" size={14} /> {ctx.acknowledgementState.error}
                 </div>
               )}
             </>
@@ -293,15 +279,173 @@ export function ScanWorkflow() {
   );
 }
 
+function DownloadControl({ scan }: { scan: ScanStatusPayload }) {
+  const ctx = useCommandCenter();
+  const elig: DownloadEligibility | null = scan.downloadEligibility ?? null;
+  const verdict = scan.securityVerdict ?? 'PENDING';
+  const auth = scan.artifactAuthorization ?? 'PENDING';
+  const [locallyAcknowledged, setLocallyAcknowledged] = useState(false);
+
+  const eligible = elig?.eligible === true;
+  const needsAck = elig?.acknowledgementRequired === true;
+  const ace = elig?.aceScore;
+
+  const handleDownload = async () => {
+    if (!scan.repositoryId || !scan.scanId) return;
+    if (needsAck && !locallyAcknowledged) return;
+    await ctx.downloadSecuredFile(scan.repositoryId, scan.scanId, needsAck);
+  };
+
+  const handleAcknowledgeAndDownload = async () => {
+    if (!scan.repositoryId || !scan.scanId) return;
+    const result = await ctx.acknowledgeDownload(scan.repositoryId, scan.scanId);
+    if (result.ok) setLocallyAcknowledged(true);
+    else return;
+    await ctx.downloadSecuredFile(scan.repositoryId, scan.scanId, true);
+  };
+
+  const rowColor = verdict === 'PASSED' ? 'var(--green)' : verdict === 'BLOCKED' ? 'var(--red)' : 'var(--amber)';
+  const metaRows = [
+    { label: 'ACE SCORE', value: typeof ace === 'number' ? `${ace} / 100` : 'NOT AVAILABLE', note: 'scale 0-100 — score never fabricated' },
+    { label: 'VALIDATION', value: String(scan.stages?.validation?.state ?? '—'), note: scan.stages?.validation?.details?.unverifiedResults != null ? `unverified results: ${scan.stages.validation.details.unverifiedResults}` : undefined },
+    { label: 'SECURITY VERDICT', value: String(verdict).toUpperCase(), note: 'independent of download eligibility' },
+    { label: 'DOWNLOAD ELIGIBILITY', value: String(elig?.level ?? '—').toUpperCase(), note: elig?.reason ?? undefined },
+  ];
+
+  const inline: {
+    control: React.CSSProperties;
+    meta: React.CSSProperties;
+    metaRow: React.CSSProperties;
+    metaLabel: React.CSSProperties;
+    metaValue: React.CSSProperties;
+    metaNote: React.CSSProperties;
+    banner: (color: string) => React.CSSProperties;
+    reason: React.CSSProperties;
+    actions: React.CSSProperties;
+    ackLabel: React.CSSProperties;
+    ackActions: React.CSSProperties;
+  } = {
+    control: { border: '1px solid var(--border)', borderRadius: '8px', padding: '12px 14px', marginTop: '10px', background: 'var(--panel)' },
+    meta: { display: 'flex', flexDirection: 'column', gap: '6px' },
+    metaRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '8px' },
+    metaLabel: { fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--text-3)' },
+    metaValue: { fontSize: '13px', fontWeight: 700, color: 'var(--text-1)' },
+    metaNote: { fontSize: '10.5px', color: 'var(--text-3)' },
+    banner: (color: string) => ({ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 10px', borderRadius: '6px', background: color === 'var(--red)' ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)', border: `1px solid ${color}`, marginTop: '10px' }),
+    reason: { fontSize: '12px', color: 'var(--text-2)', marginTop: '8px' },
+    actions: { display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' },
+    ackLabel: { display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12.5px', color: 'var(--text-1)', cursor: 'pointer' },
+    ackActions: { display: 'flex', gap: '8px' },
+  };
+
+  const buttonStyle = (color: string): React.CSSProperties => ({
+    display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px', width: '100%', padding: '10px 14px',
+    backgroundColor: color, color: '#0a0d14', fontWeight: 700, borderRadius: '6px', textDecoration: 'none', letterSpacing: '0.05em',
+    border: 'none', cursor: 'pointer', fontSize: '12.5px',
+  });
+
+  return (
+    <div className={styles.downloadControl} style={inline.control}>
+      <div style={inline.meta}>
+        {metaRows.map((row) => (
+          <div key={row.label} style={inline.metaRow}>
+            <span style={inline.metaLabel}>{row.label}</span>
+            <span style={{ ...inline.metaValue, color: row.label === 'SECURITY VERDICT' ? rowColor : 'var(--text-1)' }}>{row.value}</span>
+            {row.note && <span style={inline.metaNote}>{row.note}</span>}
+          </div>
+        ))}
+      </div>
+
+      {auth === 'BLOCKED' || elig?.level === 'INELIGIBLE' ? (
+        <div style={inline.banner('var(--red)')}>
+          <Icon name="alert" size={14} style={{ color: 'var(--red)' }} />
+          <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--red)' }}>DOWNLOAD BLOCKED — {elig?.reason ?? 'This candidate is not eligible for download.'}</span>
+        </div>
+      ) : (
+        <>
+          {verdict !== 'PASSED' && (
+            <div style={inline.banner('var(--amber)')}>
+              <Icon name="alert" size={14} style={{ color: 'var(--amber)' }} />
+              <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--amber)' }}>
+                UNVERIFIED — USE AT YOUR OWN RISK. This candidate has not passed security verification and may contain unresolved issues.
+              </span>
+            </div>
+          )}
+          <div style={inline.actions}>
+            {!needsAck && (
+              <button
+                className={cx(styles.heroBtn, styles.heroBtnPrimary)}
+                onClick={handleDownload}
+                disabled={ctx.downloadState.busy || !eligible}
+                style={buttonStyle('var(--green)')}
+              >
+                <Icon name={ctx.downloadState.busy ? 'refresh' : 'download'} size={16} />
+                {ctx.downloadState.busy ? 'DOWNLOADING…' : `DOWNLOAD ${auth === 'AUTHORIZED' ? 'SECURED CODE' : 'UNVERIFIED CODE'}`}
+              </button>
+            )}
+            {needsAck && (
+              <>
+                <label style={inline.ackLabel}>
+                  <input
+                    type="checkbox"
+                    checked={locallyAcknowledged}
+                    onChange={(e) => setLocallyAcknowledged(e.target.checked)}
+                    disabled={ctx.acknowledgementState.busy}
+                    style={downloadInputStyle()}
+                  />
+                  <span>I understand this code is UNVERIFIED and may contain unresolved security issues. I accept the risk.</span>
+                </label>
+                <div style={inline.ackActions}>
+                  {locallyAcknowledged ? (
+                    <button
+                      className={cx(styles.heroBtn, styles.heroBtnPrimary)}
+                      onClick={handleDownload}
+                      disabled={ctx.downloadState.busy || !eligible}
+                      style={buttonStyle('var(--green)')}
+                    >
+                      {ctx.downloadState.busy ? 'DOWNLOADING…' : 'DOWNLOAD UNVERIFIED CODE'}
+                    </button>
+                  ) : (
+                    <button
+                      className={cx(styles.heroBtn, styles.heroBtnPrimary)}
+                      onClick={handleAcknowledgeAndDownload}
+                      disabled={ctx.acknowledgementState.busy || !eligible}
+                      style={buttonStyle('var(--amber)')}
+                    >
+                      {ctx.acknowledgementState.busy ? 'ACKNOWLEDGING…' : 'ACKNOWLEDGE RISK &amp; DOWNLOAD'}
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+              </>
+            )}
+            {!eligible && auth !== 'BLOCKED' && (
+        <p style={inline.reason}>{elig?.reason ?? 'Download eligibility could not be determined.'}</p>
+      )}
+    </div>
+  );
+}
+
+function downloadInputStyle() {
+  return { width: '16px', height: '16px', cursor: 'pointer', accentColor: 'var(--amber)' };
+}
+
+
 function findStageState(scan: ScanStatusPayload | null, key: keyof ScanStages): string {
   return scan?.stages?.[key]?.state ?? 'PENDING';
 }
 
 function ScanSummary({ scan, secureCode }: { scan: ScanStatusPayload; secureCode: boolean }) {
+  const aceScore = scan.downloadEligibility?.aceScore ?? scan.confidence;
   const applied = scan.remediation?.patchesAppliedCount ?? null;
+  const residualFindings = scan.remediation?.afterFindingsCount ?? 0;
   const securityChanges =
     secureCode
       ? 'None Required'
+      : residualFindings > 0
+        ? 'Blocked · residual findings'
       : scan.remediation && (scan.remediation.patchesAppliedCount ?? 0) > 0
         ? `${scan.remediation.patchesAppliedCount} Applied`
         : applied === 0
@@ -311,20 +455,34 @@ function ScanSummary({ scan, secureCode }: { scan: ScanStatusPayload; secureCode
   const verification =
     scan.remediation?.rescanned === true
       ? `${scan.remediation.afterFindingsCount ?? 0} findings after re-scan · risk ${scan.remediation.afterRiskScore ?? 0}/100`
-      : scan.status === 'COMPLETED'
-        ? 'Verification complete'
+      : scan.stages?.securedFile?.state === 'FAILED' || scan.stages?.securedFile?.state === 'SKIPPED'
+        ? 'Blocked · not verified'
         : 'Not verified';
+
+  const elig = scan.downloadEligibility;
+  const verdictColor = (v: string) => (v === 'PASSED' ? 'var(--green)' : v === 'BLOCKED' ? 'var(--red)' : 'var(--amber)');
 
   return (
     <div className={styles.scanSummary}>
       <span className={styles.findingsTitle}>SCAN SUMMARY</span>
       <div className={styles.summaryGrid}>
         <SummaryCell label="RISK" value={typeof scan.riskScore === 'number' ? `${scan.riskScore}/100 (${scan.riskLevel || 'N/A'})` : 'N/A'} color={riskColor(scan.riskScore)} />
-        <SummaryCell label="CONFIDENCE" value={typeof scan.confidence === 'number' ? `${scan.confidence}%` : 'N/A'} color="var(--violet)" />
+        <SummaryCell label="CONFIDENCE" value={typeof aceScore === 'number' ? `ACE ${aceScore}/100` : `ACE N/A`} color="var(--violet)" />
+        <SummaryCell label="SECURITY VERDICT" value={String(scan.securityVerdict ?? '—').toUpperCase()} color={verdictColor(String(scan.securityVerdict ?? ''))} />
         <SummaryCell label="SECURITY CHANGES" value={securityChanges} color="var(--green)" />
         <SummaryCell label="FINAL VERIFICATION" value={verification} color="var(--sky)" />
         <SummaryCell label="SECURED OUTPUT" value={scan.hasOutputFile ? 'Available' : 'Unavailable'} color={scan.hasOutputFile ? 'var(--green)' : 'var(--amber)'} />
-        <SummaryCell label="STATUS" value={scan.status ?? '—'} color={statusColor(scan.status)} />
+        <SummaryCell label="SCAN" value={scan.status ?? '—'} color={statusColor(scan.status)} />
+        <SummaryCell
+          label="ARTIFACT AUTHORIZATION"
+          value={String(scan.artifactAuthorization ?? 'PENDING').toUpperCase()}
+          color={scan.artifactAuthorization === 'AUTHORIZED' ? 'var(--green)' : scan.artifactAuthorization === 'BLOCKED' ? 'var(--red)' : 'var(--amber)'}
+        />
+        <SummaryCell
+          label="DOWNLOAD ELIGIBILITY"
+          value={String(elig?.level ?? '—').toUpperCase()}
+          color={elig?.level === 'AUTHORIZED' ? 'var(--green)' : elig?.level === 'INELIGIBLE' ? 'var(--red)' : 'var(--amber)'}
+        />
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import {
   fetchScanFindings,
   fetchScanPatches,
   downloadSecuredFile,
+  acknowledgeUnverifiedDownload,
   type MonitoringSummary,
   type HealthInfo,
   type AlertRecord,
@@ -36,8 +37,10 @@ interface CommandCenterState {
   scanPolling: boolean;
   scanError: string | null;
   downloadState: { busy: boolean; error: string | null };
+  acknowledgementState: { busy: boolean; error: string | null };
   startScanFlow: (_repositoryId: string) => Promise<string | null>;
-  downloadSecuredFile: (_repositoryId: string, _scanId: string) => Promise<{ ok: boolean; fileName?: string; error?: string }>;
+  downloadSecuredFile: (_repositoryId: string, _scanId: string, _acknowledgeUnverified?: boolean) => Promise<{ ok: boolean; fileName?: string; error?: string }>;
+  acknowledgeDownload: (_repositoryId: string, _scanId: string, _userId?: string) => Promise<{ ok: boolean; error?: string }>;
   resetScan: () => void;
   isConnecting: boolean;
   lastSync: string | null;
@@ -67,6 +70,7 @@ export function CommandCenterProvider({ children }: { children: React.ReactNode 
   const [scanPolling, setScanPolling] = useState(false);
   const [scanError, setScanError] = useState<string | null>(null);
   const [downloadState, setDownloadState] = useState<{ busy: boolean; error: string | null }>({ busy: false, error: null });
+  const [acknowledgementState, setAcknowledgementState] = useState<{ busy: boolean; error: string | null }>({ busy: false, error: null });
   const [isConnecting, setIsConnecting] = useState(true);
   const [lastSync, setLastSync] = useState<string | null>(null);
   const scanTimer = useRef<number | null>(null);
@@ -163,13 +167,24 @@ export function CommandCenterProvider({ children }: { children: React.ReactNode 
     setScanPolling(false);
     setScanError(null);
     setDownloadState({ busy: false, error: null });
+    setAcknowledgementState({ busy: false, error: null });
   }, []);
 
   const downloadForScan = useCallback(
-    async (repositoryId: string, scanId: string): Promise<{ ok: boolean; fileName?: string; error?: string }> => {
+    async (repositoryId: string, scanId: string, acknowledgeUnverified = false): Promise<{ ok: boolean; fileName?: string; error?: string }> => {
       setDownloadState((s) => ({ ...s, busy: true, error: null }));
-      const result = await downloadSecuredFile(repositoryId, scanId);
+      const result = await downloadSecuredFile(repositoryId, scanId, acknowledgeUnverified);
       setDownloadState((s) => ({ ...s, busy: false, error: result.ok ? null : result.error ?? 'Download failed.' }));
+      return result;
+    },
+    []
+  );
+
+  const acknowledgeForScan = useCallback(
+    async (repositoryId: string, scanId: string, userId?: string): Promise<{ ok: boolean; error?: string }> => {
+      setAcknowledgementState((s) => ({ ...s, busy: true, error: null }));
+      const result = await acknowledgeUnverifiedDownload(repositoryId, scanId, userId);
+      setAcknowledgementState((s) => ({ ...s, busy: false, error: result.ok ? null : result.error ?? 'Acknowledgement failed.' }));
       return result;
     },
     []
@@ -188,8 +203,10 @@ export function CommandCenterProvider({ children }: { children: React.ReactNode 
     scanPolling,
     scanError,
     downloadState,
+    acknowledgementState,
     startScanFlow,
     downloadSecuredFile: downloadForScan,
+    acknowledgeDownload: acknowledgeForScan,
     resetScan,
     isConnecting,
     lastSync,

@@ -1,0 +1,39 @@
+{
+  "metrics": {
+    "precision": 1.0,
+    "recall": 0.2429,
+    "f1": 0.3909,
+    "accuracy": 0.414,
+    "fpr": 0.0,
+    "fnr": 0.7571,
+    "coverage": 1.0
+  },
+  "confusion_matrix": {
+    "tp": 94,
+    "fp": 0,
+    "tn": 113,
+    "fn": 293
+  },
+  "execution_counts": {
+    "attempted": 500,
+    "completed": 500,
+    "failed": 0,
+    "not_run": 0,
+    "not_applicable": 0,
+    "timeout": 0
+  },
+  "latency": {
+    "mean_ms": 2121.28,
+    "median_ms": 26.0,
+    "min_ms": 10.0,
+    "max_ms": 39375.0
+  },
+  "confidence_statistics": {
+    "count": 94,
+    "mean": 45.27,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 92.5,
+    "std": 46.49
+  }
+}

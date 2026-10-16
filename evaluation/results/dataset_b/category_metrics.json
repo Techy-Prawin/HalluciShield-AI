@@ -1,0 +1,1050 @@
+{
+  "semgrep": {
+    "clean": {
+      "total_samples": 113,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 113,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 113,
+        "completed": 113,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe22": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 55,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe256": {
+      "total_samples": 30,
+      "confusion_matrix": {
+        "tp": 6,
+        "fp": 0,
+        "tn": 0,
+        "fn": 24
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.2,
+        "f1": 0.3333,
+        "accuracy": 0.2,
+        "fpr": 0.0,
+        "fnr": 0.8,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 30,
+        "completed": 30,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe347": {
+      "total_samples": 45,
+      "confusion_matrix": {
+        "tp": 28,
+        "fp": 0,
+        "tn": 0,
+        "fn": 17
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.6222,
+        "f1": 0.7671,
+        "accuracy": 0.6222,
+        "fpr": 0.0,
+        "fnr": 0.3778,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 45,
+        "completed": 45,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe78": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 16,
+        "fp": 0,
+        "tn": 0,
+        "fn": 39
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.2909,
+        "f1": 0.4507,
+        "accuracy": 0.2909,
+        "fpr": 0.0,
+        "fnr": 0.7091,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 55,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe79": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 16,
+        "fp": 0,
+        "tn": 0,
+        "fn": 39
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.2909,
+        "f1": 0.4507,
+        "accuracy": 0.2909,
+        "fpr": 0.0,
+        "fnr": 0.7091,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 55,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe798": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 23,
+        "fp": 0,
+        "tn": 0,
+        "fn": 32
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.4182,
+        "f1": 0.5897,
+        "accuracy": 0.4182,
+        "fpr": 0.0,
+        "fnr": 0.5818,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 55,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe89": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 55,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "hallucinated_api": {
+      "total_samples": 23,
+      "confusion_matrix": {
+        "tp": 4,
+        "fp": 0,
+        "tn": 0,
+        "fn": 19
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.1739,
+        "f1": 0.2963,
+        "accuracy": 0.1739,
+        "fpr": 0.0,
+        "fnr": 0.8261,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 23,
+        "completed": 23,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "hallucinated_pkg": {
+      "total_samples": 14,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 13
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.0714,
+        "f1": 0.1333,
+        "accuracy": 0.0714,
+        "fpr": 0.0,
+        "fnr": 0.9286,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 14,
+        "completed": 14,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    }
+  },
+  "llm_zero_shot": {
+    "clean": {
+      "total_samples": 113,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 5,
+        "tn": 18,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.7826,
+        "fpr": 0.2174,
+        "fnr": 0.0,
+        "coverage": 0.2035
+      },
+      "execution_counts": {
+        "attempted": 113,
+        "completed": 23,
+        "failed": 90,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe22": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 10,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.1818
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 10,
+        "failed": 45,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe256": {
+      "total_samples": 30,
+      "confusion_matrix": {
+        "tp": 4,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.1333
+      },
+      "execution_counts": {
+        "attempted": 30,
+        "completed": 4,
+        "failed": 26,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe347": {
+      "total_samples": 45,
+      "confusion_matrix": {
+        "tp": 7,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.1556
+      },
+      "execution_counts": {
+        "attempted": 45,
+        "completed": 7,
+        "failed": 38,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe78": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 10,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.1818
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 10,
+        "failed": 45,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe79": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 8,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.1455
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 8,
+        "failed": 47,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe798": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 11,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.2
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 11,
+        "failed": 44,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe89": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 22,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.4
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 22,
+        "failed": 33,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "hallucinated_api": {
+      "total_samples": 23,
+      "confusion_matrix": {
+        "tp": 4,
+        "fp": 0,
+        "tn": 0,
+        "fn": 1
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.8,
+        "f1": 0.8889,
+        "accuracy": 0.8,
+        "fpr": 0.0,
+        "fnr": 0.2,
+        "coverage": 0.2174
+      },
+      "execution_counts": {
+        "attempted": 23,
+        "completed": 5,
+        "failed": 18,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "hallucinated_pkg": {
+      "total_samples": 14,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 1
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "accuracy": 0.5,
+        "fpr": 0.0,
+        "fnr": 0.5,
+        "coverage": 0.1429
+      },
+      "execution_counts": {
+        "attempted": 14,
+        "completed": 2,
+        "failed": 12,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    }
+  },
+  "sandbox": {
+    "clean": {
+      "total_samples": 113,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 113,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 113,
+        "timeout": 0
+      }
+    },
+    "cwe22": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 55,
+        "timeout": 0
+      }
+    },
+    "cwe256": {
+      "total_samples": 30,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 30,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 30,
+        "timeout": 0
+      }
+    },
+    "cwe347": {
+      "total_samples": 45,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 45,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 45,
+        "timeout": 0
+      }
+    },
+    "cwe78": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 55,
+        "timeout": 0
+      }
+    },
+    "cwe79": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 55,
+        "timeout": 0
+      }
+    },
+    "cwe798": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 55,
+        "timeout": 0
+      }
+    },
+    "cwe89": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 55,
+        "timeout": 0
+      }
+    },
+    "hallucinated_api": {
+      "total_samples": 23,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 23,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 23,
+        "timeout": 0
+      }
+    },
+    "hallucinated_pkg": {
+      "total_samples": 14,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 0.0
+      },
+      "execution_counts": {
+        "attempted": 14,
+        "completed": 0,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 14,
+        "timeout": 0
+      }
+    }
+  },
+  "full_ace": {
+    "clean": {
+      "total_samples": 113,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 113,
+        "fn": 0
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 1.0,
+        "fpr": 0.0,
+        "fnr": 0.0,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 113,
+        "completed": 113,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe22": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 55,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe256": {
+      "total_samples": 30,
+      "confusion_matrix": {
+        "tp": 6,
+        "fp": 0,
+        "tn": 0,
+        "fn": 24
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.2,
+        "f1": 0.3333,
+        "accuracy": 0.2,
+        "fpr": 0.0,
+        "fnr": 0.8,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 30,
+        "completed": 30,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe347": {
+      "total_samples": 45,
+      "confusion_matrix": {
+        "tp": 28,
+        "fp": 0,
+        "tn": 0,
+        "fn": 17
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.6222,
+        "f1": 0.7671,
+        "accuracy": 0.6222,
+        "fpr": 0.0,
+        "fnr": 0.3778,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 45,
+        "completed": 45,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe78": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 16,
+        "fp": 0,
+        "tn": 0,
+        "fn": 39
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.2909,
+        "f1": 0.4507,
+        "accuracy": 0.2909,
+        "fpr": 0.0,
+        "fnr": 0.7091,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 55,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe79": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 16,
+        "fp": 0,
+        "tn": 0,
+        "fn": 39
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.2909,
+        "f1": 0.4507,
+        "accuracy": 0.2909,
+        "fpr": 0.0,
+        "fnr": 0.7091,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 55,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe798": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 23,
+        "fp": 0,
+        "tn": 0,
+        "fn": 32
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.4182,
+        "f1": 0.5897,
+        "accuracy": 0.4182,
+        "fpr": 0.0,
+        "fnr": 0.5818,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 55,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "cwe89": {
+      "total_samples": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "metrics": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "accuracy": 0.0,
+        "fpr": 0.0,
+        "fnr": 1.0,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 55,
+        "completed": 55,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "hallucinated_api": {
+      "total_samples": 23,
+      "confusion_matrix": {
+        "tp": 4,
+        "fp": 0,
+        "tn": 0,
+        "fn": 19
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.1739,
+        "f1": 0.2963,
+        "accuracy": 0.1739,
+        "fpr": 0.0,
+        "fnr": 0.8261,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 23,
+        "completed": 23,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    },
+    "hallucinated_pkg": {
+      "total_samples": 14,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 13
+      },
+      "metrics": {
+        "precision": 1.0,
+        "recall": 0.0714,
+        "f1": 0.1333,
+        "accuracy": 0.0714,
+        "fpr": 0.0,
+        "fnr": 0.9286,
+        "coverage": 1.0
+      },
+      "execution_counts": {
+        "attempted": 14,
+        "completed": 14,
+        "failed": 0,
+        "not_run": 0,
+        "not_applicable": 0,
+        "timeout": 0
+      }
+    }
+  }
+}

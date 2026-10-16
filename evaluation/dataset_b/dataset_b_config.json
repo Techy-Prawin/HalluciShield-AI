@@ -1,0 +1,73 @@
+﻿{
+  "dataset_name": "HalluciShield Dataset B",
+  "dataset_version": "v1.0",
+  "config_created": "2026-10-04T14:52:05Z",
+  "metadata_csv": "dataset/dataset-b/metadata.csv",
+  "metadata_json": "dataset/dataset-b/metadata.json",
+  "files_root": "dataset/dataset/dataset-b",
+  "manifest_path": "dataset/dataset-b/MANIFEST.json",
+  "metadata_csv_sha256": "263415aff6f7de922e84c373b488fe212f8d9d9fb7bd286e812ba165996dc344",
+  "metadata_json_sha256": "b2030c41729ceae344ed07e45ba03b3b7ba850543ee8f04f65c14a3ff031ea19",
+  "total_samples": 500,
+  "positive_samples": 387,
+  "negative_samples": 113,
+  "unique_sample_ids": 361,
+  "duplicate_sample_id_groups": 108,
+  "duplicate_file_path_entries": 16,
+  "duplicate_sha256_in_metadata": 0,
+  "orphan_files_on_disk": 598,
+  "files_found_on_disk": 500,
+  "supported_languages": ["python", "javascript", "typescript", "java", "go"],
+  "categories": {
+    "cwe89": 55,
+    "cwe79": 55,
+    "cwe798": 55,
+    "cwe78": 55,
+    "cwe22": 55,
+    "cwe347": 45,
+    "cwe256": 30,
+    "hallucinated_api": 23,
+    "hallucinated_pkg": 14,
+    "clean": 113
+  },
+  "cwe_distribution": {
+    "CWE-89": 55,
+    "CWE-79": 55,
+    "CWE-798": 55,
+    "CWE-78": 55,
+    "CWE-22": 55,
+    "CWE-347": 45,
+    "CWE-256": 30,
+    "CWE-706": 23,
+    "CWE-1395": 14,
+    "NONE": 113
+  },
+  "language_distribution": {
+    "typescript": 135,
+    "javascript": 108,
+    "go": 106,
+    "java": 76,
+    "python": 75
+  },
+  "generator_model": "qwen/qwen3.8-27b",
+  "generator_provider": "groq",
+  "generation_method": "llm_generation",
+  "generation_parameters": {
+    "positive_temperature": 0.2,
+    "negative_temperature": 0.1,
+    "top_p": 0.95,
+    "positive_max_tokens": 1024,
+    "negative_max_tokens": 512,
+    "prompt_version": "v1.0"
+  },
+  "random_seed": null,
+  "duplicate_policy": "preserve_all_report_only",
+  "split_available": false,
+  "known_issues": [
+    "108 duplicate sample_id groups: different files assigned the same sample_id during generation",
+    "16 duplicate file_path entries in metadata.csv",
+    "598 orphan files on disk not referenced in metadata (generated but not indexed)",
+    "SHA-256 in metadata was recorded at generation time; on-disk files may have been regenerated with different content",
+    "Code files are at dataset/dataset/dataset-b/ but metadata lives at dataset/dataset-b/"
+  ]
+}

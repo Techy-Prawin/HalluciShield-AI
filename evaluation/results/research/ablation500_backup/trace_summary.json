@@ -1,0 +1,104 @@
+{
+  "experiment_id": "ablation500-stage-trace-summary",
+  "configurations": {
+    "A": {
+      "name": "FULL",
+      "completed_stages_distribution": {
+        "hallucination,dependency,security": 405,
+        "hallucination,dependency,security,patch,validation,confidence,aece,multi_patch": 95
+      },
+      "scanner_status_distribution": {
+        "COMPLETED": 500
+      }
+    },
+    "B": {
+      "name": "HALLUCINATION_OFF",
+      "completed_stages_distribution": {
+        "dependency,security": 398,
+        "dependency,security,patch,validation,confidence,aece,multi_patch": 102
+      },
+      "scanner_status_distribution": {
+        "COMPLETED": 500
+      }
+    },
+    "C": {
+      "name": "DEPENDENCY_OFF",
+      "completed_stages_distribution": {
+        "hallucination,security": 386,
+        "hallucination,security,patch,validation,confidence,aece,multi_patch": 114
+      },
+      "scanner_status_distribution": {
+        "COMPLETED": 500
+      }
+    },
+    "D": {
+      "name": "SECURITY_OFF",
+      "completed_stages_distribution": {
+        "hallucination,dependency": 475,
+        "hallucination,dependency,patch,validation,confidence,aece,multi_patch": 25
+      },
+      "scanner_status_distribution": {
+        "COMPLETED": 500
+      }
+    },
+    "E": {
+      "name": "RISK_OFF",
+      "completed_stages_distribution": {
+        "hallucination,dependency,security": 371,
+        "hallucination,dependency,security,patch,validation,confidence,aece,multi_patch": 129
+      },
+      "scanner_status_distribution": {
+        "COMPLETED": 500
+      }
+    },
+    "F": {
+      "name": "PATCH_OFF",
+      "completed_stages_distribution": {
+        "hallucination,dependency,security": 500
+      },
+      "scanner_status_distribution": {
+        "COMPLETED": 500
+      }
+    },
+    "G": {
+      "name": "VALIDATION_OFF",
+      "completed_stages_distribution": {
+        "hallucination,dependency,security": 405,
+        "hallucination,dependency,security,patch": 95
+      },
+      "scanner_status_distribution": {
+        "COMPLETED": 500
+      }
+    },
+    "H": {
+      "name": "LEGACY_ACE_OFF",
+      "completed_stages_distribution": {
+        "hallucination,dependency,security": 362,
+        "hallucination,dependency,security,patch,validation,aece,multi_patch": 138
+      },
+      "scanner_status_distribution": {
+        "COMPLETED": 500
+      }
+    },
+    "I": {
+      "name": "AECE_OFF",
+      "completed_stages_distribution": {
+        "hallucination,dependency,security": 356,
+        "hallucination,dependency,security,patch,validation,confidence,multi_patch": 144
+      },
+      "scanner_status_distribution": {
+        "COMPLETED": 500
+      }
+    },
+    "J": {
+      "name": "MULTI_PATCH_OFF",
+      "completed_stages_distribution": {
+        "hallucination,dependency,security": 362,
+        "hallucination,dependency,security,patch,validation,confidence,aece": 138
+      },
+      "scanner_status_distribution": {
+        "COMPLETED": 500
+      }
+    }
+  }
+}

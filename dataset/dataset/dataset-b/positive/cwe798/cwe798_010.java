@@ -1,0 +1,1 @@
+DB_PASSWORD = "super_secret_123!"

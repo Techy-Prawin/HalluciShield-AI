@@ -11,7 +11,11 @@ export async function runMigrations(): Promise<boolean> {
   }
 
   const client = await pool.connect();
+  let lockAcquired = false;
   try {
+    await client.query('SELECT pg_advisory_lock(83726194);');
+    lockAcquired = true;
+
     console.log('[Migration] Ensuring schema_migrations table exists...');
     await client.query(`
       CREATE TABLE IF NOT EXISTS schema_migrations (
@@ -41,7 +45,7 @@ export async function runMigrations(): Promise<boolean> {
           await client.query('BEGIN');
           await client.query(sql);
           await client.query(
-            'INSERT INTO schema_migrations (name) VALUES ($1)',
+            'INSERT INTO schema_migrations (name) VALUES ($1) ON CONFLICT (name) DO NOTHING',
             [file]
           );
           await client.query('COMMIT');
@@ -67,6 +71,9 @@ export async function runMigrations(): Promise<boolean> {
     console.error('[Migration] Failed to run schema migrations:', err);
     throw err;
   } finally {
+    if (lockAcquired) {
+      await client.query('SELECT pg_advisory_unlock(83726194);').catch(() => {});
+    }
     client.release();
   }
 }

@@ -1,0 +1,172 @@
+{
+  "hash": {
+    "confusion_matrix": {
+      "tp": 0,
+      "fp": 0,
+      "tn": 1,
+      "fn": 1
+    },
+    "metrics": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.5,
+      "fpr": 0.0,
+      "fnr": 1.0,
+      "coverage": 1.0
+    }
+  },
+  "trustbound": {
+    "confusion_matrix": {
+      "tp": 0,
+      "fp": 0,
+      "tn": 0,
+      "fn": 1
+    },
+    "metrics": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0,
+      "fpr": 0.0,
+      "fnr": 1.0,
+      "coverage": 1.0
+    }
+  },
+  "pathtraver": {
+    "confusion_matrix": {
+      "tp": 0,
+      "fp": 0,
+      "tn": 0,
+      "fn": 3
+    },
+    "metrics": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0,
+      "fpr": 0.0,
+      "fnr": 1.0,
+      "coverage": 1.0
+    }
+  },
+  "sqli": {
+    "confusion_matrix": {
+      "tp": 1,
+      "fp": 0,
+      "tn": 0,
+      "fn": 1
+    },
+    "metrics": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6667,
+      "accuracy": 0.5,
+      "fpr": 0.0,
+      "fnr": 0.5,
+      "coverage": 1.0
+    }
+  },
+  "cmdi": {
+    "confusion_matrix": {
+      "tp": 2,
+      "fp": 0,
+      "tn": 0,
+      "fn": 2
+    },
+    "metrics": {
+      "precision": 1.0,
+      "recall": 0.5,
+      "f1": 0.6667,
+      "accuracy": 0.5,
+      "fpr": 0.0,
+      "fnr": 0.5,
+      "coverage": 1.0
+    }
+  },
+  "weakrand": {
+    "confusion_matrix": {
+      "tp": 0,
+      "fp": 0,
+      "tn": 1,
+      "fn": 0
+    },
+    "metrics": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0,
+      "fpr": 0.0,
+      "fnr": 0.0,
+      "coverage": 1.0
+    }
+  },
+  "ldapi": {
+    "confusion_matrix": {
+      "tp": 0,
+      "fp": 0,
+      "tn": 0,
+      "fn": 1
+    },
+    "metrics": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0,
+      "fpr": 0.0,
+      "fnr": 1.0,
+      "coverage": 1.0
+    }
+  },
+  "xss": {
+    "confusion_matrix": {
+      "tp": 0,
+      "fp": 0,
+      "tn": 0,
+      "fn": 2
+    },
+    "metrics": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0,
+      "fpr": 0.0,
+      "fnr": 1.0,
+      "coverage": 1.0
+    }
+  },
+  "securecookie": {
+    "confusion_matrix": {
+      "tp": 0,
+      "fp": 0,
+      "tn": 1,
+      "fn": 0
+    },
+    "metrics": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0,
+      "fpr": 0.0,
+      "fnr": 0.0,
+      "coverage": 1.0
+    }
+  },
+  "crypto": {
+    "confusion_matrix": {
+      "tp": 2,
+      "fp": 0,
+      "tn": 0,
+      "fn": 1
+    },
+    "metrics": {
+      "precision": 1.0,
+      "recall": 0.6667,
+      "f1": 0.8,
+      "accuracy": 0.6667,
+      "fpr": 0.0,
+      "fnr": 0.3333,
+      "coverage": 1.0
+    }
+  }
+}

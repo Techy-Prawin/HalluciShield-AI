@@ -128,6 +128,9 @@ class SecurityAnalysisResponse(BaseModel):
     findings: List[SecurityFinding] = Field(default_factory=list)
     scan_duration_ms: int
     scanner: str = "semgrep"
+    status: str = "COMPLETED"
+    scanner_status: str = "COMPLETED"
+    error: Optional[str] = None
 
 
 # ============================================================
@@ -271,18 +274,21 @@ class PatchCandidate(BaseModel):
     expected_effect: str
     potential_side_effects: List[str] = Field(default_factory=list)
     is_not_applicable: bool = False
+    evaluation_mode: str = "SYNTHETIC_TEST_FIXTURE"
 
 
 class PatchGenerationRequest(BaseModel):
     vulnerability_id: str
     vulnerability_type: str
-    severity: str
+    severity: str = "HIGH"
     file: str
     line: int
     vulnerable_code: str
     surrounding_code: str = ""
     description: str = ""
     cwe: Optional[str] = None
+    candidate_count: Optional[int] = 5
+    strategies: Optional[List[str]] = None
 
 
 class PatchGenerationResponse(BaseModel):
@@ -307,20 +313,32 @@ class SandboxConfig(BaseModel):
 
 class CompilationResult(BaseModel):
     success: bool
+    status: str = "UNVERIFIED"
     language: str = ""
     output: str = ""
+    command: List[str] = Field(default_factory=list)
+    exit_code: Optional[int] = None
+    timed_out: bool = False
+    stdout_summary: str = ""
+    stderr_summary: str = ""
     duration_ms: int = 0
     error: Optional[str] = None
 
 
 class TestResult(BaseModel):
     success: bool
+    status: str = "UNVERIFIED"
     framework: str = ""
     total_tests: int = 0
     passed: int = 0
     failed: int = 0
     skipped: int = 0
     output: str = ""
+    command: List[str] = Field(default_factory=list)
+    exit_code: Optional[int] = None
+    timed_out: bool = False
+    stdout_summary: str = ""
+    stderr_summary: str = ""
     duration_ms: int = 0
     failures: List[Dict[str, Any]] = Field(default_factory=list)
     error: Optional[str] = None
@@ -328,10 +346,16 @@ class TestResult(BaseModel):
 
 class SecurityScanResult(BaseModel):
     success: bool
+    status: str = "UNVERIFIED"
     scanner: str = ""
     vulnerabilities_found: int = 0
     findings: List[Dict[str, Any]] = Field(default_factory=list)
     output: str = ""
+    command: List[str] = Field(default_factory=list)
+    exit_code: Optional[int] = None
+    timed_out: bool = False
+    stdout_summary: str = ""
+    stderr_summary: str = ""
     duration_ms: int = 0
     error: Optional[str] = None
 
@@ -349,6 +373,7 @@ class SandboxValidationRequest(BaseModel):
     patch: PatchCandidate
     repository_id: str = ""
     workspace_path: str = ""
+    candidate_workspace_ready: bool = False
     file_path: str
     original_code: str
     language: str = "python"
@@ -385,8 +410,10 @@ class SandboxValidationResponse(BaseModel):
 class ValidationStatus(str, Enum):
     PASS = "PASS"
     FAIL = "FAIL"
+    TIMEOUT = "TIMEOUT"
     WARNING = "WARNING"
     ERROR = "ERROR"
+    NOT_APPLICABLE = "NOT_APPLICABLE"
     UNVERIFIED = "UNVERIFIED"
 
 
@@ -398,6 +425,12 @@ class CompilationScore(BaseModel):
     duration_ms: int = 0
     error: Optional[str] = None
     verified: bool = True
+    execution_status: ValidationStatus = ValidationStatus.UNVERIFIED
+    command: str = ""
+    exit_code: Optional[int] = None
+    timed_out: bool = False
+    stdout_summary: str = ""
+    stderr_summary: str = ""
 
 
 class UnitTestScore(BaseModel):
@@ -412,6 +445,12 @@ class UnitTestScore(BaseModel):
     failure_details: List[Dict[str, Any]] = Field(default_factory=list)
     error: Optional[str] = None
     verified: bool = True
+    execution_status: ValidationStatus = ValidationStatus.UNVERIFIED
+    command: str = ""
+    exit_code: Optional[int] = None
+    timed_out: bool = False
+    stdout_summary: str = ""
+    stderr_summary: str = ""
 
 
 class RegressionScore(BaseModel):
@@ -425,6 +464,12 @@ class RegressionScore(BaseModel):
     duration_ms: int = 0
     error: Optional[str] = None
     verified: bool = True
+    execution_status: ValidationStatus = ValidationStatus.UNVERIFIED
+    command: str = ""
+    exit_code: Optional[int] = None
+    timed_out: bool = False
+    stdout_summary: str = ""
+    stderr_summary: str = ""
 
 
 class SecurityValidationScore(BaseModel):
@@ -440,6 +485,12 @@ class SecurityValidationScore(BaseModel):
     duration_ms: int = 0
     error: Optional[str] = None
     verified: bool = True
+    execution_status: ValidationStatus = ValidationStatus.UNVERIFIED
+    command: str = ""
+    exit_code: Optional[int] = None
+    timed_out: bool = False
+    stdout_summary: str = ""
+    stderr_summary: str = ""
 
 
 class FunctionalBehaviorScore(BaseModel):
@@ -453,6 +504,12 @@ class FunctionalBehaviorScore(BaseModel):
     duration_ms: int = 0
     error: Optional[str] = None
     verified: bool = True
+    execution_status: ValidationStatus = ValidationStatus.UNVERIFIED
+    command: str = ""
+    exit_code: Optional[int] = None
+    timed_out: bool = False
+    stdout_summary: str = ""
+    stderr_summary: str = ""
 
 
 class PerformanceImpactScore(BaseModel):
@@ -468,6 +525,12 @@ class PerformanceImpactScore(BaseModel):
     duration_ms: int = 0
     error: Optional[str] = None
     verified: bool = True
+    execution_status: ValidationStatus = ValidationStatus.UNVERIFIED
+    command: str = ""
+    exit_code: Optional[int] = None
+    timed_out: bool = False
+    stdout_summary: str = ""
+    stderr_summary: str = ""
 
 
 class PatchValidationResult(BaseModel):
@@ -488,7 +551,10 @@ class PatchValidationResult(BaseModel):
 
 class ValidateCandidatesRequest(BaseModel):
     vulnerability_id: str
+    vulnerability_type: Optional[str] = None
     candidates: List[PatchCandidate] = Field(default_factory=list)
+    workspace_path: str = ""
+    baseline_workspace_path: str = ""
     file_path: str = ""
     original_code: str = ""
     language: str = "python"
@@ -498,6 +564,7 @@ class ValidateCandidatesRequest(BaseModel):
     scan_command: Optional[str] = None
     baseline_performance: Optional[Dict[str, Any]] = None
     sandbox_config: Optional[SandboxConfig] = None
+    evaluation_mode: str = "SYNTHETIC_TEST_FIXTURE"
 
 
 class ValidateCandidatesResponse(BaseModel):
@@ -1142,3 +1209,127 @@ class ExperimentSummary(BaseModel):
     started_at: str
     completed_at: str
     duration_ms: int
+
+
+# ============================================================
+# Phase 5: Research-Level Upgrade Models
+# ============================================================
+
+class EvidenceStatusEnum(str, Enum):
+    AVAILABLE = "AVAILABLE"
+    NOT_AVAILABLE = "NOT_AVAILABLE"
+    SYNTHETIC_TEST = "SYNTHETIC_TEST"
+
+
+class DecisionEnum(str, Enum):
+    AUTO_APPLY = "AUTO_APPLY"
+    HUMAN_REVIEW = "HUMAN_REVIEW"
+    REJECT = "REJECT"
+    INSUFFICIENT_EVIDENCE = "INSUFFICIENT_EVIDENCE"
+
+
+class AECEConfig(BaseModel):
+    auto_apply_confidence_threshold: float = 80.0
+    auto_apply_completeness_threshold: float = 0.8
+    human_review_confidence_threshold: float = 50.0
+    human_review_completeness_threshold: float = 0.5
+    min_completeness_threshold: float = 0.5
+    min_historical_samples: int = 3
+
+
+class AECEResult(BaseModel):
+    patch_id: str
+    vulnerability_id: str = ""
+    legacy_ace_score: float = Field(ge=0.0, le=100.0)
+    evidence_completeness: float = Field(ge=0.0, le=1.0)
+    evidence_status: Dict[str, Dict[str, str]] = Field(default_factory=dict)
+    evidence_aware_confidence: float = Field(ge=0.0, le=100.0)
+    decision: str = DecisionEnum.REJECT.value
+    recommendation: str = ""
+    dimension_scores: Dict[str, float] = Field(default_factory=dict)
+    pi_comp: float = 1.0
+    pi_crit: float = 1.0
+    created_at: str = ""
+
+
+class PatchStrategyEnum(str, Enum):
+    MINIMAL_FIX = "minimal_fix"
+    DEFENSIVE_VALIDATION = "defensive_validation"
+    SECURE_API_REPLACEMENT = "secure_api_replacement"
+    PARAMETERIZED_IMPLEMENTATION = "parameterized_implementation"
+    DEPENDENCY_REPLACEMENT = "dependency_replacement"
+
+
+class CandidateSelectionRecord(BaseModel):
+    patch_id: str
+    strategy: str
+    validation_result: Dict[str, Any] = Field(default_factory=dict)
+    security_result: Dict[str, Any] = Field(default_factory=dict)
+    ace_score: float = 0.0
+    evidence_completeness: float = 0.0
+    evidence_aware_confidence: float = 0.0
+    performance_result: Dict[str, Any] = Field(default_factory=dict)
+    final_decision: str = DecisionEnum.REJECT.value
+    selected: bool = False
+    selection_rationale: str = ""
+
+
+class MultiPatchSelectionResult(BaseModel):
+    vulnerability_id: str
+    total_candidates: int
+    baseline_1_selected: str
+    baseline_2_selected: str
+    proposed_selected: str
+    candidates: List[CandidateSelectionRecord] = Field(default_factory=list)
+    selection_duration_ms: int = 0
+
+
+class CausalCategoryEnum(str, Enum):
+    API_HALLUCINATION = "API_HALLUCINATION"
+    PACKAGE_HALLUCINATION = "PACKAGE_HALLUCINATION"
+    DOCUMENTATION_HALLUCINATION = "DOCUMENTATION_HALLUCINATION"
+    SECURITY_PROPERTY_HALLUCINATION = "SECURITY_PROPERTY_HALLUCINATION"
+    SEMANTIC_HALLUCINATION = "SEMANTIC_HALLUCINATION"
+    NO_HALLUCINATION_EVIDENCE = "NO_HALLUCINATION_EVIDENCE"
+    UNKNOWN = "UNKNOWN"
+
+
+class CausalStatusEnum(str, Enum):
+    CAUSAL_SUPPORTED = "CAUSAL_SUPPORTED"
+    CAUSAL_PLAUSIBLE = "CAUSAL_PLAUSIBLE"
+    NO_CAUSAL_EVIDENCE = "NO_CAUSAL_EVIDENCE"
+    UNKNOWN = "UNKNOWN"
+
+
+class CausalFinding(BaseModel):
+    causal_id: str
+    vulnerability_id: str
+    hallucination_id: Optional[str] = None
+    category: str = CausalCategoryEnum.UNKNOWN.value
+    status: str = CausalStatusEnum.UNKNOWN.value
+    cwe: str = ""
+    affected_symbol: str = ""
+    file_path: str = ""
+    line_number: int = 0
+    causal_chain: List[str] = Field(default_factory=list)
+    causal_evidence: str = ""
+    attribution_type: str = "unknown"
+
+
+class CausalAnalysisResponse(BaseModel):
+    repository_id: str
+    total_vulnerabilities: int = 0
+    total_hallucinations: int = 0
+    causal_findings: List[CausalFinding] = Field(default_factory=list)
+    metrics: Dict[str, Any] = Field(default_factory=dict)
+    analysis_duration_ms: int = 0
+
+
+class SecurityDebtResult(BaseModel):
+    security_debt_before: Optional[float] = None
+    security_debt_after: Optional[float] = None
+    security_debt_reduction: Optional[float] = None
+    reduction_pct: Optional[float] = None
+    findings_debt: List[Dict[str, Any]] = Field(default_factory=list)
+    status: str = "AVAILABLE"
+

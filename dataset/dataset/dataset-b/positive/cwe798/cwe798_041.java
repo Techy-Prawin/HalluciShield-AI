@@ -1,0 +1,12 @@
+public class Config {
+    private static final String API_KEY = "sk-1234567890abcdef";
+    private static final String DB_PASSWORD = "SuperSecret123!";
+    
+    public String getApiKey() {
+        return API_KEY;
+    }
+    
+    public String getDbPassword() {
+        return DB_PASSWORD;
+    }
+}

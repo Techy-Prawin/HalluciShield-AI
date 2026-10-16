@@ -1,0 +1,1 @@
+query = "SELECT * FROM products WHERE name LIKE '%" + search_term + "%'"; cursor.execute(query)

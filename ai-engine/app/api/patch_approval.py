@@ -12,7 +12,7 @@ Design principle: Never automatically deploy a generated patch.
 Developer approval is mandatory.
 """
 
-from fastapi import APIRouter, HTTPException, Query, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 
 from app.agents.patch_approval import PatchApprovalService
 from app.agents.models import (
@@ -29,6 +29,7 @@ from app.security import require_api_key
 router = APIRouter(
     prefix="/api/v1/vulnerabilities",
     tags=["Human-in-the-Loop Patch Approval"],
+    dependencies=[Depends(require_api_key)],
 )
 
 approval_service = PatchApprovalService()

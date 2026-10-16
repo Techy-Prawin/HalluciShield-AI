@@ -1,0 +1,35 @@
+rules:
+  - id: hallucishield.python.tainted-sql-execution
+    languages: [python]
+    mode: taint
+    severity: ERROR
+    message: User-controlled data reaches a SQL execution sink.
+    pattern-sources:
+      - patterns:
+          - pattern-either:
+              - pattern: input(...)
+              - pattern: request.args.get(...)
+              - pattern: request.form.get(...)
+              - pattern: request.values.get(...)
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern: $CURSOR.execute($QUERY)
+              - pattern: $CURSOR.executemany($QUERY, ...)
+  - id: hallucishield.python.command-injection
+    languages: [python]
+    mode: taint
+    severity: ERROR
+    message: User-controlled data reaches a shell execution sink.
+    pattern-sources:
+      - patterns:
+          - pattern-either:
+              - pattern: input(...)
+              - pattern: request.args.get(...)
+              - pattern: request.form.get(...)
+              - pattern: request.values.get(...)
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern: os.system(...)
+              - pattern: subprocess.$FUNC(..., shell=True, ...)

@@ -1,0 +1,31 @@
+{
+  "metrics": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "accuracy": 1.0,
+    "fpr": 0.0,
+    "fnr": 0.0,
+    "coverage": 1.0
+  },
+  "confusion_matrix": {
+    "tp": 1,
+    "fp": 0,
+    "tn": 1,
+    "fn": 0
+  },
+  "execution_counts": {
+    "attempted": 2,
+    "completed": 2,
+    "failed": 0,
+    "not_run": 0,
+    "not_applicable": 0,
+    "timeout": 0
+  },
+  "latency": {
+    "mean_ms": 0.0,
+    "median_ms": 0.0,
+    "min_ms": 0.0,
+    "max_ms": 0.0
+  }
+}

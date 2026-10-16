@@ -3,13 +3,18 @@ Research experiment API endpoints.
 Provides endpoints for running experiments, querying results, and exporting.
 Supports both SIMULATION and REAL experiment modes.
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
 from app.agents.experiment_runner import experiment_runner
 from app.agents.models import ExperimentDataSource, RunExperimentRequest, VulnerabilityTestCategory
+from app.security import require_api_key
 
-router = APIRouter(prefix="/api/experiments", tags=["experiments"])
+router = APIRouter(
+    prefix="/api/experiments",
+    tags=["experiments"],
+    dependencies=[Depends(require_api_key)],
+)
 
 
 @router.post("/run")

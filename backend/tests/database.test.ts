@@ -207,31 +207,43 @@ describe('Milestone 2: PostgreSQL Database & Domain Models Test Suite', () => {
 
     expect(validation.id).toBeDefined();
 
-    // Verify Explainable Confidence Score Components
-    const components = {
-      static_analysis_score: 0.9000,
-      hallucination_score: 0.9500,
-      sandbox_validation_score: 1.0000,
-      runtime_event_score: 0.8000,
-      historical_feedback_score: 0.8500,
-    };
-
-    const computedFinalScore = ConfidenceScoreModel.calculateFinalScore(components);
-    expect(computedFinalScore).toBeGreaterThan(0.85);
-
+    // Verify AI Engine ACE Confidence Score Components (6 features + gates)
     const confidence = await ConfidenceScoreModel.create({
       patch_id: patch.id,
       validation_result_id: validation.id,
-      ...components,
-      weights_applied: ConfidenceScoreModel.DEFAULT_WEIGHTS,
-      explanation: 'Explainable component breakdown score',
+      final_score: 96.2,
+      static_security_score: 0.95,
+      unit_test_success_score: 1.0,
+      regression_success_score: 1.0,
+      compilation_score: 1.0,
+      performance_score: 0.95,
+      historical_success_score: 0.90,
+      pi_comp: 1.0,
+      pi_crit: 1.0,
+      weighted_sum: 0.962,
+      weights_applied: {
+        static_security: 0.25,
+        unit_test_success: 0.20,
+        regression_success: 0.20,
+        compilation_score: 0.10,
+        performance: 0.10,
+        historical_success: 0.15,
+      },
+      explanation: 'High confidence patch: All tests pass (1.00), compiles cleanly (1.00), no regressions (1.00), security clean (0.95), performance within range (0.95), supported by historical feedback (0.90). π_comp=1.0, π_crit=1.0.',
+      metadata: { ace_version: 'v1.0', algorithm: 'adaptive_confidence_engine' },
     });
 
     expect(confidence.id).toBeDefined();
-    expect(confidence.final_score).toBe(computedFinalScore);
-    expect(confidence.static_analysis_score).toBe(0.9000);
-    expect(confidence.hallucination_score).toBe(0.9500);
-    expect(confidence.sandbox_validation_score).toBe(1.0000);
+    expect(confidence.final_score).toBe(96.2);
+    expect(confidence.static_security_score).toBe(0.95);
+    expect(confidence.unit_test_success_score).toBe(1.0);
+    expect(confidence.regression_success_score).toBe(1.0);
+    expect(confidence.compilation_score).toBe(1.0);
+    expect(confidence.performance_score).toBe(0.95);
+    expect(confidence.historical_success_score).toBe(0.90);
+    expect(confidence.pi_comp).toBe(1.0);
+    expect(confidence.pi_crit).toBe(1.0);
+    expect(confidence.weighted_sum).toBe(0.962);
 
     // Verify Developer Acceptance Feedback
     const acceptFeedback = await DeveloperFeedbackModel.create({

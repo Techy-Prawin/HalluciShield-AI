@@ -39,3 +39,11 @@ def disable_rate_limiter(monkeypatch):
         _unique_client_id,
         raising=False,
     )
+
+
+@pytest.fixture(autouse=True)
+def bypass_api_key_for_tests(monkeypatch):
+    """
+    Ensure API key auth is disabled during unit tests unless explicitly tested.
+    """
+    monkeypatch.setenv("HALLUCISHIELD_API_KEY", "")

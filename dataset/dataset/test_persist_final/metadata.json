@@ -1,0 +1,27 @@
+[
+  {
+    "sample_id": "DS-B-0001",
+    "language": "python",
+    "cwe": "CWE-89",
+    "category": "cwe89",
+    "label": "positive",
+    "generator_model": "qwen/qwen3.8-27b",
+    "generation_prompt": "test",
+    "ground_truth": "Test SQL_INJECTION at line 6: SQL query constructed via string concatenation with unsanitized user input",
+    "file_path": "positive/cwe89/test_persist_001.py",
+    "sha256": "41791576d99fcf2d64af5ce49a745099eea38a31f001c893cc97727cdb486a9b",
+    "generator_provider": "groq",
+    "temperature": 0.2,
+    "top_p": 0.95,
+    "max_tokens": 1024,
+    "prompt_version": "v1.0",
+    "timestamp": "2026-09-22T10:21:50.590171Z",
+    "generation_method": "llm_generation",
+    "dataset_version": "v1.0",
+    "vulnerability_type": "SQL_INJECTION",
+    "severity": "CRITICAL",
+    "description": "SQL query constructed via string concatenation with unsanitized user input",
+    "expected_detection": true,
+    "expected_patch_types": []
+  }
+]

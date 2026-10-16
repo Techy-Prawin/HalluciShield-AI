@@ -1,0 +1,441 @@
+    def evaluate_sample(
+        self,
+        sample_info: Dict[str, Any],
+        file_path: Path,
+    ) -> Dict[str, Any]:
+        """Execute all pipeline stages for a single Dataset B sample.
+
+        Returns comprehensive per-stage trace and final security decision.
+        """
+        sample_id = sample_info["sample_id"]
+        record_id = sample_info.get("record_id", sample_id)
+        label = sample_info["label"]
+        category = sample_info["category"]
+        cwe = sample_info["cwe"]
+        language = sample_info["language"]
+        ground_truth = sample_info.get("ground_truth", "")
+
+        start_time = time.time()
+
+        if not file_path.exists():
+            return {
+                "record_id": record_id,
+                "sample_id": sample_id,
+                "file_path": str(file_path),
+                "language": language,
+                "category": category,
+                "cwe": cwe,
+                "label": label,
+                "ground_truth": ground_truth,
+                "predicted_label": ExecutionStatus.FAILED,
+                "scanner_status": ExecutionStatus.FAILED,
+                "stages_completed": [],
+                "stages": {},
+                "detection_correct": None,
+                "error_message": f"File not found: {file_path}",
+                "execution_time_ms": 0,
+            }
+
+        try:
+            code = file_path.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            code = ""
+
+        # Set up isolated workspace directory
+        stages_completed: List[str] = []
+        stage_records: Dict[str, Any] = {}
+        all_findings: List[Any] = []
+        scanner_status = ExecutionStatus.COMPLETED
+        error_message: Optional[str] = None
+
+        with tempfile.TemporaryDirectory(prefix=f"hs_ace_{sample_id}_") as workspace_dir:
+            dest = Path(workspace_dir) / file_path.name
+            shutil.copy2(file_path, dest)
+            repo_id = f"ace-{sample_id}"
+
+            # ── 1. Hallucination Detection Agent ─────────────────────────────
+            hal_res = None
+            try:
+                hal_res = self.hallucination_agent.detect_hallucinations(
+                    repository_id=repo_id,
+                    workspace_path=workspace_dir,
+                )
+                stages_completed.append("hallucination")
+                stage_records["hallucination"] = {
+                    "executed": True,
+                    "class": "HallucinationDetectionAgent",
+                    "function": "detect_hallucinations",
+                    "input_type": "workspace_path (str)",
+                    "output_type": type(hal_res).__name__,
+                    "status": ExecutionStatus.COMPLETED,
+                    "finding_count": len(hal_res.findings),
+                    "error": None,
+                }
+                all_findings.extend(hal_res.findings)
+            except Exception as e:
+                stage_records["hallucination"] = {
+                    "executed": True,
+                    "class": "HallucinationDetectionAgent",
+                    "function": "detect_hallucinations",
+                    "input_type": "workspace_path (str)",
+                    "output_type": "None",
+                    "status": ExecutionStatus.FAILED,
+                    "finding_count": 0,
+                    "error": str(e),
+                }
+
+            # ── 2. Dependency Analysis Agent ─────────────────────────────────
+            dep_res = None
+            try:
+                dep_res = self.dependency_agent.analyze_dependencies(
+                    repository_id=repo_id,
+                    workspace_path=workspace_dir,
+                )
+                stages_completed.append("dependency")
+                stage_records["dependency"] = {
+                    "executed": True,
+                    "class": "DependencyAnalysisAgent",
+                    "function": "analyze_dependencies",
+                    "input_type": "workspace_path (str)",
+                    "output_type": type(dep_res).__name__,
+                    "status": ExecutionStatus.COMPLETED,
+                    "finding_count": len(dep_res.findings),
+                    "error": None,
+                }
+                all_findings.extend(dep_res.findings)
+            except Exception as e:
+                stage_records["dependency"] = {
+                    "executed": True,
+                    "class": "DependencyAnalysisAgent",
+                    "function": "analyze_dependencies",
+                    "input_type": "workspace_path (str)",
+                    "output_type": "None",
+                    "status": ExecutionStatus.FAILED,
+                    "finding_count": 0,
+                    "error": str(e),
+                }
+
+            # ── 3. Security Analysis Agent ───────────────────────────────────
+            sec_res = None
+            try:
+                sec_res = self.security_agent.analyze_security(
+                    repository_id=repo_id,
+                    workspace_path=workspace_dir,
+                )
+                stages_completed.append("security")
+                sec_finding_types = [f.type.value for f in sec_res.findings]
+                stage_records["security"] = {
+                    "executed": True,
+                    "class": "SecurityAnalysisAgent",
+                    "function": "analyze_security",
+                    "input_type": "workspace_path (str)",
+                    "output_type": type(sec_res).__name__,
+                    "status": ExecutionStatus.COMPLETED,
+                    "finding_count": len(sec_res.findings),
+                    "critical_count": sec_res.critical_count,
+                    "high_count": sec_res.high_count,
+                    "medium_count": sec_res.medium_count,
+                    "low_count": sec_res.low_count,
+                    "findings": sec_finding_types,
+                    "error": None,
+                }
+                all_findings.extend(sec_res.findings)
+            except Exception as e:
+                stage_records["security"] = {
+                    "executed": True,
+                    "class": "SecurityAnalysisAgent",
+                    "function": "analyze_security",
+                    "input_type": "workspace_path (str)",
+                    "output_type": "None",
+                    "status": ExecutionStatus.FAILED,
+                    "finding_count": 0,
+                    "findings": [],
+                    "error": str(e),
+                }
+
+            # ── 4. Risk Engine ───────────────────────────────────────────────
+            risk_res = None
+            if hal_res is not None and dep_res is not None and sec_res is not None:
+                try:
+                    risk_res = self.risk_engine.assess_risk(
+                        repository_id=repo_id,
+                        hallucination_response=hal_res,
+                        security_response=sec_res,
+                        dependency_response=dep_res,
+                    )
+                    stages_completed.append("risk")
+                    stage_records["risk"] = {
+                        "executed": True,
+                        "class": "RiskEngine",
+                        "function": "assess_risk",
+                        "input_type": "(DetectionResponse, SecurityAnalysisResponse, DependencyAnalysisResponse)",
+                        "output_type": type(risk_res).__name__,
+                        "status": ExecutionStatus.COMPLETED,
+                        "overall_risk_score": risk_res.overall_risk_score,
+                        "overall_risk_level": risk_res.overall_risk_level.value,
+                        "recommendations_count": len(risk_res.recommendations),
+                        "error": None,
+                    }
+                except Exception as e:
+                    stage_records["risk"] = {
+                        "executed": True,
+                        "class": "RiskEngine",
+                        "function": "assess_risk",
+                        "input_type": "(DetectionResponse, SecurityAnalysisResponse, DependencyAnalysisResponse)",
+                        "output_type": "None",
+                        "status": ExecutionStatus.FAILED,
+                        "error": str(e),
+                    }
+            else:
+                stage_records["risk"] = {
+                    "executed": False,
+                    "class": "RiskEngine",
+                    "function": "assess_risk",
+                    "input_type": "None (missing upstream responses)",
+                    "output_type": "None",
+                    "status": ExecutionStatus.NOT_RUN,
+                    "error": "Upstream detection stages failed",
+                }
+
+            # ── 5. Patch Generation Agent ────────────────────────────────────
+            patch_res = None
+            primary_finding = all_findings[0] if all_findings else None
+
+            if primary_finding is not None:
+                try:
+                    f_type = getattr(primary_finding, "type", None)
+                    v_type = f_type.value if hasattr(f_type, "value") else str(f_type or "SECURITY_VULNERABILITY")
+                    f_sev = getattr(primary_finding, "severity", None)
+                    v_sev = f_sev.value if hasattr(f_sev, "value") else str(f_sev or "HIGH")
+                    f_desc = getattr(primary_finding, "description", "Vulnerability detected")
+                    f_cwe = getattr(primary_finding, "cwe", None) or "CWE-UNKNOWN"
+                    f_line = getattr(primary_finding, "line", 1) or 1
+                    f_id = getattr(primary_finding, "finding_id", f"find-{sample_id}")
+
+                    patch_req = PatchGenerationRequest(
+                        vulnerability_id=f_id,
+                        vulnerability_type=v_type,
+                        severity=v_sev,
+                        file=file_path.name,
+                        line=f_line,
+                        vulnerable_code=code,
+                        surrounding_code="",
+                        description=f_desc,
+                        cwe=f_cwe,
+                    )
+                    patch_res = self.patch_agent.generate_patches(patch_req)
+                    stages_completed.append("patch")
+                    stage_records["patch"] = {
+                        "executed": True,
+                        "class": "PatchGenerationAgent",
+                        "function": "generate_patches",
+                        "input_type": "PatchGenerationRequest",
+                        "output_type": type(patch_res).__name__,
+                        "status": ExecutionStatus.COMPLETED,
+                        "candidate_count": len(patch_res.candidates),
+                        "candidates": [c.patch_id for c in patch_res.candidates],
+                        "model_used": getattr(patch_res, "model_used", "default"),
+                        "error": None,
+                    }
+                except Exception as e:
+                    stage_records["patch"] = {
+                        "executed": True,
+                        "class": "PatchGenerationAgent",
+                        "function": "generate_patches",
+                        "input_type": "PatchGenerationRequest",
+                        "output_type": "None",
+                        "status": ExecutionStatus.FAILED,
+                        "candidate_count": 0,
+                        "error": str(e),
+                    }
+            else:
+                stage_records["patch"] = {
+                    "executed": False,
+                    "class": "PatchGenerationAgent",
+                    "function": "generate_patches",
+                    "input_type": "None (no findings detected)",
+                    "output_type": "None",
+                    "status": ExecutionStatus.NOT_APPLICABLE,
+                    "candidate_count": 0,
+                    "error": "No vulnerability findings detected to patch",
+                }
+
+            # ── 6. Validation Agent ──────────────────────────────────────────
+            val_res = None
+            if patch_res is not None and patch_res.candidates:
+                try:
+                    primary_candidate = patch_res.candidates[0]
+                    val_req = ValidateCandidatesRequest(
+                        vulnerability_id=patch_req.vulnerability_id,
+                        candidates=[primary_candidate],
+                        file_path=file_path.name,
+                        original_code=code,
+                        language=language,
+                    )
+                    val_res = self.validation_agent.validate_candidate(
+                        candidate=primary_candidate,
+                        request=val_req,
+                    )
+                    stages_completed.append("validation")
+                    stage_records["validation"] = {
+                        "executed": True,
+                        "class": "ValidationAgent",
+                        "function": "validate_candidate",
+                        "input_type": "(PatchCandidate, ValidateCandidatesRequest)",
+                        "output_type": type(val_res).__name__,
+                        "status": ExecutionStatus.COMPLETED,
+                        "validation_status": val_res.validation_status.value,
+                        "scores": {
+                            "compilation": val_res.compilation_score.score,
+                            "unit_test": val_res.unit_test_score.score,
+                            "regression": val_res.regression_score.score,
+                            "security": val_res.security_score.score,
+                            "functional": val_res.functional_score.score,
+                            "performance": val_res.performance_score.score,
+                        },
+                        "error": None,
+                    }
+                except Exception as e:
+                    stage_records["validation"] = {
+                        "executed": True,
+                        "class": "ValidationAgent",
+                        "function": "validate_candidate",
+                        "input_type": "(PatchCandidate, ValidateCandidatesRequest)",
+                        "output_type": "None",
+                        "status": ExecutionStatus.FAILED,
+                        "validation_status": "FAILED",
+                        "error": str(e),
+                    }
+            else:
+                stage_records["validation"] = {
+                    "executed": False,
+                    "class": "ValidationAgent",
+                    "function": "validate_candidate",
+                    "input_type": "None (no candidate patches)",
+                    "output_type": "None",
+                    "status": ExecutionStatus.NOT_APPLICABLE,
+                    "validation_status": "NOT_APPLICABLE",
+                    "error": "No candidate patches to validate",
+                }
+
+            # ── 7. Confidence Engine (ACE) ───────────────────────────────────
+            conf_res = None
+            ace_score = None
+            pi_comp = None
+            pi_crit = None
+            f_scores: Dict[str, float] = {}
+            weighted_score = None
+
+            if val_res is not None and val_res.validation_status.value != "FAILED":
+                try:
+                    conf_res = self.confidence_engine.calculate_confidence(
+                        validation_result=val_res,
+                        historical_success_rate=0.5,
+                    )
+                    pi_comp = calculate_pi_comp(val_res)
+                    pi_crit = calculate_pi_crit(val_res)
+                    f_scores = {f.feature.value: round(f.raw_value, 4) for f in conf_res.feature_scores}
+                    weighted_score = round(sum(f.weighted_score for f in conf_res.feature_scores), 4)
+                    ace_score = conf_res.confidence_score
+
+                    stages_completed.append("confidence")
+                    stage_records["confidence"] = {
+                        "executed": True,
+                        "class": "ConfidenceEngine",
+                        "function": "calculate_confidence",
+                        "input_type": "PatchValidationResult",
+                        "output_type": type(conf_res).__name__,
+                        "status": ExecutionStatus.COMPLETED,
+                        "ace_score": ace_score,
+                        "pi_comp": pi_comp,
+                        "pi_crit": pi_crit,
+                        "f1_to_f6": f_scores,
+                        "weighted_score": weighted_score,
+                        "recommendation": conf_res.recommendation,
+                        "error": None,
+                    }
+                except Exception as e:
+                    stage_records["confidence"] = {
+                        "executed": True,
+                        "class": "ConfidenceEngine",
+                        "function": "calculate_confidence",
+                        "input_type": "PatchValidationResult",
+                        "output_type": "None",
+                        "status": ExecutionStatus.FAILED,
+                        "error": str(e),
+                    }
+            else:
+                stage_records["confidence"] = {
+                    "executed": False,
+                    "class": "ConfidenceEngine",
+                    "function": "calculate_confidence",
+                    "input_type": "None (no patch validation result)",
+                    "output_type": "None",
+                    "status": ExecutionStatus.NOT_APPLICABLE,
+                    "error": "No patch validation result to score",
+                }
+
+            # Check if all detection stages completed
+            detection_failed = (
+                stage_records.get("hallucination", {}).get("status") == ExecutionStatus.FAILED or
+                stage_records.get("dependency", {}).get("status") == ExecutionStatus.FAILED or
+                stage_records.get("security", {}).get("status") == ExecutionStatus.FAILED
+            )
+            if detection_failed:
+                scanner_status = ExecutionStatus.FAILED
+                error_message = "One or more detection stages failed"
+
+        execution_time_ms = int((time.time() - start_time) * 1000)
+
+        # Final decision:
+        # If any detection stage failed, prediction must be FAILED (never negative)
+        if scanner_status == ExecutionStatus.FAILED:
+            predicted_label = ExecutionStatus.FAILED
+            cm = {
+                "detection_correct": None,
+                "false_positive": None,
+                "false_negative": None,
+                "predicted_label": ExecutionStatus.FAILED,
+            }
+        else:
+            detected = len(all_findings) > 0
+            predicted_label = "positive" if detected else "negative"
+            detection_correct = (detected and label == "positive") or (not detected and label == "negative")
+            cm = {
+                "detection_correct": detection_correct,
+                "false_positive": detected and label == "negative",
+                "false_negative": (not detected) and label == "positive",
+                "predicted_label": predicted_label,
+            }
+
+        return {
+            "record_id": record_id,
+            "sample_id": sample_id,
+            "file_path": str(file_path),
+            "language": language,
+            "category": category,
+            "cwe": cwe,
+            "label": label,
+            "ground_truth": ground_truth,
+            "predicted_label": cm["predicted_label"],
+            "scanner_status": scanner_status,
+            "detection_correct": cm["detection_correct"],
+            "false_positive": cm["false_positive"],
+            "false_negative": cm["false_negative"],
+            "all_findings_count": len(all_findings),
+            "stages_completed": stages_completed,
+            "stage_records": stage_records,
+            "ace_score": ace_score,
+            "pi_comp": pi_comp,
+            "pi_crit": pi_crit,
+            "f1_to_f6": f_scores,
+            "weighted_score": weighted_score,
+            "overall_risk_score": stage_records.get("risk", {}).get("overall_risk_score"),
+            "overall_risk_level": stage_records.get("risk", {}).get("overall_risk_level"),
+            "validation_status": stage_records.get("validation", {}).get("validation_status"),
+            "execution_time_ms": execution_time_ms,
+            "error_message": error_message,
+            "experiment_name": "phase-3-dataset-b-ace-evaluation",
+            "experiment_version": "v2.0",
+            "data_source": "full_ace",
+        }

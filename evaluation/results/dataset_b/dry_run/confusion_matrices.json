@@ -1,0 +1,26 @@
+{
+  "semgrep": {
+    "tp": 1,
+    "fp": 0,
+    "tn": 1,
+    "fn": 0
+  },
+  "llm_zero_shot": {
+    "tp": 1,
+    "fp": 0,
+    "tn": 1,
+    "fn": 0
+  },
+  "sandbox": {
+    "tp": 0,
+    "fp": 0,
+    "tn": 0,
+    "fn": 0
+  },
+  "full_ace": {
+    "tp": 1,
+    "fp": 0,
+    "tn": 1,
+    "fn": 0
+  }
+}

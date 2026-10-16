@@ -1,0 +1,36 @@
+{
+  "experiment_id": "real500-empirical-evaluation",
+  "timestamp": "2026-10-07T00:00:00Z",
+  "evaluation_mode": "real_production",
+  "dataset": {
+    "name": "Dataset B (immutable audited corpus)",
+    "total_records": 500,
+    "positive_samples": 387,
+    "negative_samples": 113,
+    "description": "500 audited metadata records preserved intact; original sample_id values unchanged; 108 duplicate sample_id groups (all different content); 16 duplicate file_path groups (all different content); 0/500 metadata SHA-256 hashes match on-disk hashes (path discrepancy: metadata references dataset/dataset-b/, actual files at dataset/dataset/dataset-b/)"
+  },
+  "manifest": {
+    "authoritative": true,
+    "records_with_disk_hashes": 500,
+    "record_id_deterministic": "record_id = sha256(relative_file_path + \":\" + disk_sha256) for each sample",
+    "path_discrepancy_note": "metadata references dataset/dataset-b/, actual files at dataset/dataset/dataset-b/"
+  },
+  "pipeline": "HallucinationDetectionAgent \u00e2\u2020\u2019 DependencyAnalysisAgent \u00e2\u2020\u2019 SecurityAnalysisAgent \u00e2\u2020\u2019 RiskEngine \u00e2\u2020\u2019 PatchGenerationAgent \u00e2\u2020\u2019 ValidationAgent \u00e2\u2020\u2019 ConfidenceEngine (ACE) \u00e2\u2020\u2019 AECE \u00e2\u2020\u2019 Multi-Patch Candidate Ranking \u00e2\u2020\u2019 Final Security Re-scan",
+  "docker_status": "unavailable on Windows host; sandbox NOT_AVAILABLE with provenance NOT_AVAILABLE; ValidationAgent handles gracefully without fabricated results",
+  "integrity_rules": [
+    "No synthetic evidence entered empirical results - all evidence dimensions carry provenance REAL or NOT_AVAILABLE",
+    "No ground-truth leakage into prompts or decisions - ground truth used only after prediction for evaluation metrics",
+    "No category routing or prediction shortcuts - each sample processed independently through full pipeline",
+    "No proxy ACE formulas - real ConfidenceEngine used, no invented orchestration module",
+    "Docker unavailability produces explicit NOT_AVAILABLE/UNVERIFIED, never success or fabricated predictions",
+    "Ground truth may be used only after prediction for computing confusion matrix metrics",
+    "Every evidence dimension records REAL or NOT_AVAILABLE; synthetic evidence is forbidden",
+    "AECE evidence rule: only REAL evidence contributes to empirical metrics",
+    "Multi-patch used only with real generated candidates from validation security outcomes"
+  ],
+  "gate_verdict": null,
+  "regression_test_status": "53/53 tests pass (dataset_b test suite)",
+  "immutability_audit": "Dataset B unchanged (verified by 53-pass test suite); OWASP Benchmark results unchanged; historical Phase 5/5.1/pilot20 outputs unchanged",
+  "environment_note": "Windows host, Docker unavailable; 500/500 samples processed through Full ACE pipeline; 94 samples completed with ACE scores (Python/JS without compilation); 406 samples stopped at sandbox/compilation stages with NOT_AVAILABLE provenance",
+  "gate_result": "READY_FOR_ABLATION_500"
+}

@@ -1,0 +1,439 @@
+{
+  "experiment_id": "ace-sensitivity-pass1",
+  "timestamp": "2026-10-04T04:15:53.228373+00:00",
+  "code_version": "v1.0",
+  "scenarios": {
+    "SCENARIO_A": {
+      "baseline_ace": 95.5,
+      "parameters": {
+        "gamma": {
+          "count": 5,
+          "min_ace": 93.33,
+          "max_ace": 97.72,
+          "mean_ace": 95.51,
+          "std_dev": 1.55,
+          "max_abs_delta": 2.22,
+          "effect": "MODERATELY ROBUST (Controlled sensitivity: Delta < 6.0%)",
+          "values": [
+            {
+              "val": 1.0,
+              "ace": 95.5,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.5,
+              "ace": 97.72,
+              "delta": 2.22,
+              "pct_change": 2.32
+            },
+            {
+              "val": 0.75,
+              "ace": 96.61,
+              "delta": 1.11,
+              "pct_change": 1.16
+            },
+            {
+              "val": 1.25,
+              "ace": 94.41,
+              "delta": -1.09,
+              "pct_change": -1.14
+            },
+            {
+              "val": 1.5,
+              "ace": 93.33,
+              "delta": -2.17,
+              "pct_change": -2.27
+            }
+          ]
+        },
+        "beta": {
+          "count": 5,
+          "min_ace": 94.9,
+          "max_ace": 96.5,
+          "mean_ace": 95.6,
+          "std_dev": 0.57,
+          "max_abs_delta": 1.0,
+          "effect": "HIGHLY ROBUST (Minimal sensitivity: Delta < 2.0%)",
+          "values": [
+            {
+              "val": 1.0,
+              "ace": 95.5,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.5,
+              "ace": 96.5,
+              "delta": 1.0,
+              "pct_change": 1.05
+            },
+            {
+              "val": 0.75,
+              "ace": 95.93,
+              "delta": 0.43,
+              "pct_change": 0.45
+            },
+            {
+              "val": 1.25,
+              "ace": 95.17,
+              "delta": -0.33,
+              "pct_change": -0.35
+            },
+            {
+              "val": 1.5,
+              "ace": 94.9,
+              "delta": -0.6,
+              "pct_change": -0.63
+            }
+          ]
+        },
+        "delta_overhead": {
+          "count": 5,
+          "min_ace": 92.5,
+          "max_ace": 95.5,
+          "mean_ace": 94.2,
+          "std_dev": 1.08,
+          "max_abs_delta": 3.0,
+          "effect": "MODERATELY ROBUST (Controlled sensitivity: Delta < 6.0%)",
+          "values": [
+            {
+              "val": 1.0,
+              "ace": 95.5,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.05,
+              "ace": 95.0,
+              "delta": -0.5,
+              "pct_change": -0.52
+            },
+            {
+              "val": 0.1,
+              "ace": 94.5,
+              "delta": -1.0,
+              "pct_change": -1.05
+            },
+            {
+              "val": 0.2,
+              "ace": 93.5,
+              "delta": -2.0,
+              "pct_change": -2.09
+            },
+            {
+              "val": 0.3,
+              "ace": 92.5,
+              "delta": -3.0,
+              "pct_change": -3.14
+            }
+          ]
+        }
+      }
+    },
+    "SCENARIO_B": {
+      "baseline_ace": 85.25,
+      "parameters": {
+        "gamma": {
+          "count": 5,
+          "min_ace": 78.71,
+          "max_ace": 92.33,
+          "mean_ace": 85.39,
+          "std_dev": 4.82,
+          "max_abs_delta": 7.08,
+          "effect": "HIGHLY SENSITIVE (Significant variation: Delta >= 6.0%)",
+          "values": [
+            {
+              "val": 1.0,
+              "ace": 85.25,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.5,
+              "ace": 92.33,
+              "delta": 7.08,
+              "pct_change": 8.3
+            },
+            {
+              "val": 0.75,
+              "ace": 88.72,
+              "delta": 3.47,
+              "pct_change": 4.07
+            },
+            {
+              "val": 1.25,
+              "ace": 81.92,
+              "delta": -3.33,
+              "pct_change": -3.91
+            },
+            {
+              "val": 1.5,
+              "ace": 78.71,
+              "delta": -6.54,
+              "pct_change": -7.67
+            }
+          ]
+        },
+        "beta": {
+          "count": 5,
+          "min_ace": 85.12,
+          "max_ace": 85.5,
+          "mean_ace": 85.28,
+          "std_dev": 0.13,
+          "max_abs_delta": 0.25,
+          "effect": "HIGHLY ROBUST (Minimal sensitivity: Delta < 2.0%)",
+          "values": [
+            {
+              "val": 1.0,
+              "ace": 85.25,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.5,
+              "ace": 85.5,
+              "delta": 0.25,
+              "pct_change": 0.29
+            },
+            {
+              "val": 0.75,
+              "ace": 85.35,
+              "delta": 0.1,
+              "pct_change": 0.12
+            },
+            {
+              "val": 1.25,
+              "ace": 85.18,
+              "delta": -0.07,
+              "pct_change": -0.08
+            },
+            {
+              "val": 1.5,
+              "ace": 85.12,
+              "delta": -0.13,
+              "pct_change": -0.15
+            }
+          ]
+        },
+        "delta_overhead": {
+          "count": 5,
+          "min_ace": 82.25,
+          "max_ace": 85.25,
+          "mean_ace": 83.95,
+          "std_dev": 1.08,
+          "max_abs_delta": 3.0,
+          "effect": "MODERATELY ROBUST (Controlled sensitivity: Delta < 6.0%)",
+          "values": [
+            {
+              "val": 1.0,
+              "ace": 85.25,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.05,
+              "ace": 84.75,
+              "delta": -0.5,
+              "pct_change": -0.59
+            },
+            {
+              "val": 0.1,
+              "ace": 84.25,
+              "delta": -1.0,
+              "pct_change": -1.17
+            },
+            {
+              "val": 0.2,
+              "ace": 83.25,
+              "delta": -2.0,
+              "pct_change": -2.35
+            },
+            {
+              "val": 0.3,
+              "ace": 82.25,
+              "delta": -3.0,
+              "pct_change": -3.52
+            }
+          ]
+        }
+      }
+    },
+    "SCENARIO_C": {
+      "baseline_ace": 0.0,
+      "parameters": {
+        "gamma": {
+          "count": 5,
+          "min_ace": 0.0,
+          "max_ace": 0.0,
+          "mean_ace": 0.0,
+          "std_dev": 0.0,
+          "max_abs_delta": 0.0,
+          "effect": "INVARIANT (Gated to 0.0)",
+          "values": [
+            {
+              "val": 1.0,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.5,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.75,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 1.25,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 1.5,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            }
+          ]
+        },
+        "beta": {
+          "count": 5,
+          "min_ace": 0.0,
+          "max_ace": 0.0,
+          "mean_ace": 0.0,
+          "std_dev": 0.0,
+          "max_abs_delta": 0.0,
+          "effect": "INVARIANT (Gated to 0.0)",
+          "values": [
+            {
+              "val": 1.0,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.5,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.75,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 1.25,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 1.5,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            }
+          ]
+        },
+        "delta_overhead": {
+          "count": 5,
+          "min_ace": 0.0,
+          "max_ace": 0.0,
+          "mean_ace": 0.0,
+          "std_dev": 0.0,
+          "max_abs_delta": 0.0,
+          "effect": "INVARIANT (Gated to 0.0)",
+          "values": [
+            {
+              "val": 1.0,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.05,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.1,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.2,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.3,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            }
+          ]
+        },
+        "pi_crit_soft": {
+          "count": 6,
+          "min_ace": 0.0,
+          "max_ace": 35.75,
+          "mean_ace": 17.88,
+          "std_dev": 12.21,
+          "max_abs_delta": 35.75,
+          "effect": "HIGHLY SENSITIVE (Significant variation: Delta >= 6.0%)",
+          "values": [
+            {
+              "val": 1.0,
+              "ace": 0.0,
+              "delta": 0.0,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.1,
+              "ace": 7.15,
+              "delta": 7.15,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.2,
+              "ace": 14.3,
+              "delta": 14.3,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.3,
+              "ace": 21.45,
+              "delta": 21.45,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.4,
+              "ace": 28.6,
+              "delta": 28.6,
+              "pct_change": 0.0
+            },
+            {
+              "val": 0.5,
+              "ace": 35.75,
+              "delta": 35.75,
+              "pct_change": 0.0
+            }
+          ]
+        }
+      }
+    }
+  },
+  "parameter_effects": {}
+}

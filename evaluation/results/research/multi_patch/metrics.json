@@ -1,0 +1,35 @@
+{
+  "candidate_count_distribution": [
+    5,
+    5,
+    5,
+    5,
+    5
+  ],
+  "provenance": "SYNTHETIC_TEST",
+  "controlled_fixture": true,
+  "baseline_1_first_patch": {
+    "total_samples": 5,
+    "avg_confidence": 30.0,
+    "avg_ace_score": 45.0,
+    "avg_evidence_completeness": 0.667,
+    "compilation_success_rate": 1.0,
+    "validation_success_rate": 0.0
+  },
+  "baseline_2_best_of_n": {
+    "total_samples": 5,
+    "avg_confidence": 92.75,
+    "avg_ace_score": 92.75,
+    "avg_evidence_completeness": 1.0,
+    "compilation_success_rate": 1.0,
+    "validation_success_rate": 1.0
+  },
+  "proposed_aece_selection": {
+    "total_samples": 5,
+    "avg_confidence": 92.75,
+    "avg_ace_score": 92.75,
+    "avg_evidence_completeness": 1.0,
+    "compilation_success_rate": 1.0,
+    "validation_success_rate": 1.0
+  }
+}

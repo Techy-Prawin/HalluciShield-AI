@@ -1,0 +1,1 @@
+open(os.path.join("/data/files", user_filename)).read()

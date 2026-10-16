@@ -1,0 +1,115 @@
+{
+  "experiment_id": "ablation500-empirical-evaluation",
+  "audit_timestamp": "2026-10-08T00:00:00+00:00",
+  "evidence_state": "PARTIAL - raw_results.jsonl missing; metrics derived from executed run",
+  
+  "available_artifacts": {
+    "config_json": {
+      "path": "evaluation/results/research/ablation500/config.json",
+      "gate_verdict": "VALIDATED_FOR_PAPER",
+      "unique_experimental_units": 4890,
+      "manifest_executions": 5000,
+      "duplicate_executions": 110,
+      "expected_unique_units": 4890,
+      "explanation": "Based on dataset identity audit: 489 unique record_ids x 10 configs"
+    },
+    "provenance_summary": {
+      "path": "evaluation/results/research/ablation500/provenance_summary.json",
+      "unique_experimental_units": 3610,
+      "manifest_executions": 5000,
+      "duplicate_executions": 590,
+      "note": "Uses sample_id-based counting: 361 unique sample_ids x 10 configs = 3610"
+    },
+    "metrics_json": {
+      "path": "evaluation/results/research/ablation500/metrics.json",
+      "note": "All classification metrics are 0.0; all predictions recorded as '?' or FAILED",
+      "detection": {
+        "A": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "B": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "C": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "D": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "E": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "F": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "G": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "H": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "I": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "J": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0}
+      }
+    },
+    "comparison_json": {
+      "path": "evaluation/results/research/ablation500/comparison.json",
+      "note": "All A-vs-B...A-vs-J deltas are 0.0; meaningful=false for all",
+      "deltas": {
+        "A_vs_B": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "A_vs_C": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "A_vs_D": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "A_vs_E": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "A_vs_F": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "A_vs_G": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "A_vs_H": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "A_vs_I": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0},
+        "A_vs_J": {"precision": 0.0, "recall": 0.0, "f1": 0.0, "accuracy": 0.0, "fpr": 0.0, "fnr": 0.0}
+      }
+    },
+    "confusion_matrices_json": {
+      "path": "evaluation/results/research/ablation500/confusion_matrices.json",
+      "note": "All configurations have TP=FP=TN=FN=0",
+      "matrices": {"A": {"tp": 0, "fp": 0, "tn": 0, "fn": 0}, "B": {"tp": 0, "fp": 0, "tn": 0, "fn": 0}, "C": {"tp": 0, "fp": 0, "tn": 0, "fn": 0}, "D": {"tp": 0, "fp": 0, "tn": 0, "fn": 0}, "E": {"tp": 0, "fp": 0, "tn": 0, "fn": 0}, "F": {"tp": 0, "fp": 0, "tn": 0, "fn": 0}, "G": {"tp": 0, "fp": 0, "tn": 0, "fn": 0}, "H": {"tp": 0, "fp": 0, "tn": 0, "fn": 0}, "I": {"tp": 0, "fp": 0, "tn": 0, "fn": 0}, "J": {"tp": 0, "fp": 0, "tn": 0, "fn": 0}}
+    },
+    "trace_summary_json": {
+      "path": "evaluation/results/research/ablation500/trace_summary.json",
+      "note": "Verdict distribution is '?' for all 361 samples per config; ace_score_count=0; stages_distribution empty",
+      "verdict_distribution": {"?": 361} for each config A-J
+    },
+    "aece_comparison_json": {
+      "status": "MISSING - not present in ablation500 directory",
+      "note": "Required per Phase 5.6 output spec but file not found"
+    },
+    "multi_patch_comparison_json": {
+      "status": "MISSING - not present in ablation500 directory",
+      "note": "Required per Phase 5.6 output spec but file not found"
+    },
+    "cwe_metrics_json": {
+      "status": "MISSING - not present in ablation500 directory",
+      "note": "Required per Phase 5.6 output spec but file not found"
+    },
+    "language_metrics_json": {
+      "status": "MISSING - not present in ablation500 directory",
+      "note": "Required per Phase 5.6 output spec but file not found"
+    },
+    "category_metrics_json": {
+      "status": "MISSING - not present in ablation500 directory",
+      "note": "Required per Phase 5.6 output spec but file not found"
+    }
+  },
+  "missing_artifacts": [
+    "raw_results.jsonl",
+    "aece_comparison.json",
+    "multi_patch_comparison.json",
+    "cwe_metrics.json",
+    "language_metrics.json",
+    "category_metrics.json",
+    "README.md",
+    "integrity_report.json",
+    "latency_metrics.json",
+    "stage_metrics.json"
+  ],
+  "evidence_limitations": {
+    "raw_results_missing": "Primary evidence source (raw_results.jsonl) is not present in the ablation500 directory. Metrics are derived from executed run output.",
+    "all_metrics_zero": "All classification metrics are 0.0 because predictions are recorded as '?' or FAILED, not as TP/FP/TN classifications.",
+    "no_aceaece_scores": "AECE and Legacy ACE scores have sample_count=0 in trace_summary; no confidence scores computed.",
+    "verdict_unknown": "All trace verdicts are '?' indicating UNKNOWN status, likely due to Docker/unavailability issues or pipeline failures.",
+    "experimental_unit_discrepancy": "config.json reports 4890 unique units (record_id-based: 489 x 10); provenance_summary reports 3610 unique units (sample_id-based: 361 x 10). The correct unit depends on identity resolution methodology.",
+    "docker_unavailability": "Phase 5.5 audit noted 12/20 samples stopped at stage 4 due to Docker unavailability; this likely affects Phase 5.6 results too.",
+    "ground_truth_usage": "Ground truth is used only after prediction for metric calculation, never in prediction logic, per provenance policy."
+  },
+  "verified_infrastructure": {
+    "pipelineconfig_verified": "PipelineConfig class with 9 per-component switches; production default ALL ENABLED; backward compatible",
+    "fullaceadapter_refactored": "FullACEAdapter supports genuine component ablations via PipelineConfig; disabled components record NOT_APPLICABLE",
+    "smoke_test_passed": "5-sample × 10-configuration smoke test verified all configurations execute genuinely",
+    "dataset_identity_audit": "Dataset B identity audit completed: 500 manifest entries, 489 unique record_ids, 11 duplicated entries across 10 groups (all exact duplicates)",
+    "no_synthetic_evidence": "Provenance policy: REAL or NOT_AVAILABLE only; SYNTHETIC_TEST forbidden",
+    "no_ground_truth_leakage": "Ground truth used only after prediction, never in prediction logic"
+  },
+  "gate_verdict": "NOT_READY for full paper due to missing raw evidence and all-zero metrics, but infrastructure verified as VALIDATED_FOR_PAPER READY status based on pre-rerun architecture audit"
+}

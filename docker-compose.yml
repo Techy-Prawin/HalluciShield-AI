@@ -5,7 +5,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-hallucishield_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hallucishield_secure_pass_2026}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_postgres_password}
       POSTGRES_DB: ${POSTGRES_DB:-hallucishield_db}
       POSTGRES_SSL: "false"
     ports:
@@ -32,7 +32,7 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_PORT: 5432
       POSTGRES_USER: ${POSTGRES_USER:-hallucishield_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hallucishield_secure_pass_2026}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_postgres_password}
       POSTGRES_DB: ${POSTGRES_DB:-hallucishield_db}
       AI_ENGINE_URL: http://ai-engine:8000
       AI_ENGINE_API_KEY: ${HALLUCISHIELD_API_KEY}

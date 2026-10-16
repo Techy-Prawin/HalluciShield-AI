@@ -1,0 +1,27 @@
+[
+  {
+    "sample_id": "DS-B-0002",
+    "language": "python",
+    "cwe": "CWE-79",
+    "category": "cwe79",
+    "label": "positive",
+    "generator_model": "qwen/qwen3.8-27b",
+    "generation_prompt": "test",
+    "ground_truth": "Test CROSS_SITE_SCRIPTING at line 7: Unescaped user input 'query' is directly inserted into HTML output, allowing XSS.",
+    "file_path": "positive/cwe79/test_resume_002.py",
+    "sha256": "b65551b52397b9fe16a5dc56233664742e4cd56123b66e9174192704ec65934f",
+    "generator_provider": "groq",
+    "temperature": 0.2,
+    "top_p": 0.95,
+    "max_tokens": 1024,
+    "prompt_version": "v1.0",
+    "timestamp": "2026-09-22T10:13:40.693734Z",
+    "generation_method": "llm_generation",
+    "dataset_version": "v1.0",
+    "vulnerability_type": "CROSS_SITE_SCRIPTING",
+    "severity": "HIGH",
+    "description": "Unescaped user input 'query' is directly inserted into HTML output, allowing XSS.",
+    "expected_detection": true,
+    "expected_patch_types": []
+  }
+]

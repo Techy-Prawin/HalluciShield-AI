@@ -1,5 +1,4 @@
 export const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
-export const AI_URL = process.env.NEXT_PUBLIC_AI_ENGINE_URL || 'http://localhost:8000';
 
 /* ------------------------------------------------------------------ */
 /* Types (kept permissive — shapes come from FastAPI/Express models)  */
@@ -111,6 +110,7 @@ export interface ScanStatusPayload {
   scanId?: string;
   repositoryId?: string;
   status?: string;
+  scanner_status?: string;
   currentStage?: string;
   stages?: ScanStages;
   error?: string | null;
@@ -128,6 +128,14 @@ export interface ScanStatusPayload {
   patches?: Record<string, unknown>;
   validationResults?: Record<string, unknown>;
   remediation?: RemediationSummary | null;
+  remediationStatus?: 'PENDING' | 'NOT_REQUIRED' | 'VERIFIED' | 'BLOCKED' | 'FAILED';
+  artifactAuthorization?: 'PENDING' | 'AUTHORIZED' | 'UNVERIFIED_DOWNLOAD' | 'BLOCKED';
+  /** Independent security verdict (never PASSED when the candidate is unverified). */
+  securityVerdict?: 'PENDING' | 'PASSED' | 'UNVERIFIED' | 'BLOCKED';
+  /** Download eligibility decision (distinct from the security verdict). */
+  downloadEligibility?: DownloadEligibility | null;
+  /** Auditable explicit acknowledgement for an unverified download. */
+  downloadAcknowledgement?: DownloadAcknowledgement | null;
   hasOutputFile?: boolean;
   downloadUrl?: string | null;
   outputFile?: string | null;
@@ -141,6 +149,7 @@ export interface FindingsPayload {
   scanId?: string;
   repositoryId?: string;
   status?: string;
+  scanner_status?: string;
   stages?: ScanStages;
   hallucinationFindings?: unknown;
   securityFindings?: unknown;
@@ -152,6 +161,10 @@ export interface FindingsPayload {
   patches?: Record<string, unknown>;
   validationResults?: Record<string, unknown>;
   remediation?: RemediationSummary | null;
+  artifactAuthorization?: 'PENDING' | 'AUTHORIZED' | 'UNVERIFIED_DOWNLOAD' | 'BLOCKED';
+  securityVerdict?: 'PENDING' | 'PASSED' | 'UNVERIFIED' | 'BLOCKED';
+  downloadEligibility?: DownloadEligibility | null;
+  downloadAcknowledgement?: DownloadAcknowledgement | null;
   hasOutputFile?: boolean;
   downloadUrl?: string | null;
   outputFile?: string | null;
@@ -160,12 +173,35 @@ export interface FindingsPayload {
   uploadType?: string;
 }
 
+/** Download eligibility decision: whether a candidate can be downloaded.
+ * Distinct from securityVerdict (whether the candidate passed security checks). */
+export interface DownloadEligibility {
+  eligible: boolean;
+  level: 'AUTHORIZED' | 'UNVERIFIED_DOWNLOAD' | 'INELIGIBLE';
+  reason: string;
+  aceScore: number | null;
+  aceScale: { min: number; max: number };
+  acknowledgementRequired: boolean;
+  securityGatesPassed: boolean;
+  thresholds: { authorized: number; unverified: number };
+}
+
+/** Auditable explicit user acknowledgement for an unverified download. */
+export interface DownloadAcknowledgement {
+  acknowledgedAt: string;
+  acknowledgedBy?: string;
+  userId?: string;
+  ip?: string;
+  level: 'UNVERIFIED_DOWNLOAD';
+}
+
 /** A security finding as reported by the backend security agent. */
 export interface SecurityFinding {
   id?: string;
   vulnerability_type?: string;
   cwe_id?: string;
   severity?: string;
+  scanner_status?: string;
   file?: string;
   file_path?: string;
   line?: number;
@@ -232,10 +268,13 @@ export function getSecuredFileDownloadUrl(repositoryId: string, scanId: string):
  */
 export async function downloadSecuredFile(
   repositoryId: string,
-  scanId: string
+  scanId: string,
+  acknowledgeUnverified = false
 ): Promise<{ ok: boolean; fileName?: string; error?: string }> {
   try {
-    const res = await fetch(getSecuredFileDownloadUrl(repositoryId, scanId), { method: 'GET' });
+    const url = new URL(getSecuredFileDownloadUrl(repositoryId, scanId));
+    if (acknowledgeUnverified) url.searchParams.set('acknowledge', 'true');
+    const res = await fetch(url.toString(), { method: 'GET' });
     if (!res.ok) {
       return { ok: false, error: `Download failed (HTTP ${res.status}).` };
     }
@@ -243,17 +282,45 @@ export async function downloadSecuredFile(
     const disposition = res.headers.get('content-disposition') || '';
     const fileNameMatch = disposition.match(/filename="?([^"]+)"?/i);
     const fileName = fileNameMatch?.[1] || scanId;
-    const url = URL.createObjectURL(blob);
+    const objectUrl = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
+    a.href = objectUrl;
     a.download = fileName;
     document.body.appendChild(a);
     a.click();
     a.remove();
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(objectUrl);
     return { ok: true, fileName };
   } catch {
     return { ok: false, error: 'Network error during download. Check that the backend is running.' };
+  }
+}
+
+/** Record the explicit, auditable user acknowledgement required to download
+ * an UNVERIFIED candidate. Call this before downloadSecuredFile when
+ * downloadEligibility.acknowledgementRequired is true. */
+export async function acknowledgeUnverifiedDownload(
+  repositoryId: string,
+  scanId: string,
+  userId?: string
+): Promise<{ ok: boolean; acknowledgedAt?: string; error?: string }> {
+  const res = await safeFetch(
+    `${BACKEND_URL}/api/repositories/${encodeURIComponent(repositoryId)}/scan/${encodeURIComponent(scanId)}/acknowledge-download`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ acknowledged: true, userId }),
+    }
+  );
+  if (!res) {
+    return { ok: false, error: 'Could not connect to the backend. Check that the backend service is running.' };
+  }
+  try {
+    const data = await res.json();
+    if (!res.ok) return { ok: false, error: data.error || `Acknowledgement failed (HTTP ${res.status}).` };
+    return { ok: true, acknowledgedAt: data.acknowledgedAt };
+  } catch {
+    return { ok: false, error: 'Backend returned an invalid response.' };
   }
 }
 
@@ -368,25 +435,25 @@ export async function fetchBackendHealth(signal?: AbortSignal): Promise<HealthIn
 }
 
 export async function fetchAiHealth(signal?: AbortSignal): Promise<HealthInfo | null> {
-  return safeGet<HealthInfo>(`${AI_URL}/api/v1/health`, signal);
+  return safeGet<HealthInfo>(`${BACKEND_URL}/api/ai-engine/health`, signal);
 }
 
 export async function fetchMonitoringSummary(signal?: AbortSignal): Promise<MonitoringSummary | null> {
-  return safeGet<MonitoringSummary>(`${AI_URL}/api/v1/monitoring/summary`, signal);
+  return safeGet<MonitoringSummary>(`${BACKEND_URL}/api/monitoring/summary`, signal);
 }
 
 export async function fetchMonitoringAlerts(signal?: AbortSignal): Promise<AlertRecord[]> {
-  const payload = await safeGet<NamedList<AlertRecord>>(`${AI_URL}/api/v1/monitoring/alerts?limit=40`, signal);
+  const payload = await safeGet<NamedList<AlertRecord>>(`${BACKEND_URL}/api/alerts?limit=40`, signal);
   return toList(payload);
 }
 
 export async function fetchMonitoringEvents(signal?: AbortSignal): Promise<RuntimeEventRecord[]> {
-  const payload = await safeGet<NamedList<RuntimeEventRecord>>(`${AI_URL}/api/v1/monitoring/events?limit=60`, signal);
+  const payload = await safeGet<NamedList<RuntimeEventRecord>>(`${BACKEND_URL}/api/monitoring/events?limit=60`, signal);
   return toList(payload);
 }
 
 export async function fetchLearningSummary(signal?: AbortSignal): Promise<LearningSummary | null> {
-  return safeGet<LearningSummary>(`${AI_URL}/api/v1/learning/summary`, signal);
+  return safeGet<LearningSummary>(`${BACKEND_URL}/api/learning/summary`, signal);
 }
 
 /* ------------------------------------------------------------------ */

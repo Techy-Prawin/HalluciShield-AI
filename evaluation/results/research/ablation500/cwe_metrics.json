@@ -1,0 +1,1322 @@
+{
+  "A": {
+    "CWE-1395": {
+      "total": 14,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 13
+      },
+      "precision": 1.0,
+      "recall": 0.0714,
+      "f1": 0.1333,
+      "accuracy": 0.0714
+    },
+    "CWE-22": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-256": {
+      "total": 30,
+      "confusion_matrix": {
+        "tp": 4,
+        "fp": 0,
+        "tn": 0,
+        "fn": 26
+      },
+      "precision": 1.0,
+      "recall": 0.1333,
+      "f1": 0.2352,
+      "accuracy": 0.1333
+    },
+    "CWE-347": {
+      "total": 56,
+      "confusion_matrix": {
+        "tp": 23,
+        "fp": 0,
+        "tn": 0,
+        "fn": 33
+      },
+      "precision": 1.0,
+      "recall": 0.4107,
+      "f1": 0.5823,
+      "accuracy": 0.4107
+    },
+    "CWE-706": {
+      "total": 25,
+      "confusion_matrix": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 0,
+        "fn": 23
+      },
+      "precision": 1.0,
+      "recall": 0.08,
+      "f1": 0.1481,
+      "accuracy": 0.08
+    },
+    "CWE-78": {
+      "total": 76,
+      "confusion_matrix": {
+        "tp": 9,
+        "fp": 0,
+        "tn": 0,
+        "fn": 67
+      },
+      "precision": 1.0,
+      "recall": 0.1184,
+      "f1": 0.2117,
+      "accuracy": 0.1184
+    },
+    "CWE-79": {
+      "total": 60,
+      "confusion_matrix": {
+        "tp": 15,
+        "fp": 0,
+        "tn": 0,
+        "fn": 45
+      },
+      "precision": 1.0,
+      "recall": 0.25,
+      "f1": 0.4,
+      "accuracy": 0.25
+    },
+    "CWE-798": {
+      "total": 77,
+      "confusion_matrix": {
+        "tp": 29,
+        "fp": 0,
+        "tn": 0,
+        "fn": 48
+      },
+      "precision": 1.0,
+      "recall": 0.3766,
+      "f1": 0.5471,
+      "accuracy": 0.3766
+    },
+    "CWE-89": {
+      "total": 69,
+      "confusion_matrix": {
+        "tp": 12,
+        "fp": 0,
+        "tn": 0,
+        "fn": 57
+      },
+      "precision": 1.0,
+      "recall": 0.1739,
+      "f1": 0.2963,
+      "accuracy": 0.1739
+    },
+    "NONE": {
+      "total": 38,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 38,
+        "fn": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0
+    }
+  },
+  "B": {
+    "CWE-1395": {
+      "total": 14,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 13
+      },
+      "precision": 1.0,
+      "recall": 0.0714,
+      "f1": 0.1333,
+      "accuracy": 0.0714
+    },
+    "CWE-22": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-256": {
+      "total": 30,
+      "confusion_matrix": {
+        "tp": 4,
+        "fp": 0,
+        "tn": 0,
+        "fn": 26
+      },
+      "precision": 1.0,
+      "recall": 0.1333,
+      "f1": 0.2352,
+      "accuracy": 0.1333
+    },
+    "CWE-347": {
+      "total": 56,
+      "confusion_matrix": {
+        "tp": 23,
+        "fp": 0,
+        "tn": 0,
+        "fn": 33
+      },
+      "precision": 1.0,
+      "recall": 0.4107,
+      "f1": 0.5823,
+      "accuracy": 0.4107
+    },
+    "CWE-706": {
+      "total": 25,
+      "confusion_matrix": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 0,
+        "fn": 23
+      },
+      "precision": 1.0,
+      "recall": 0.08,
+      "f1": 0.1481,
+      "accuracy": 0.08
+    },
+    "CWE-78": {
+      "total": 81,
+      "confusion_matrix": {
+        "tp": 16,
+        "fp": 0,
+        "tn": 0,
+        "fn": 65
+      },
+      "precision": 1.0,
+      "recall": 0.1975,
+      "f1": 0.3299,
+      "accuracy": 0.1975
+    },
+    "CWE-79": {
+      "total": 60,
+      "confusion_matrix": {
+        "tp": 15,
+        "fp": 0,
+        "tn": 0,
+        "fn": 45
+      },
+      "precision": 1.0,
+      "recall": 0.25,
+      "f1": 0.4,
+      "accuracy": 0.25
+    },
+    "CWE-798": {
+      "total": 72,
+      "confusion_matrix": {
+        "tp": 29,
+        "fp": 0,
+        "tn": 0,
+        "fn": 43
+      },
+      "precision": 1.0,
+      "recall": 0.4028,
+      "f1": 0.5743,
+      "accuracy": 0.4028
+    },
+    "CWE-89": {
+      "total": 69,
+      "confusion_matrix": {
+        "tp": 12,
+        "fp": 0,
+        "tn": 0,
+        "fn": 57
+      },
+      "precision": 1.0,
+      "recall": 0.1739,
+      "f1": 0.2963,
+      "accuracy": 0.1739
+    },
+    "NONE": {
+      "total": 38,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 38,
+        "fn": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0
+    }
+  },
+  "C": {
+    "CWE-1395": {
+      "total": 14,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 13
+      },
+      "precision": 1.0,
+      "recall": 0.0714,
+      "f1": 0.1333,
+      "accuracy": 0.0714
+    },
+    "CWE-22": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-256": {
+      "total": 39,
+      "confusion_matrix": {
+        "tp": 13,
+        "fp": 0,
+        "tn": 0,
+        "fn": 26
+      },
+      "precision": 1.0,
+      "recall": 0.3333,
+      "f1": 0.5,
+      "accuracy": 0.3333
+    },
+    "CWE-347": {
+      "total": 56,
+      "confusion_matrix": {
+        "tp": 23,
+        "fp": 0,
+        "tn": 0,
+        "fn": 33
+      },
+      "precision": 1.0,
+      "recall": 0.4107,
+      "f1": 0.5823,
+      "accuracy": 0.4107
+    },
+    "CWE-706": {
+      "total": 25,
+      "confusion_matrix": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 0,
+        "fn": 23
+      },
+      "precision": 1.0,
+      "recall": 0.08,
+      "f1": 0.1481,
+      "accuracy": 0.08
+    },
+    "CWE-78": {
+      "total": 70,
+      "confusion_matrix": {
+        "tp": 15,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 1.0,
+      "recall": 0.2143,
+      "f1": 0.353,
+      "accuracy": 0.2143
+    },
+    "CWE-79": {
+      "total": 57,
+      "confusion_matrix": {
+        "tp": 17,
+        "fp": 0,
+        "tn": 0,
+        "fn": 40
+      },
+      "precision": 1.0,
+      "recall": 0.2982,
+      "f1": 0.4594,
+      "accuracy": 0.2982
+    },
+    "CWE-798": {
+      "total": 77,
+      "confusion_matrix": {
+        "tp": 29,
+        "fp": 0,
+        "tn": 0,
+        "fn": 48
+      },
+      "precision": 1.0,
+      "recall": 0.3766,
+      "f1": 0.5471,
+      "accuracy": 0.3766
+    },
+    "CWE-89": {
+      "total": 69,
+      "confusion_matrix": {
+        "tp": 14,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 1.0,
+      "recall": 0.2029,
+      "f1": 0.3374,
+      "accuracy": 0.2029
+    },
+    "NONE": {
+      "total": 38,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 38,
+        "fn": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0
+    }
+  },
+  "D": {
+    "CWE-1395": {
+      "total": 14,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 14
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-22": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-256": {
+      "total": 30,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 30
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-347": {
+      "total": 64,
+      "confusion_matrix": {
+        "tp": 25,
+        "fp": 0,
+        "tn": 0,
+        "fn": 39
+      },
+      "precision": 1.0,
+      "recall": 0.3906,
+      "f1": 0.5618,
+      "accuracy": 0.3906
+    },
+    "CWE-706": {
+      "total": 25,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 25
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-78": {
+      "total": 73,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 73
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-79": {
+      "total": 58,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 58
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-798": {
+      "total": 74,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 74
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-89": {
+      "total": 69,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 69
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "NONE": {
+      "total": 38,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 38,
+        "fn": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0
+    }
+  },
+  "E": {
+    "CWE-1395": {
+      "total": 14,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 13
+      },
+      "precision": 1.0,
+      "recall": 0.0714,
+      "f1": 0.1333,
+      "accuracy": 0.0714
+    },
+    "CWE-22": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-256": {
+      "total": 39,
+      "confusion_matrix": {
+        "tp": 13,
+        "fp": 0,
+        "tn": 0,
+        "fn": 26
+      },
+      "precision": 1.0,
+      "recall": 0.3333,
+      "f1": 0.5,
+      "accuracy": 0.3333
+    },
+    "CWE-347": {
+      "total": 64,
+      "confusion_matrix": {
+        "tp": 31,
+        "fp": 0,
+        "tn": 0,
+        "fn": 33
+      },
+      "precision": 1.0,
+      "recall": 0.4844,
+      "f1": 0.6527,
+      "accuracy": 0.4844
+    },
+    "CWE-706": {
+      "total": 25,
+      "confusion_matrix": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 0,
+        "fn": 23
+      },
+      "precision": 1.0,
+      "recall": 0.08,
+      "f1": 0.1481,
+      "accuracy": 0.08
+    },
+    "CWE-78": {
+      "total": 72,
+      "confusion_matrix": {
+        "tp": 22,
+        "fp": 0,
+        "tn": 0,
+        "fn": 50
+      },
+      "precision": 1.0,
+      "recall": 0.3056,
+      "f1": 0.4681,
+      "accuracy": 0.3056
+    },
+    "CWE-79": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 17,
+        "fp": 0,
+        "tn": 0,
+        "fn": 38
+      },
+      "precision": 1.0,
+      "recall": 0.3091,
+      "f1": 0.4722,
+      "accuracy": 0.3091
+    },
+    "CWE-798": {
+      "total": 69,
+      "confusion_matrix": {
+        "tp": 29,
+        "fp": 0,
+        "tn": 0,
+        "fn": 40
+      },
+      "precision": 1.0,
+      "recall": 0.4203,
+      "f1": 0.5918,
+      "accuracy": 0.4203
+    },
+    "CWE-89": {
+      "total": 69,
+      "confusion_matrix": {
+        "tp": 14,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 1.0,
+      "recall": 0.2029,
+      "f1": 0.3374,
+      "accuracy": 0.2029
+    },
+    "NONE": {
+      "total": 38,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 38,
+        "fn": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0
+    }
+  },
+  "F": {
+    "CWE-1395": {
+      "total": 14,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 13
+      },
+      "precision": 1.0,
+      "recall": 0.0714,
+      "f1": 0.1333,
+      "accuracy": 0.0714
+    },
+    "CWE-22": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-256": {
+      "total": 30,
+      "confusion_matrix": {
+        "tp": 4,
+        "fp": 0,
+        "tn": 0,
+        "fn": 26
+      },
+      "precision": 1.0,
+      "recall": 0.1333,
+      "f1": 0.2352,
+      "accuracy": 0.1333
+    },
+    "CWE-347": {
+      "total": 56,
+      "confusion_matrix": {
+        "tp": 23,
+        "fp": 0,
+        "tn": 0,
+        "fn": 33
+      },
+      "precision": 1.0,
+      "recall": 0.4107,
+      "f1": 0.5823,
+      "accuracy": 0.4107
+    },
+    "CWE-706": {
+      "total": 25,
+      "confusion_matrix": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 0,
+        "fn": 23
+      },
+      "precision": 1.0,
+      "recall": 0.08,
+      "f1": 0.1481,
+      "accuracy": 0.08
+    },
+    "CWE-78": {
+      "total": 76,
+      "confusion_matrix": {
+        "tp": 13,
+        "fp": 0,
+        "tn": 0,
+        "fn": 63
+      },
+      "precision": 1.0,
+      "recall": 0.1711,
+      "f1": 0.2922,
+      "accuracy": 0.1711
+    },
+    "CWE-79": {
+      "total": 60,
+      "confusion_matrix": {
+        "tp": 33,
+        "fp": 0,
+        "tn": 0,
+        "fn": 27
+      },
+      "precision": 1.0,
+      "recall": 0.55,
+      "f1": 0.7097,
+      "accuracy": 0.55
+    },
+    "CWE-798": {
+      "total": 77,
+      "confusion_matrix": {
+        "tp": 31,
+        "fp": 0,
+        "tn": 0,
+        "fn": 46
+      },
+      "precision": 1.0,
+      "recall": 0.4026,
+      "f1": 0.5741,
+      "accuracy": 0.4026
+    },
+    "CWE-89": {
+      "total": 69,
+      "confusion_matrix": {
+        "tp": 39,
+        "fp": 0,
+        "tn": 0,
+        "fn": 30
+      },
+      "precision": 1.0,
+      "recall": 0.5652,
+      "f1": 0.7222,
+      "accuracy": 0.5652
+    },
+    "NONE": {
+      "total": 38,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 38,
+        "fn": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0
+    }
+  },
+  "G": {
+    "CWE-1395": {
+      "total": 14,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 13
+      },
+      "precision": 1.0,
+      "recall": 0.0714,
+      "f1": 0.1333,
+      "accuracy": 0.0714
+    },
+    "CWE-22": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-256": {
+      "total": 30,
+      "confusion_matrix": {
+        "tp": 4,
+        "fp": 0,
+        "tn": 0,
+        "fn": 26
+      },
+      "precision": 1.0,
+      "recall": 0.1333,
+      "f1": 0.2352,
+      "accuracy": 0.1333
+    },
+    "CWE-347": {
+      "total": 56,
+      "confusion_matrix": {
+        "tp": 23,
+        "fp": 0,
+        "tn": 0,
+        "fn": 33
+      },
+      "precision": 1.0,
+      "recall": 0.4107,
+      "f1": 0.5823,
+      "accuracy": 0.4107
+    },
+    "CWE-706": {
+      "total": 25,
+      "confusion_matrix": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 0,
+        "fn": 23
+      },
+      "precision": 1.0,
+      "recall": 0.08,
+      "f1": 0.1481,
+      "accuracy": 0.08
+    },
+    "CWE-78": {
+      "total": 76,
+      "confusion_matrix": {
+        "tp": 9,
+        "fp": 0,
+        "tn": 0,
+        "fn": 67
+      },
+      "precision": 1.0,
+      "recall": 0.1184,
+      "f1": 0.2117,
+      "accuracy": 0.1184
+    },
+    "CWE-79": {
+      "total": 60,
+      "confusion_matrix": {
+        "tp": 15,
+        "fp": 0,
+        "tn": 0,
+        "fn": 45
+      },
+      "precision": 1.0,
+      "recall": 0.25,
+      "f1": 0.4,
+      "accuracy": 0.25
+    },
+    "CWE-798": {
+      "total": 77,
+      "confusion_matrix": {
+        "tp": 29,
+        "fp": 0,
+        "tn": 0,
+        "fn": 48
+      },
+      "precision": 1.0,
+      "recall": 0.3766,
+      "f1": 0.5471,
+      "accuracy": 0.3766
+    },
+    "CWE-89": {
+      "total": 69,
+      "confusion_matrix": {
+        "tp": 12,
+        "fp": 0,
+        "tn": 0,
+        "fn": 57
+      },
+      "precision": 1.0,
+      "recall": 0.1739,
+      "f1": 0.2963,
+      "accuracy": 0.1739
+    },
+    "NONE": {
+      "total": 38,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 38,
+        "fn": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0
+    }
+  },
+  "H": {
+    "CWE-1395": {
+      "total": 14,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 13
+      },
+      "precision": 1.0,
+      "recall": 0.0714,
+      "f1": 0.1333,
+      "accuracy": 0.0714
+    },
+    "CWE-22": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-256": {
+      "total": 45,
+      "confusion_matrix": {
+        "tp": 19,
+        "fp": 0,
+        "tn": 0,
+        "fn": 26
+      },
+      "precision": 1.0,
+      "recall": 0.4222,
+      "f1": 0.5937,
+      "accuracy": 0.4222
+    },
+    "CWE-347": {
+      "total": 67,
+      "confusion_matrix": {
+        "tp": 34,
+        "fp": 0,
+        "tn": 0,
+        "fn": 33
+      },
+      "precision": 1.0,
+      "recall": 0.5075,
+      "f1": 0.6733,
+      "accuracy": 0.5075
+    },
+    "CWE-706": {
+      "total": 25,
+      "confusion_matrix": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 0,
+        "fn": 23
+      },
+      "precision": 1.0,
+      "recall": 0.08,
+      "f1": 0.1481,
+      "accuracy": 0.08
+    },
+    "CWE-78": {
+      "total": 69,
+      "confusion_matrix": {
+        "tp": 22,
+        "fp": 0,
+        "tn": 0,
+        "fn": 47
+      },
+      "precision": 1.0,
+      "recall": 0.3188,
+      "f1": 0.4835,
+      "accuracy": 0.3188
+    },
+    "CWE-79": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 17,
+        "fp": 0,
+        "tn": 0,
+        "fn": 38
+      },
+      "precision": 1.0,
+      "recall": 0.3091,
+      "f1": 0.4722,
+      "accuracy": 0.3091
+    },
+    "CWE-798": {
+      "total": 66,
+      "confusion_matrix": {
+        "tp": 29,
+        "fp": 0,
+        "tn": 0,
+        "fn": 37
+      },
+      "precision": 1.0,
+      "recall": 0.4394,
+      "f1": 0.6105,
+      "accuracy": 0.4394
+    },
+    "CWE-89": {
+      "total": 66,
+      "confusion_matrix": {
+        "tp": 14,
+        "fp": 0,
+        "tn": 0,
+        "fn": 52
+      },
+      "precision": 1.0,
+      "recall": 0.2121,
+      "f1": 0.35,
+      "accuracy": 0.2121
+    },
+    "NONE": {
+      "total": 38,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 38,
+        "fn": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0
+    }
+  },
+  "I": {
+    "CWE-1395": {
+      "total": 14,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 13
+      },
+      "precision": 1.0,
+      "recall": 0.0714,
+      "f1": 0.1333,
+      "accuracy": 0.0714
+    },
+    "CWE-22": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-256": {
+      "total": 45,
+      "confusion_matrix": {
+        "tp": 19,
+        "fp": 0,
+        "tn": 0,
+        "fn": 26
+      },
+      "precision": 1.0,
+      "recall": 0.4222,
+      "f1": 0.5937,
+      "accuracy": 0.4222
+    },
+    "CWE-347": {
+      "total": 73,
+      "confusion_matrix": {
+        "tp": 40,
+        "fp": 0,
+        "tn": 0,
+        "fn": 33
+      },
+      "precision": 1.0,
+      "recall": 0.5479,
+      "f1": 0.7079,
+      "accuracy": 0.5479
+    },
+    "CWE-706": {
+      "total": 22,
+      "confusion_matrix": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 0,
+        "fn": 20
+      },
+      "precision": 1.0,
+      "recall": 0.0909,
+      "f1": 0.1667,
+      "accuracy": 0.0909
+    },
+    "CWE-78": {
+      "total": 69,
+      "confusion_matrix": {
+        "tp": 22,
+        "fp": 0,
+        "tn": 0,
+        "fn": 47
+      },
+      "precision": 1.0,
+      "recall": 0.3188,
+      "f1": 0.4835,
+      "accuracy": 0.3188
+    },
+    "CWE-79": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 17,
+        "fp": 0,
+        "tn": 0,
+        "fn": 38
+      },
+      "precision": 1.0,
+      "recall": 0.3091,
+      "f1": 0.4722,
+      "accuracy": 0.3091
+    },
+    "CWE-798": {
+      "total": 66,
+      "confusion_matrix": {
+        "tp": 29,
+        "fp": 0,
+        "tn": 0,
+        "fn": 37
+      },
+      "precision": 1.0,
+      "recall": 0.4394,
+      "f1": 0.6105,
+      "accuracy": 0.4394
+    },
+    "CWE-89": {
+      "total": 63,
+      "confusion_matrix": {
+        "tp": 14,
+        "fp": 0,
+        "tn": 0,
+        "fn": 49
+      },
+      "precision": 1.0,
+      "recall": 0.2222,
+      "f1": 0.3636,
+      "accuracy": 0.2222
+    },
+    "NONE": {
+      "total": 38,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 38,
+        "fn": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0
+    }
+  },
+  "J": {
+    "CWE-1395": {
+      "total": 14,
+      "confusion_matrix": {
+        "tp": 1,
+        "fp": 0,
+        "tn": 0,
+        "fn": 13
+      },
+      "precision": 1.0,
+      "recall": 0.0714,
+      "f1": 0.1333,
+      "accuracy": 0.0714
+    },
+    "CWE-22": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 0.0
+    },
+    "CWE-256": {
+      "total": 42,
+      "confusion_matrix": {
+        "tp": 16,
+        "fp": 0,
+        "tn": 0,
+        "fn": 26
+      },
+      "precision": 1.0,
+      "recall": 0.381,
+      "f1": 0.5518,
+      "accuracy": 0.381
+    },
+    "CWE-347": {
+      "total": 70,
+      "confusion_matrix": {
+        "tp": 37,
+        "fp": 0,
+        "tn": 0,
+        "fn": 33
+      },
+      "precision": 1.0,
+      "recall": 0.5286,
+      "f1": 0.6916,
+      "accuracy": 0.5286
+    },
+    "CWE-706": {
+      "total": 22,
+      "confusion_matrix": {
+        "tp": 2,
+        "fp": 0,
+        "tn": 0,
+        "fn": 20
+      },
+      "precision": 1.0,
+      "recall": 0.0909,
+      "f1": 0.1667,
+      "accuracy": 0.0909
+    },
+    "CWE-78": {
+      "total": 69,
+      "confusion_matrix": {
+        "tp": 22,
+        "fp": 0,
+        "tn": 0,
+        "fn": 47
+      },
+      "precision": 1.0,
+      "recall": 0.3188,
+      "f1": 0.4835,
+      "accuracy": 0.3188
+    },
+    "CWE-79": {
+      "total": 55,
+      "confusion_matrix": {
+        "tp": 17,
+        "fp": 0,
+        "tn": 0,
+        "fn": 38
+      },
+      "precision": 1.0,
+      "recall": 0.3091,
+      "f1": 0.4722,
+      "accuracy": 0.3091
+    },
+    "CWE-798": {
+      "total": 66,
+      "confusion_matrix": {
+        "tp": 29,
+        "fp": 0,
+        "tn": 0,
+        "fn": 37
+      },
+      "precision": 1.0,
+      "recall": 0.4394,
+      "f1": 0.6105,
+      "accuracy": 0.4394
+    },
+    "CWE-89": {
+      "total": 69,
+      "confusion_matrix": {
+        "tp": 14,
+        "fp": 0,
+        "tn": 0,
+        "fn": 55
+      },
+      "precision": 1.0,
+      "recall": 0.2029,
+      "f1": 0.3374,
+      "accuracy": 0.2029
+    },
+    "NONE": {
+      "total": 38,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 38,
+        "fn": 0
+      },
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0
+    }
+  }
+}

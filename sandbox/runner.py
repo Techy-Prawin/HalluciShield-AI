@@ -14,6 +14,8 @@ Pipeline:
 
 import json
 import os
+import re
+import shlex
 import subprocess
 import sys
 import time
@@ -33,15 +35,31 @@ LANGUAGE_FILE = WORKSPACE_DIR / "language"
 COMPILE_CMD_FILE = WORKSPACE_DIR / "compile_cmd"
 TEST_CMD_FILE = WORKSPACE_DIR / "test_cmd"
 SCAN_CMD_FILE = WORKSPACE_DIR / "scan_cmd"
+CANDIDATE_READY_FILE = WORKSPACE_DIR / "candidate_workspace_ready"
+ALLOWED_EXECUTABLES = {"python", "python3", "node", "semgrep", "javac", "java", "go", "cargo", "rustc", "gcc", "g++", "clang", "clang++"}
+
+
+def command_arguments(command: str) -> list[str]:
+    """Parse a fixed command without shell syntax or an unapproved executable."""
+    if re.search(r"[;&|<>`\n\r]", command):
+        raise ValueError("Shell operators are not permitted in sandbox commands")
+    arguments = shlex.split(command)
+    if not arguments:
+        raise ValueError("Empty command")
+    executable = Path(arguments[0]).name
+    if executable not in ALLOWED_EXECUTABLES:
+        raise ValueError(f"Executable '{executable}' is not permitted in the sandbox")
+    return arguments
 
 
 def run_command(cmd: str, timeout: int = 30, cwd: str = None) -> dict:
-    """Run a shell command with timeout and capture output."""
+    """Run an allowlisted argv command without invoking a shell."""
     start = time.time()
     try:
+        arguments = command_arguments(cmd)
         result = subprocess.run(
-            cmd,
-            shell=True,
+            arguments,
+            shell=False,
             capture_output=True,
             text=True,
             timeout=timeout,
@@ -51,8 +69,12 @@ def run_command(cmd: str, timeout: int = 30, cwd: str = None) -> dict:
         return {
             "success": result.returncode == 0,
             "output": (result.stdout + result.stderr).strip()[:10000],
+            "stdout": result.stdout[-5000:],
+            "stderr": result.stderr[-5000:],
             "duration_ms": duration_ms,
             "return_code": result.returncode,
+            "timed_out": False,
+            "command": arguments,
         }
     except subprocess.TimeoutExpired:
         return {
@@ -60,6 +82,8 @@ def run_command(cmd: str, timeout: int = 30, cwd: str = None) -> dict:
             "output": f"Command timed out after {timeout}s",
             "duration_ms": int((time.time() - start) * 1000),
             "return_code": -1,
+            "timed_out": True,
+            "command": cmd,
         }
     except Exception as e:
         return {
@@ -67,6 +91,9 @@ def run_command(cmd: str, timeout: int = 30, cwd: str = None) -> dict:
             "output": str(e),
             "duration_ms": int((time.time() - start) * 1000),
             "return_code": -1,
+            "timed_out": False,
+            "command": cmd,
+            "error": str(e),
         }
 
 
@@ -93,6 +120,7 @@ def prepare_repository():
         "compile_command": compile_cmd,
         "test_command": test_cmd,
         "scan_command": scan_cmd,
+        "candidate_workspace_ready": read_file(CANDIDATE_READY_FILE).strip().lower() == "true",
     }
 
 
@@ -128,6 +156,11 @@ def apply_patch() -> dict:
         return {"success": False, "output": f"Path validation error: {e}", "duration_ms": 0}
     # --- End security check ---
 
+    if read_file(CANDIDATE_READY_FILE).strip().lower() == "true":
+        if not target_path.is_file():
+            return {"success": False, "output": "Prepared candidate target file is missing", "duration_ms": 0}
+        return {"success": True, "output": f"Prepared candidate workspace verified for {target_file}", "duration_ms": int((time.time() - start) * 1000)}
+
     target_path.parent.mkdir(parents=True, exist_ok=True)
 
     try:
@@ -157,6 +190,7 @@ def compile_code(compile_cmd: str) -> dict:
     if not compile_cmd:
         return {
             "success": True,
+            "status": "NOT_APPLICABLE",
             "output": "No compilation required",
             "duration_ms": 0,
             "language": "",
@@ -166,9 +200,16 @@ def compile_code(compile_cmd: str) -> dict:
     result = run_command(compile_cmd, timeout=30)
     return {
         "success": result["success"],
+        "status": "TIMEOUT" if result["timed_out"] else "PASS" if result["success"] else "FAIL",
         "output": result["output"],
         "duration_ms": result["duration_ms"],
         "language": language,
+        "command": result.get("command", compile_cmd),
+        "exit_code": result["return_code"],
+        "timed_out": result["timed_out"],
+        "stdout": result.get("stdout", ""),
+        "stderr": result.get("stderr", ""),
+        "error": result.get("error"),
     }
 
 
@@ -176,7 +217,8 @@ def run_tests(test_cmd: str) -> dict:
     """Step 4: Execute the test suite."""
     if not test_cmd:
         return {
-            "success": True,
+            "success": False,
+            "status": "UNVERIFIED",
             "output": "No test command provided",
             "duration_ms": 0,
             "framework": "",
@@ -185,6 +227,10 @@ def run_tests(test_cmd: str) -> dict:
             "failed": 0,
             "skipped": 0,
             "failures": [],
+            "command": "",
+            "exit_code": None,
+            "timed_out": False,
+            "stderr": "",
         }
 
     result = run_command(test_cmd, timeout=30)
@@ -254,6 +300,7 @@ def run_tests(test_cmd: str) -> dict:
 
     return {
         "success": result["success"],
+        "status": "TIMEOUT" if result["timed_out"] else "PASS" if result["success"] and total_tests > 0 else "FAIL",
         "framework": framework,
         "total_tests": total_tests,
         "passed": passed,
@@ -262,6 +309,10 @@ def run_tests(test_cmd: str) -> dict:
         "output": result["output"],
         "duration_ms": result["duration_ms"],
         "failures": failures,
+        "command": result.get("command", test_cmd),
+        "exit_code": result["return_code"],
+        "timed_out": result["timed_out"],
+        "stderr": result.get("stderr", ""),
     }
 
 
@@ -269,12 +320,17 @@ def run_security_scan(scan_cmd: str) -> dict:
     """Step 5: Execute security scanner."""
     if not scan_cmd:
         return {
-            "success": True,
+            "success": False,
+            "status": "UNVERIFIED",
             "scanner": "none",
             "vulnerabilities_found": 0,
             "findings": [],
             "output": "No scan command provided",
             "duration_ms": 0,
+            "command": "",
+            "exit_code": None,
+            "timed_out": False,
+            "stderr": "",
         }
 
     result = run_command(scan_cmd, timeout=30)
@@ -288,26 +344,42 @@ def run_security_scan(scan_cmd: str) -> dict:
     if "semgrep" in scan_cmd:
         scanner = "semgrep"
         try:
-            # Try to parse semgrep JSON output
-            json_start = output.find("[")
-            json_end = output.rfind("]") + 1
-            if json_start >= 0 and json_end > json_start:
-                findings = json.loads(output[json_start:json_end])
-                vuln_count = len(findings)
-        except (json.JSONDecodeError, ValueError):
-            # Fall back to counting error lines
-            for line in output.split("\n"):
-                if "error" in line.lower() or "warning" in line.lower():
-                    vuln_count += 1
-                    findings.append({"message": line.strip()})
+            data = json.loads(result.get("stdout", ""))
+            if not isinstance(data, dict) or not isinstance(data.get("results"), list):
+                raise ValueError("Semgrep output is missing a results array")
+            if data.get("errors"):
+                raise ValueError("Semgrep reported scan errors")
+            findings = data["results"]
+            vuln_count = len(findings)
+        except (json.JSONDecodeError, ValueError) as error:
+            return {
+                "success": False,
+                "status": "TIMEOUT" if result["timed_out"] else "ERROR",
+                "scanner": scanner,
+                "vulnerabilities_found": 0,
+                "findings": [],
+                "output": output[:5000],
+                "duration_ms": result["duration_ms"],
+                "command": result.get("command", scan_cmd),
+                "exit_code": result["return_code"],
+                "timed_out": result["timed_out"],
+                "stderr": result.get("stderr", ""),
+                "error": str(error),
+            }
 
     return {
-        "success": result["success"],
+        "success": result["success"] and vuln_count == 0,
+        "status": "TIMEOUT" if result["timed_out"] else "ERROR" if not result["success"] else "FAIL" if vuln_count else "PASS",
         "scanner": scanner,
         "vulnerabilities_found": vuln_count,
         "findings": findings[:100],
         "output": result["output"][:5000],
         "duration_ms": result["duration_ms"],
+        "command": result.get("command", scan_cmd),
+        "exit_code": result["return_code"],
+        "timed_out": result["timed_out"],
+        "stderr": result.get("stderr", ""),
+        "error": result.get("error"),
     }
 
 

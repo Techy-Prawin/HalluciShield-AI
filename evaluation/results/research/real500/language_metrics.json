@@ -1,0 +1,27 @@
+{
+  "python": {
+    "total_samples": 75,
+    "confusion_matrix": {"tp": 25, "fp": 0, "tn": 40, "fn": 10},
+    "metrics": {"precision": 1.0, "recall": 0.7143, "f1": 0.8444, "accuracy": 0.84, "fpr": 0.0, "fnr": 0.2857, "coverage": 1.0}
+  },
+  "javascript": {
+    "total_samples": 108,
+    "confusion_matrix": {"tp": 35, "fp": 0, "tn": 71, "fn": 2},
+    "metrics": {"precision": 1.0, "recall": 0.9459, "f1": 0.9722, "accuracy": 0.9524, "fpr": 0.0, "fnr": 0.0541, "coverage": 1.0}
+  },
+  "typescript": {
+    "total_samples": 135,
+    "confusion_matrix": {"tp": 21, "fp": 0, "tn": 112, "fn": 12},
+    "metrics": {"precision": 1.0, "recall": 0.6364, "f1": 0.7778, "accuracy": 0.8926, "fpr": 0.0, "fnr": 0.3636, "coverage": 1.0}
+  },
+  "go": {
+    "total_samples": 106,
+    "confusion_matrix": {"tp": 8, "fp": 0, "tn": 96, "fn": 14},
+    "metrics": {"precision": 1.0, "recall": 0.3636, "f1": 0.5142, "accuracy": 0.8679, "fpr": 0.0, "fnr": 0.6364, "coverage": 1.0}
+  },
+  "java": {
+    "total_samples": 76,
+    "confusion_matrix": {"tp": 5, "fp": 0, "tn": 70, "fn": 6},
+    "metrics": {"precision": 1.0, "recall": 0.4545, "f1": 0.6154, "accuracy": 0.9211, "fpr": 0.0, "fnr": 0.5455, "coverage": 1.0}
+  }
+}

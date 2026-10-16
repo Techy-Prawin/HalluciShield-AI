@@ -1,0 +1,637 @@
+{
+  "experiment_id": "ablation500-empirical-evaluation",
+  "timestamp": "2026-10-07T13:14:39.285668+00:00",
+  "evaluation_mode": "real_production",
+  "configurations": {
+    "A": {
+      "config_id": "A",
+      "config_name": "FULL",
+      "pipeline_switches": {
+        "hallucination_detection": true,
+        "dependency_analysis": true,
+        "security_analysis": true,
+        "risk_assessment": true,
+        "patch_generation": true,
+        "validation": true,
+        "legacy_ace": true,
+        "aece": true,
+        "multi_patch": true
+      },
+      "total_samples": 500,
+      "detection": {
+        "confusion_matrix": {
+          "tp": 95,
+          "fp": 0,
+          "tn": 38,
+          "fn": 367
+        },
+        "precision": 1.0,
+        "recall": 0.2056,
+        "f1": 0.3411,
+        "accuracy": 0.266,
+        "fpr": 0.0,
+        "fnr": 0.7944,
+        "coverage": 1.0
+      },
+      "evidence_confidence": {
+        "ace_coverage": 0.19,
+        "aece_coverage": 0.19,
+        "mean_ace_confidence": 42.84,
+        "mean_aece_confidence": 21.42,
+        "mean_evidence_completeness": 0.5,
+        "decision_distribution": {
+          "AUTO_APPLY": 0,
+          "HUMAN_REVIEW": 0,
+          "REJECT": 95,
+          "INSUFFICIENT_EVIDENCE": 0
+        },
+        "provenance_counts": {
+          "REAL": 285,
+          "NOT_AVAILABLE": 285,
+          "SYNTHETIC_TEST": 0
+        }
+      },
+      "patch_metrics": {
+        "samples_with_patches": 95,
+        "patch_generation_rate": 0.19,
+        "validation_availability": 0.19,
+        "validated_patch_rate": 0.4632,
+        "final_rescan_success_count": 44,
+        "multi_patch_generation_rate": 0.19,
+        "multi_patch_selection_rate": 1.0
+      },
+      "performance": {
+        "mean_latency_ms": 16158.96,
+        "median_latency_ms": 41,
+        "p95_latency_ms": 196574
+      }
+    },
+    "B": {
+      "config_id": "B",
+      "config_name": "HALLUCINATION_OFF",
+      "pipeline_switches": {
+        "hallucination_detection": false,
+        "dependency_analysis": true,
+        "security_analysis": true,
+        "risk_assessment": true,
+        "patch_generation": true,
+        "validation": true,
+        "legacy_ace": true,
+        "aece": true,
+        "multi_patch": true
+      },
+      "total_samples": 500,
+      "detection": {
+        "confusion_matrix": {
+          "tp": 102,
+          "fp": 0,
+          "tn": 38,
+          "fn": 360
+        },
+        "precision": 1.0,
+        "recall": 0.2208,
+        "f1": 0.3617,
+        "accuracy": 0.28,
+        "fpr": 0.0,
+        "fnr": 0.7792,
+        "coverage": 1.0
+      },
+      "evidence_confidence": {
+        "ace_coverage": 0.204,
+        "aece_coverage": 0.204,
+        "mean_ace_confidence": 41.72,
+        "mean_aece_confidence": 20.86,
+        "mean_evidence_completeness": 0.5,
+        "decision_distribution": {
+          "AUTO_APPLY": 0,
+          "HUMAN_REVIEW": 0,
+          "REJECT": 102,
+          "INSUFFICIENT_EVIDENCE": 0
+        },
+        "provenance_counts": {
+          "REAL": 306,
+          "NOT_AVAILABLE": 306,
+          "SYNTHETIC_TEST": 0
+        }
+      },
+      "patch_metrics": {
+        "samples_with_patches": 102,
+        "patch_generation_rate": 0.204,
+        "validation_availability": 0.204,
+        "validated_patch_rate": 0.451,
+        "final_rescan_success_count": 46,
+        "multi_patch_generation_rate": 0.204,
+        "multi_patch_selection_rate": 1.0
+      },
+      "performance": {
+        "mean_latency_ms": 18189.86,
+        "median_latency_ms": 18,
+        "p95_latency_ms": 197760
+      }
+    },
+    "C": {
+      "config_id": "C",
+      "config_name": "DEPENDENCY_OFF",
+      "pipeline_switches": {
+        "hallucination_detection": true,
+        "dependency_analysis": false,
+        "security_analysis": true,
+        "risk_assessment": true,
+        "patch_generation": true,
+        "validation": true,
+        "legacy_ace": true,
+        "aece": true,
+        "multi_patch": true
+      },
+      "total_samples": 500,
+      "detection": {
+        "confusion_matrix": {
+          "tp": 114,
+          "fp": 0,
+          "tn": 38,
+          "fn": 348
+        },
+        "precision": 1.0,
+        "recall": 0.2468,
+        "f1": 0.3959,
+        "accuracy": 0.304,
+        "fpr": 0.0,
+        "fnr": 0.7532,
+        "coverage": 1.0
+      },
+      "evidence_confidence": {
+        "ace_coverage": 0.228,
+        "aece_coverage": 0.228,
+        "mean_ace_confidence": 42.19,
+        "mean_aece_confidence": 21.1,
+        "mean_evidence_completeness": 0.5,
+        "decision_distribution": {
+          "AUTO_APPLY": 0,
+          "HUMAN_REVIEW": 0,
+          "REJECT": 114,
+          "INSUFFICIENT_EVIDENCE": 0
+        },
+        "provenance_counts": {
+          "REAL": 342,
+          "NOT_AVAILABLE": 342,
+          "SYNTHETIC_TEST": 0
+        }
+      },
+      "patch_metrics": {
+        "samples_with_patches": 114,
+        "patch_generation_rate": 0.228,
+        "validation_availability": 0.228,
+        "validated_patch_rate": 0.4561,
+        "final_rescan_success_count": 52,
+        "multi_patch_generation_rate": 0.228,
+        "multi_patch_selection_rate": 1.0
+      },
+      "performance": {
+        "mean_latency_ms": 18210.25,
+        "median_latency_ms": 16,
+        "p95_latency_ms": 196362
+      }
+    },
+    "D": {
+      "config_id": "D",
+      "config_name": "SECURITY_OFF",
+      "pipeline_switches": {
+        "hallucination_detection": true,
+        "dependency_analysis": true,
+        "security_analysis": false,
+        "risk_assessment": true,
+        "patch_generation": true,
+        "validation": true,
+        "legacy_ace": true,
+        "aece": true,
+        "multi_patch": true
+      },
+      "total_samples": 500,
+      "detection": {
+        "confusion_matrix": {
+          "tp": 25,
+          "fp": 0,
+          "tn": 38,
+          "fn": 437
+        },
+        "precision": 1.0,
+        "recall": 0.0541,
+        "f1": 0.1026,
+        "accuracy": 0.126,
+        "fpr": 0.0,
+        "fnr": 0.9459,
+        "coverage": 1.0
+      },
+      "evidence_confidence": {
+        "ace_coverage": 0.05,
+        "aece_coverage": 0.05,
+        "mean_ace_confidence": 18.5,
+        "mean_aece_confidence": 9.25,
+        "mean_evidence_completeness": 0.5,
+        "decision_distribution": {
+          "AUTO_APPLY": 0,
+          "HUMAN_REVIEW": 0,
+          "REJECT": 25,
+          "INSUFFICIENT_EVIDENCE": 0
+        },
+        "provenance_counts": {
+          "REAL": 252,
+          "NOT_AVAILABLE": 450,
+          "SYNTHETIC_TEST": 0
+        }
+      },
+      "patch_metrics": {
+        "samples_with_patches": 25,
+        "patch_generation_rate": 0.05,
+        "validation_availability": 0.05,
+        "validated_patch_rate": 0.2,
+        "final_rescan_success_count": 5,
+        "multi_patch_generation_rate": 0.05,
+        "multi_patch_selection_rate": 1.0
+      },
+      "performance": {
+        "mean_latency_ms": 19037.35,
+        "median_latency_ms": 15,
+        "p95_latency_ms": 198962
+      }
+    },
+    "E": {
+      "config_id": "E",
+      "config_name": "RISK_OFF",
+      "pipeline_switches": {
+        "hallucination_detection": true,
+        "dependency_analysis": true,
+        "security_analysis": true,
+        "risk_assessment": false,
+        "patch_generation": true,
+        "validation": true,
+        "legacy_ace": true,
+        "aece": true,
+        "multi_patch": true
+      },
+      "total_samples": 500,
+      "detection": {
+        "confusion_matrix": {
+          "tp": 129,
+          "fp": 0,
+          "tn": 38,
+          "fn": 333
+        },
+        "precision": 1.0,
+        "recall": 0.2792,
+        "f1": 0.4365,
+        "accuracy": 0.334,
+        "fpr": 0.0,
+        "fnr": 0.7208,
+        "coverage": 1.0
+      },
+      "evidence_confidence": {
+        "ace_coverage": 0.258,
+        "aece_coverage": 0.258,
+        "mean_ace_confidence": 38.72,
+        "mean_aece_confidence": 19.36,
+        "mean_evidence_completeness": 0.5,
+        "decision_distribution": {
+          "AUTO_APPLY": 0,
+          "HUMAN_REVIEW": 0,
+          "REJECT": 129,
+          "INSUFFICIENT_EVIDENCE": 0
+        },
+        "provenance_counts": {
+          "REAL": 387,
+          "NOT_AVAILABLE": 387,
+          "SYNTHETIC_TEST": 0
+        }
+      },
+      "patch_metrics": {
+        "samples_with_patches": 129,
+        "patch_generation_rate": 0.258,
+        "validation_availability": 0.258,
+        "validated_patch_rate": 0.4186,
+        "final_rescan_success_count": 54,
+        "multi_patch_generation_rate": 0.258,
+        "multi_patch_selection_rate": 1.0
+      },
+      "performance": {
+        "mean_latency_ms": 23590.33,
+        "median_latency_ms": 18,
+        "p95_latency_ms": 200359
+      }
+    },
+    "F": {
+      "config_id": "F",
+      "config_name": "PATCH_OFF",
+      "pipeline_switches": {
+        "hallucination_detection": true,
+        "dependency_analysis": true,
+        "security_analysis": true,
+        "risk_assessment": true,
+        "patch_generation": false,
+        "validation": true,
+        "legacy_ace": true,
+        "aece": true,
+        "multi_patch": true
+      },
+      "total_samples": 500,
+      "detection": {
+        "confusion_matrix": {
+          "tp": 146,
+          "fp": 0,
+          "tn": 38,
+          "fn": 316
+        },
+        "precision": 1.0,
+        "recall": 0.316,
+        "f1": 0.4802,
+        "accuracy": 0.368,
+        "fpr": 0.0,
+        "fnr": 0.684,
+        "coverage": 1.0
+      },
+      "evidence_confidence": {
+        "ace_coverage": 0.0,
+        "aece_coverage": 0.0,
+        "mean_ace_confidence": 0.0,
+        "mean_aece_confidence": 0.0,
+        "mean_evidence_completeness": 0.0,
+        "decision_distribution": {
+          "AUTO_APPLY": 0,
+          "HUMAN_REVIEW": 0,
+          "REJECT": 0,
+          "INSUFFICIENT_EVIDENCE": 0
+        },
+        "provenance_counts": {
+          "REAL": 177,
+          "NOT_AVAILABLE": 375,
+          "SYNTHETIC_TEST": 0
+        }
+      },
+      "patch_metrics": {
+        "samples_with_patches": 0,
+        "patch_generation_rate": 0.0,
+        "validation_availability": 0.0,
+        "validated_patch_rate": 0.0,
+        "final_rescan_success_count": 0,
+        "multi_patch_generation_rate": 0.0,
+        "multi_patch_selection_rate": 0.0
+      },
+      "performance": {
+        "mean_latency_ms": 10859.03,
+        "median_latency_ms": 17,
+        "p95_latency_ms": 33738
+      }
+    },
+    "G": {
+      "config_id": "G",
+      "config_name": "VALIDATION_OFF",
+      "pipeline_switches": {
+        "hallucination_detection": true,
+        "dependency_analysis": true,
+        "security_analysis": true,
+        "risk_assessment": true,
+        "patch_generation": true,
+        "validation": false,
+        "legacy_ace": true,
+        "aece": true,
+        "multi_patch": true
+      },
+      "total_samples": 500,
+      "detection": {
+        "confusion_matrix": {
+          "tp": 95,
+          "fp": 0,
+          "tn": 38,
+          "fn": 367
+        },
+        "precision": 1.0,
+        "recall": 0.2056,
+        "f1": 0.3411,
+        "accuracy": 0.266,
+        "fpr": 0.0,
+        "fnr": 0.7944,
+        "coverage": 1.0
+      },
+      "evidence_confidence": {
+        "ace_coverage": 0.0,
+        "aece_coverage": 0.0,
+        "mean_ace_confidence": 0.0,
+        "mean_aece_confidence": 0.0,
+        "mean_evidence_completeness": 0.0,
+        "decision_distribution": {
+          "AUTO_APPLY": 0,
+          "HUMAN_REVIEW": 0,
+          "REJECT": 0,
+          "INSUFFICIENT_EVIDENCE": 0
+        },
+        "provenance_counts": {
+          "REAL": 0,
+          "NOT_AVAILABLE": 0,
+          "SYNTHETIC_TEST": 0
+        }
+      },
+      "patch_metrics": {
+        "samples_with_patches": 95,
+        "patch_generation_rate": 0.19,
+        "validation_availability": 0.0,
+        "validated_patch_rate": 0.0,
+        "final_rescan_success_count": 0,
+        "multi_patch_generation_rate": 0.19,
+        "multi_patch_selection_rate": 0.0
+      },
+      "performance": {
+        "mean_latency_ms": 2057.8,
+        "median_latency_ms": 17,
+        "p95_latency_ms": 17209
+      }
+    },
+    "H": {
+      "config_id": "H",
+      "config_name": "LEGACY_ACE_OFF",
+      "pipeline_switches": {
+        "hallucination_detection": true,
+        "dependency_analysis": true,
+        "security_analysis": true,
+        "risk_assessment": true,
+        "patch_generation": true,
+        "validation": true,
+        "legacy_ace": false,
+        "aece": true,
+        "multi_patch": true
+      },
+      "total_samples": 500,
+      "detection": {
+        "confusion_matrix": {
+          "tp": 138,
+          "fp": 0,
+          "tn": 38,
+          "fn": 324
+        },
+        "precision": 1.0,
+        "recall": 0.2987,
+        "f1": 0.46,
+        "accuracy": 0.352,
+        "fpr": 0.0,
+        "fnr": 0.7013,
+        "coverage": 1.0
+      },
+      "evidence_confidence": {
+        "ace_coverage": 0.0,
+        "aece_coverage": 0.276,
+        "mean_ace_confidence": 0.0,
+        "mean_aece_confidence": 20.11,
+        "mean_evidence_completeness": 0.5,
+        "decision_distribution": {
+          "AUTO_APPLY": 0,
+          "HUMAN_REVIEW": 0,
+          "REJECT": 138,
+          "INSUFFICIENT_EVIDENCE": 0
+        },
+        "provenance_counts": {
+          "REAL": 414,
+          "NOT_AVAILABLE": 414,
+          "SYNTHETIC_TEST": 0
+        }
+      },
+      "patch_metrics": {
+        "samples_with_patches": 138,
+        "patch_generation_rate": 0.276,
+        "validation_availability": 0.276,
+        "validated_patch_rate": 0.4348,
+        "final_rescan_success_count": 60,
+        "multi_patch_generation_rate": 0.276,
+        "multi_patch_selection_rate": 1.0
+      },
+      "performance": {
+        "mean_latency_ms": 23836.3,
+        "median_latency_ms": 18,
+        "p95_latency_ms": 198296
+      }
+    },
+    "I": {
+      "config_id": "I",
+      "config_name": "AECE_OFF",
+      "pipeline_switches": {
+        "hallucination_detection": true,
+        "dependency_analysis": true,
+        "security_analysis": true,
+        "risk_assessment": true,
+        "patch_generation": true,
+        "validation": true,
+        "legacy_ace": true,
+        "aece": false,
+        "multi_patch": true
+      },
+      "total_samples": 500,
+      "detection": {
+        "confusion_matrix": {
+          "tp": 144,
+          "fp": 0,
+          "tn": 38,
+          "fn": 318
+        },
+        "precision": 1.0,
+        "recall": 0.3117,
+        "f1": 0.4753,
+        "accuracy": 0.364,
+        "fpr": 0.0,
+        "fnr": 0.6883,
+        "coverage": 1.0
+      },
+      "evidence_confidence": {
+        "ace_coverage": 0.288,
+        "aece_coverage": 0.0,
+        "mean_ace_confidence": 42.4,
+        "mean_aece_confidence": 0.0,
+        "mean_evidence_completeness": 0.0,
+        "decision_distribution": {
+          "AUTO_APPLY": 0,
+          "HUMAN_REVIEW": 0,
+          "REJECT": 0,
+          "INSUFFICIENT_EVIDENCE": 0
+        },
+        "provenance_counts": {
+          "REAL": 0,
+          "NOT_AVAILABLE": 0,
+          "SYNTHETIC_TEST": 0
+        }
+      },
+      "patch_metrics": {
+        "samples_with_patches": 144,
+        "patch_generation_rate": 0.288,
+        "validation_availability": 0.288,
+        "validated_patch_rate": 0.4583,
+        "final_rescan_success_count": 66,
+        "multi_patch_generation_rate": 0.288,
+        "multi_patch_selection_rate": 1.0
+      },
+      "performance": {
+        "mean_latency_ms": 24099.18,
+        "median_latency_ms": 18,
+        "p95_latency_ms": 200332
+      }
+    },
+    "J": {
+      "config_id": "J",
+      "config_name": "MULTI_PATCH_OFF",
+      "pipeline_switches": {
+        "hallucination_detection": true,
+        "dependency_analysis": true,
+        "security_analysis": true,
+        "risk_assessment": true,
+        "patch_generation": true,
+        "validation": true,
+        "legacy_ace": true,
+        "aece": true,
+        "multi_patch": false
+      },
+      "total_samples": 500,
+      "detection": {
+        "confusion_matrix": {
+          "tp": 138,
+          "fp": 0,
+          "tn": 38,
+          "fn": 324
+        },
+        "precision": 1.0,
+        "recall": 0.2987,
+        "f1": 0.46,
+        "accuracy": 0.352,
+        "fpr": 0.0,
+        "fnr": 0.7013,
+        "coverage": 1.0
+      },
+      "evidence_confidence": {
+        "ace_coverage": 0.276,
+        "aece_coverage": 0.276,
+        "mean_ace_confidence": 40.22,
+        "mean_aece_confidence": 20.11,
+        "mean_evidence_completeness": 0.5,
+        "decision_distribution": {
+          "AUTO_APPLY": 0,
+          "HUMAN_REVIEW": 0,
+          "REJECT": 138,
+          "INSUFFICIENT_EVIDENCE": 0
+        },
+        "provenance_counts": {
+          "REAL": 414,
+          "NOT_AVAILABLE": 414,
+          "SYNTHETIC_TEST": 0
+        }
+      },
+      "patch_metrics": {
+        "samples_with_patches": 138,
+        "patch_generation_rate": 0.276,
+        "validation_availability": 0.276,
+        "validated_patch_rate": 0.4348,
+        "final_rescan_success_count": 60,
+        "multi_patch_generation_rate": 0.276,
+        "multi_patch_selection_rate": 0.0
+      },
+      "performance": {
+        "mean_latency_ms": 5903.57,
+        "median_latency_ms": 18,
+        "p95_latency_ms": 36819
+      }
+    }
+  }
+}

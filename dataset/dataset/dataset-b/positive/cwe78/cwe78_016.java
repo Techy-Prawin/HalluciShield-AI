@@ -1,0 +1,1 @@
+os.system("ping -c 4 " + host)

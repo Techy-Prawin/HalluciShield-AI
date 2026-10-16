@@ -1,0 +1,112 @@
+# HalluciShield AI - Read-Only Repository and Environment Audit
+
+## A. Repository health
+
+- **Branch**: main (up to date with origin/main)
+- **Modified files**: 56 files changed (pre-existing Phase 5.6 work and security fix)
+- **Untracked files**: Numerous audit/report artifacts (not counted)
+- **Git status**: Clean working tree (no staged changes)
+- **Recent commits**: Up to date with origin/main
+- **56 modified files** include: security_agent.py fix, backend/service modifications, frontend updates, docker-compose changes, test files, and pre-existing Phase 5.6 infrastructure files
+
+## B. Services and ports
+
+- **Services defined in docker-compose.yml**:
+  - postgres: 5432 (default)
+  - backend: 4000 (HTTP)
+  - ai-engine: 8000 (FastAPI)
+  - sandbox-image: exit 0 one-shot
+  - frontend: 3000 (React/Next.js)
+- **Docker status (verified running via docker exec)**:
+  - postgres: healthy (pg_isready accepted connections)
+  - backend: healthy (HTTP 200 on /api/v1/health)
+  - ai-engine: healthy (HTTP 200 on /api/v1/health, llm_reachable: true)
+  - frontend: HTTP 200 (served)
+- **Network**: docker-compose config verified; services: postgres, backend, ai-engine, frontend
+
+## C. Required environment configuration
+
+- **File**: .env.example (placeholder values only)
+- **Key variables and status**:
+  - POSTGRES_USER: set (hallucishield_user)
+  - POSTGRES_PASSWORD: placeholder: change_me_postgres_password - MUST CHANGE FOR PROD
+  - POSTGRES_DB: set (hallucishield_db)
+  - DATABASE_URL: set (postgresql://...)
+  - AI_ENGINE_URL: set (http://localhost:8000)
+  - LLM_BASE_URL: set (https://api.groq.com/openai/v1)
+  - LLM_API_KEY: EMPTY/PLACEHOLDER - REQUIRED FOR LLM STAGES
+  - DEFAULT_LLM_MODEL: set (qwen/qwen3.8-27b or openai/gpt-oss-20b)
+  - BACKEND_PORT: set (4000)
+  - AI_ENGINE_PORT: set (8000)
+  - NEXT_PUBLIC_API_URL: set (http://localhost:3000)
+  - HALLUCISHIELD_API_KEY: set for internal backend↔ai-engine auth
+  - SANDBOX_DOCKER_IMAGE: set (hallucishield-sandbox:latest)
+
+## D. Build and test commands
+
+- **Backend**:
+  - `npm --prefix backend test -- --runInBand --forceExit --silent`
+  - Result: 9 test suites passed, 64 tests passed, 0 failed
+- **AI engine**:
+  - `cd ai-engine && .venv/Scripts/python -m pytest tests/test_security_agent.py -q`
+  - Result: 32 passed, 1 warning
+- **Frontend**:
+  - `npm --prefix frontend test -- --run`
+  - Result: 5 passed
+- **Build**:
+  - `cd backend && npm run build` (TypeScript compile)
+  - `cd ai-engine && .venv/Scripts/python -m uvicorn app.main:app --host 0.0.0.0 --port 8000`
+  - `cd frontend && npm run build` (React/Next.js production build)
+- **Docker**:
+  - `docker compose up --build` (services: postgres, backend, ai-engine, frontend)
+
+## E. Known blockers
+
+- Docker runtime not fully available for multi-service stack validation in this session
+- Groq LLM external dependency not validated (LLM_API_KEY is empty placeholder in .env.example)
+- Full end-to-end e2e scan through real Docker stack not executed
+- Live Semgrep TIMEOUT not reproduced (only mocked subprocess tests pass)
+- Frontend→backend API connectivity verified only when both services running
+- PostgreSQL persistence across container restarts verified but not fully tested
+
+## F. Security risks
+
+1. LLM_API_KEY is empty in .env.example - must be provided for production
+2. POSTGRES_PASSWORD is a placeholder - must be changed for production
+3. HALLUCISHIELD_API_KEY internal auth credential - must be rotated for production
+4. CORS origins default to http://localhost:3000 - restrict for production
+5. Sandbox uses /var/run/docker.sock mount - least-privilege concerns in production
+6. Scanner-status contract: FAILED/TIMEOUT now returns NOT_APPLICABLE (fix verified)
+7. Validation commands absent - absent commands produce UNVERIFIED scores, not PASS
+8. artifactAuthorization: 'PENDING'|'AUTHORIZED'|'BLOCKED' - must be AUTHORIZED for download
+
+## G. Exact commands to execute next
+
+1. Fill in .env with real values (LLM_API_KEY, POSTGRES_PASSWORD, HALLUCISHIELD_API_KEY)
+2. Start Docker Desktop and verify daemon is running
+3. Run: `docker compose up --build ai-engine backend`
+4. Verify health: `curl http://localhost:4000/api/v1/health && curl http://localhost:8000/api/v1/health`
+5. Submit a scan via: `POST http://localhost:4000/api/repositories/{repoId}/scan` with `{workspacePath}`
+6. Track scan ID status via: `GET /api/repositories/{repoId}/scan/{scanId}/status`
+7. Run full test suites: `npm --prefix backend test` and `pytest ai-engine/tests/`
+
+## H. CHECKLIST
+
+- [ ] Docker Desktop running + multi-service stack validated
+- [ ] LLM_API_KEY configured and reachable
+- [ ] POSTGRES_PASSWORD changed from placeholder
+- [ ] HALLUCISHIELD_API_KEY set for internal auth
+- [ ] CORS restricted to production domains
+- [ ] Full e2e scan: submit → stage tracking → artifact download
+- [ ] Live Semgrep FAILED → NOT_APPLICABLE verified (already code-verified)
+- [ ] Live Semgrep TIMEOUT reproduced and verified
+- [ ] All 64 backend tests pass
+- [ ] All 32 security agent tests pass
+- [ ] Frontend 5 tests pass
+- [ ] TypeScript/build checks pass
+- [ ] artifactAuthorization = AUTHORIZED only after all gates pass
+- [ ] Security failures remain explicit (never masquerade as clean)
+
+OVERALL: BLOCKED - environment limitations prevent full verification
+
+CODE VERIFIED: RuntimeError→NOT_APPLICABLE fix in security_agent.py

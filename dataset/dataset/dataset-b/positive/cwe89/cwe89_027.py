@@ -1,0 +1,1 @@
+cursor.execute('INSERT INTO logs(msg) VALUES(' + msg + ')')

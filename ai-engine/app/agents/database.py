@@ -252,6 +252,87 @@ class SecurityAlertRow(Base):
     )
 
 
+class ResearchExperimentRow(Base):
+    __tablename__ = "research_experiments"
+
+    id = Column(String(64), primary_key=True, default=lambda: f"exp-{uuid.uuid4().hex[:12]}")
+    experiment_id = Column(String(100), nullable=False, index=True)
+    sample_id = Column(String(100), nullable=True, index=True)
+    name = Column(String(255), nullable=False)
+    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    configuration_version = Column(String(50), nullable=False, default="v1.0")
+    model_provider = Column(String(100), nullable=True, default="unknown")
+    code_hash = Column(String(128), nullable=True)
+    patch_hash = Column(String(128), nullable=True)
+    metadata_json = Column(JSON, nullable=True)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
+class AECEScoreRow(Base):
+    __tablename__ = "aece_scores"
+
+    id = Column(String(64), primary_key=True, default=lambda: f"aece-{uuid.uuid4().hex[:12]}")
+    patch_id = Column(String(100), nullable=False, index=True)
+    experiment_id = Column(String(100), nullable=True, index=True)
+    sample_id = Column(String(100), nullable=True)
+    legacy_ace_score = Column(Float, nullable=False)
+    evidence_completeness = Column(Float, nullable=False)
+    evidence_aware_confidence = Column(Float, nullable=False)
+    decision = Column(String(50), nullable=False, index=True)
+    recommendation = Column(Text, nullable=True)
+    dimension_scores = Column(JSON, nullable=True)
+    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    configuration_version = Column(String(50), nullable=False, default="v1.0")
+    model_provider = Column(String(100), nullable=True, default="unknown")
+    code_hash = Column(String(128), nullable=True)
+    patch_hash = Column(String(128), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
+class CausalFindingRow(Base):
+    __tablename__ = "causal_findings"
+
+    id = Column(String(64), primary_key=True, default=lambda: f"causal-{uuid.uuid4().hex[:12]}")
+    causal_id = Column(String(100), nullable=False, unique=True)
+    experiment_id = Column(String(100), nullable=True, index=True)
+    sample_id = Column(String(100), nullable=True)
+    vulnerability_id = Column(String(100), nullable=False, index=True)
+    hallucination_id = Column(String(100), nullable=True, index=True)
+    category = Column(String(100), nullable=False, index=True)
+    status = Column(String(50), nullable=False, index=True)
+    cwe = Column(String(50), nullable=True)
+    affected_symbol = Column(String(255), nullable=True)
+    file_path = Column(Text, nullable=True)
+    line_number = Column(Integer, nullable=True)
+    causal_chain = Column(JSON, nullable=True)
+    causal_evidence = Column(Text, nullable=True)
+    attribution_type = Column(String(50), nullable=True, default="unknown")
+    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    configuration_version = Column(String(50), nullable=False, default="v1.0")
+    model_provider = Column(String(100), nullable=True, default="unknown")
+    code_hash = Column(String(128), nullable=True)
+    patch_hash = Column(String(128), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
+class PatchEvidenceRow(Base):
+    __tablename__ = "patch_evidence"
+
+    id = Column(String(64), primary_key=True, default=lambda: f"evi-{uuid.uuid4().hex[:12]}")
+    patch_id = Column(String(100), nullable=False, index=True)
+    experiment_id = Column(String(100), nullable=True, index=True)
+    sample_id = Column(String(100), nullable=True)
+    compilation_evidence = Column(JSON, nullable=True)
+    unit_test_evidence = Column(JSON, nullable=True)
+    regression_evidence = Column(JSON, nullable=True)
+    security_evidence = Column(JSON, nullable=True)
+    performance_evidence = Column(JSON, nullable=True)
+    historical_evidence = Column(JSON, nullable=True)
+    evidence_completeness = Column(Float, nullable=False, default=0.0)
+    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
 _engine = None
 _session_factory = None
 

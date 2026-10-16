@@ -9,7 +9,7 @@ Returns ranked patches with confidence scores and recommendation.
 Returns detailed explanations from stored evidence (no LLM fabrication).
 """
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.agents.patch_ranker import PatchRanker
 from app.agents.explanation_generator import ExplanationGenerator
@@ -20,8 +20,13 @@ from app.agents.models import (
     RankPatchesRequest,
     RecommendationResponse,
 )
+from app.security import require_api_key
 
-router = APIRouter(prefix="/api/v1/vulnerabilities", tags=["Patch Ranking & Recommendation"])
+router = APIRouter(
+    prefix="/api/v1/vulnerabilities",
+    tags=["Patch Ranking & Recommendation"],
+    dependencies=[Depends(require_api_key)],
+)
 
 ranker_instance = PatchRanker()
 explanation_generator = ExplanationGenerator()

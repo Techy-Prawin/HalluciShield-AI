@@ -1,0 +1,43 @@
+{
+  "eligible_sample_count": 95,
+  "legacy_ace_vs_aece": {
+    "legacy_ace": {
+      "count": 95,
+      "mean": 42.84,
+      "min": 0.0,
+      "max": 92.5
+    },
+    "aece": {
+      "count": 95,
+      "mean": 21.42,
+      "min": 0.0,
+      "max": 46.25
+    },
+    "evidence_completeness": {
+      "mean": 0.5,
+      "min": 0.5,
+      "max": 0.5
+    },
+    "decision_distribution": {
+      "AUTO_APPLY": 0,
+      "HUMAN_REVIEW": 0,
+      "REJECT": 95,
+      "INSUFFICIENT_EVIDENCE": 0
+    },
+    "provenance_dimensions": {
+      "REAL_dimensions": [
+        "static_security"
+      ],
+      "NOT_AVAILABLE_dimensions": [
+        "unit_tests",
+        "regression_tests",
+        "compilation",
+        "performance",
+        "historical"
+      ],
+      "docker_sandbox_status": "NOT_AVAILABLE (Windows host; sandbox evidence unverified)",
+      "synthetic_evidence_count": 0
+    },
+    "validation_aware_decisions": "AECE incorporates completeness penalization; unavailable sandbox prevents AUTO_APPLY inflation."
+  }
+}

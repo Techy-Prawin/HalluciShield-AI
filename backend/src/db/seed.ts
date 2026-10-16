@@ -160,27 +160,33 @@ export async function seedDatabase(): Promise<boolean> {
     });
     console.log(`[Seed] Created validation result: ${validation.id}`);
 
-    // 8. Create Seed Confidence Score (Explainable components breakdown)
-    console.log('[Seed] Creating explainable confidence score...');
+    // 8. Create Seed Confidence Score (AI Engine ACE - 6 features + gates)
+    console.log('[Seed] Creating ACE confidence score...');
     const confidence = await ConfidenceScoreModel.create({
       patch_id: patch.id,
       validation_result_id: validation.id,
-      static_analysis_score: 0.9500,
-      hallucination_score: 0.9000,
-      sandbox_validation_score: 1.0000,
-      runtime_event_score: 0.8500,
-      historical_feedback_score: 0.9000,
+      final_score: 96.2,
+      static_security_score: 0.95,
+      unit_test_success_score: 1.0,
+      regression_success_score: 1.0,
+      compilation_score: 1.0,
+      performance_score: 0.95,
+      historical_success_score: 0.90,
+      pi_comp: 1.0,
+      pi_crit: 1.0,
+      weighted_sum: 0.962,
       weights_applied: {
-        static_analysis: 0.20,
-        hallucination: 0.30,
-        sandbox_validation: 0.30,
-        runtime_event: 0.10,
-        historical_feedback: 0.10,
+        static_security: 0.25,
+        unit_test_success: 0.20,
+        regression_success: 0.20,
+        compilation_success: 0.10,
+        performance: 0.10,
+        historical_success: 0.15,
       },
-      explanation: 'High confidence patch: Passes all sandbox tests (1.00), verified real npm dependency (0.90), resolves SQL injection (0.95), supported by positive historical feedback (0.90).',
-      metadata: { ace_version: 'v2.1' },
+      explanation: 'High confidence patch: All tests pass (1.00), compiles cleanly (1.00), no regressions (1.00), security clean (0.95), performance within range (0.95), supported by historical feedback (0.90). π_comp=1.0, π_crit=1.0.',
+      metadata: { ace_version: 'v1.0', algorithm: 'adaptive_confidence_engine' },
     });
-    console.log(`[Seed] Created confidence score: ${confidence.id} with final score: ${confidence.final_score}`);
+    console.log(`[Seed] Created ACE confidence score: ${confidence.id} with final score: ${confidence.final_score}`);
 
     // 9. Create Seed Developer Feedback (Acceptance / Rejection recording)
     console.log('[Seed] Creating developer feedback...');

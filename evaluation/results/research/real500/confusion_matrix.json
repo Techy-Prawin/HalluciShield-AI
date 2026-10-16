@@ -1,0 +1,17 @@
+{
+  "tp": 94,
+  "fp": 0,
+  "tn": 113,
+  "fn": 293,
+  "total_valid": 500,
+  "detection_metrics": {
+    "precision": 1.0,
+    "recall": 0.2429,
+    "f1": 0.3909,
+    "accuracy": 0.414,
+    "fpr": 0.0,
+    "fnr": 0.7571,
+    "coverage": 1.0
+  },
+  "notes": "Confusion matrix from Full HalluciShield + ACE production pipeline on 500 Dataset B records. 94 true positives (vulnerabilities correctly detected in positive samples). 0 false positives. 113 true negatives (all negative samples correctly identified). 293 false negatives (positive samples where vulnerability not detected - mainly Go/Java/TS where compilation requires Docker)."
+}

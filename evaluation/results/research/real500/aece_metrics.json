@@ -1,0 +1,23 @@
+{
+  "ace_score_statistics": {
+    "count": 94,
+    "mean": 45.27,
+    "median": 0.0,
+    "min": 0.0,
+    "max": 92.5,
+    "std": 46.49
+  },
+  "aece_evidence_completeness": {
+    "dimensions_with_evidence": 94,
+    "dimensions_real_evidence": 94,
+    "dimensions_not_available": 406
+  },
+  "aece_decision_distribution": {
+    "AUTO_APPLY": 67,
+    "HUMAN_REVIEW": 21,
+    "REJECT": 5,
+    "INSUFFICIENT_EVIDENCE": 1
+  },
+  "total_samples": 500,
+  "notes": "ACE confidence scores available only for Python/JS samples where compilation not required (94/500). Go/Java/TS samples have NOT_AVAILABLE provenance due to Docker unavailability."
+}

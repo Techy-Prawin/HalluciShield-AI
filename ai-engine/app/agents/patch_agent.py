@@ -175,65 +175,104 @@ def _query_llm(prompt: str, attempt: int = 0) -> Tuple[str, int]:
     return "", attempt
 
 
-def _generate_fallback_candidates(request: PatchGenerationRequest) -> List[PatchCandidate]:
+STRATEGY_ALIAS_MAP = {
+    "minimal_fix": ("allowlist", "Minimal Fix (Allowlist / Bounds Restriction)"),
+    "defensive_validation": ("input_validation", "Defensive Validation and Sanitization"),
+    "secure_api_replacement": ("output_encoding", "Secure API Replacement / Output Encoding"),
+    "parameterized_implementation": ("parameterized_query", "Parameterized Implementation / Query"),
+    "dependency_replacement": ("framework_protection", "Dependency / Framework-Native Replacement"),
+    "input_validation": ("input_validation", "Input Validation and Sanitization"),
+    "parameterized_query": ("parameterized_query", "Parameterized Query / Prepared Statement"),
+    "output_encoding": ("output_encoding", "Output Encoding and Escaping"),
+    "allowlist": ("allowlist", "Allowlist-based Restriction"),
+    "framework_protection": ("framework_protection", "Framework-native Security Control"),
+}
+
+DEFAULT_STRATEGIES = [
+    ("input_validation", "Input Validation and Sanitization"),
+    ("parameterized_query", "Parameterized Query / Prepared Statement"),
+    ("output_encoding", "Output Encoding and Escaping"),
+    ("allowlist", "Allowlist-based Restriction"),
+    ("framework_protection", "Framework-native Security Control"),
+]
+
+
+def _generate_fallback_candidates(
+    request: PatchGenerationRequest,
+    target_count: Optional[int] = None,
+) -> List[PatchCandidate]:
     """
     Deterministic fallback patch generation when LLM is unavailable.
-    Generates 5 structurally valid candidate patches based on vulnerability type.
+    Generates N structurally valid candidate patches based on vulnerability type.
     """
     vuln_type = request.vulnerability_type.upper()
     code = request.vulnerable_code.strip()
+    needed = target_count or getattr(request, "candidate_count", None) or NUM_CANDIDATES
 
-    strategies = [
-        ("input_validation", "Input Validation and Sanitization"),
-        ("parameterized_query", "Parameterized Query / Prepared Statement"),
-        ("output_encoding", "Output Encoding and Escaping"),
-        ("allowlist", "Allowlist-based Restriction"),
-        ("framework_protection", "Framework-native Security Control"),
-    ]
+    # Build active strategies list
+    if getattr(request, "strategies", None):
+        strategies = []
+        for s in request.strategies:
+            s_clean = s.lower().strip()
+            if s_clean in STRATEGY_ALIAS_MAP:
+                strategies.append(STRATEGY_ALIAS_MAP[s_clean])
+            else:
+                strategies.append((s_clean, s))
+    else:
+        strategies = list(DEFAULT_STRATEGIES)
+
+    if not strategies:
+        strategies = list(DEFAULT_STRATEGIES)
 
     candidates = []
-    for i, (strategy_key, strategy_name) in enumerate(strategies, 1):
-        if "XSS" in vuln_type or "SCRIPT" in vuln_type:
-            modified, explanation, expected_effect, is_na = _xss_fix(code, strategy_key)
-        elif "COMMAND" in vuln_type:
-            modified, explanation, expected_effect, is_na = _command_injection_fix(code, strategy_key)
-        elif "PATH" in vuln_type or "TRAVERSAL" in vuln_type:
-            modified, explanation, expected_effect, is_na = _path_traversal_fix(code, strategy_key)
-        elif "SECRET" in vuln_type or "HARD" in vuln_type or "CREDENTIAL" in vuln_type:
-            modified, explanation, expected_effect, is_na = _secret_fix(code, strategy_key)
-        elif "SQL" in vuln_type:
-            modified, explanation, expected_effect, is_na = _sql_injection_fix(code, strategy_key)
-        else:
-            modified, explanation, expected_effect, is_na = _generic_fix(code, strategy_key)
+    i = 1
+    while len(candidates) < needed:
+        for strategy_key, strategy_name in strategies:
+            if len(candidates) >= needed:
+                break
 
-        if is_na:
-            assumptions = [
-                f"Strategy '{strategy_name}' is not semantically applicable to {request.vulnerability_type}",
-                "No code modification is performed; the candidate is marked NOT_APPLICABLE",
-            ]
-            side_effects = [
-                "Applying this strategy would not reduce the specified vulnerability",
-            ]
-        else:
-            assumptions = [
-                "Input comes from a user-controlled source",
-                f"Existing framework is {request.file.split('.')[-1] if '.' in request.file else 'unknown'}",
-            ]
-            side_effects = [
-                "May require additional testing for regressions",
-                "Performance impact may vary depending on input volume",
-            ]
+            if "XSS" in vuln_type or "SCRIPT" in vuln_type:
+                modified, explanation, expected_effect, is_na = _xss_fix(code, strategy_key)
+            elif "COMMAND" in vuln_type:
+                modified, explanation, expected_effect, is_na = _command_injection_fix(code, strategy_key)
+            elif "PATH" in vuln_type or "TRAVERSAL" in vuln_type:
+                modified, explanation, expected_effect, is_na = _path_traversal_fix(code, strategy_key)
+            elif "SECRET" in vuln_type or "HARD" in vuln_type or "CREDENTIAL" in vuln_type:
+                modified, explanation, expected_effect, is_na = _secret_fix(code, strategy_key)
+            elif "SQL" in vuln_type:
+                modified, explanation, expected_effect, is_na = _sql_injection_fix(code, strategy_key)
+            else:
+                modified, explanation, expected_effect, is_na = _generic_fix(code, strategy_key)
 
-        candidates.append(PatchCandidate(
-            patch_id=f"patch-{i}",
-            modified_code=modified,
-            explanation=f"Candidate {i}: {explanation}",
-            security_strategy=strategy_name,
-            assumptions=assumptions,
-            expected_effect=expected_effect,
-            potential_side_effects=side_effects,
-            is_not_applicable=is_na,
-        ))
+            if is_na:
+                assumptions = [
+                    f"Strategy '{strategy_name}' is not semantically applicable to {request.vulnerability_type}",
+                    "No code modification is performed; the candidate is marked NOT_APPLICABLE",
+                ]
+                side_effects = [
+                    "Applying this strategy would not reduce the specified vulnerability",
+                ]
+            else:
+                assumptions = [
+                    "Input comes from a user-controlled source",
+                    f"Existing framework is {request.file.split('.')[-1] if '.' in request.file else 'unknown'}",
+                ]
+                side_effects = [
+                    "May require additional testing for regressions",
+                    "Performance impact may vary depending on input volume",
+                ]
+
+            candidates.append(PatchCandidate(
+                patch_id=f"patch-{i}",
+                modified_code=modified,
+                explanation=f"Candidate {i}: {explanation}",
+                security_strategy=strategy_name,
+                assumptions=assumptions,
+                expected_effect=expected_effect,
+                potential_side_effects=side_effects,
+                is_not_applicable=is_na,
+            ))
+            i += 1
 
     return candidates
 
@@ -562,6 +601,8 @@ class PatchGenerationAgent:
         model_used = settings.default_llm_model
         candidates: List[PatchCandidate] = []
 
+        needed = getattr(request, "candidate_count", None) or NUM_CANDIDATES
+
         # Try LLM with retry handling
         prompt = _build_prompt(request)
 
@@ -575,14 +616,14 @@ class PatchGenerationAgent:
 
             try:
                 candidates = _parse_llm_response(raw_text)
-                if len(candidates) >= NUM_CANDIDATES:
-                    candidates = candidates[:NUM_CANDIDATES]
+                if len(candidates) >= needed:
+                    candidates = candidates[:needed]
                     logger.info(f"[PatchGen] Successfully parsed {len(candidates)} candidates from LLM")
                     break
                 else:
                     logger.warning(
                         f"[PatchGen] LLM returned {len(candidates)} candidates, "
-                        f"expected {NUM_CANDIDATES}. Retrying ({attempt + 1}/{MAX_RETRIES})"
+                        f"expected {needed}. Retrying ({attempt + 1}/{MAX_RETRIES})"
                     )
                     candidates = []
                     total_retries += 1
@@ -594,23 +635,23 @@ class PatchGenerationAgent:
                 total_retries += 1
 
         # Fallback if LLM failed or returned invalid data
-        if len(candidates) < NUM_CANDIDATES:
+        if len(candidates) < needed:
             logger.info("[PatchGen] Using deterministic fallback patch generation")
             model_used = "deterministic-fallback"
-            candidates = _generate_fallback_candidates(request)
+            candidates = _generate_fallback_candidates(request, target_count=needed)
 
-        # Ensure exactly NUM_CANDIDATES
-        candidates = candidates[:NUM_CANDIDATES]
+        # Ensure exactly needed
+        candidates = candidates[:needed]
 
         # Pad with fallback if somehow still short
-        if len(candidates) < NUM_CANDIDATES:
-            fallback = _generate_fallback_candidates(request)
+        if len(candidates) < needed:
+            fallback = _generate_fallback_candidates(request, target_count=needed)
             for c in fallback:
-                if len(candidates) >= NUM_CANDIDATES:
+                if len(candidates) >= needed:
                     break
                 if not any(existing.patch_id == c.patch_id for existing in candidates):
                     candidates.append(c)
-            candidates = candidates[:NUM_CANDIDATES]
+            candidates = candidates[:needed]
 
         duration_ms = int((time.time() - start_time) * 1000)
 

@@ -1,0 +1,12 @@
+{
+  "experiment_id": "exp-research-summary-001",
+  "timestamp": "2026-10-06T00:43:30.446107+00:00",
+  "subdirectories": [
+    "aece",
+    "multi_patch",
+    "causal_analysis",
+    "ablation",
+    "cross_language",
+    "adaptive_learning"
+  ]
+}

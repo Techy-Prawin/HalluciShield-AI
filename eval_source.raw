@@ -1,0 +1,77 @@
+    def evaluate_sample(
+        self,
+        sample_info: Dict[str, Any],
+        file_path: Path,
+    ) -> Dict[str, Any]:
+        """Execute all pipeline stages for a single Dataset B sample.
+
+        Returns comprehensive per-stage trace and final security decision.
+        """
+        sample_id = sample_info["sample_id"]
+        record_id = sample_info.get("record_id", sample_id)
+        label = sample_info["label"]
+        category = sample_info["category"]
+        cwe = sample_info["cwe"]
+        language = sample_info["language"]
+        ground_truth = sample_info.get("ground_truth", "")
+
+        start_time = time.time()
+
+        if not file_path.exists():
+            return {
+                "record_id": record_id,
+                "sample_id": sample_id,
+                "file_path": str(file_path),
+                "language": language,
+                "category": category,
+                "cwe": cwe,
+                "label": label,
+                "ground_truth": ground_truth,
+                "predicted_label": ExecutionStatus.FAILED,
+                "scanner_status": ExecutionStatus.FAILED,
+                "stages_completed": [],
+                "stages": {},
+                "detection_correct": None,
+                "error_message": f"File not found: {file_path}",
+                "execution_time_ms": 0,
+            }
+
+        try:
+            code = file_path.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            code = ""
+
+        # Set up isolated workspace directory
+        stages_completed: List[str] = []
+        stage_records: Dict[str, Any] = {}
+        all_findings: List[Any] = []
+        scanner_status = ExecutionStatus.COMPLETED
+        error_message: Optional[str] = None
+
+        with tempfile.TemporaryDirectory(prefix=f"hs_ace_{sample_id}_") as workspace_dir:
+            dest = Path(workspace_dir) / file_path.name
+            shutil.copy2(file_path, dest)
+            repo_id = f"ace-{sample_id}"
+
+            # ── 1. Hallucination Detection Agent ─────────────────────────────
+            hal_res = None
+            try:
+                hal_res = self.hallucination_agent.detect_hallucinations(
+                    repository_id=repo_id,
+                    workspace_path=workspace_dir,
+                )
+                stages_completed.append("hallucination")
+                stage_records["hallucination"] = {
+                    "executed": True,
+                    "class": "HallucinationDetectionAgent",
+                    "function": "detect_hallucinations",
+                    "input_type": "workspace_path (str)",
+                    "output_type": type(hal_res).__name__,
+                    "status": ExecutionStatus.COMPLETED,
+                    "finding_count": len(hal_res.findings),
+                    "error": None,
+                }
+                all_findings.extend(hal_res.findings)
+            except Exception as e:
+                stage_records["hallucination"] = {
+                   

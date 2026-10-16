@@ -1,0 +1,8 @@
+{
+  "total_samples": 500,
+  "first_patch_success_rate": 0.0,
+  "legacy_ace_selection_rate": 0.0,
+  "aece_selection_rate": 0.0,
+  "samples_with_patch_candidates": 94,
+  "note": "Multi-patch metrics from real validation/security outcomes. 94/500 samples had patch candidates generated (Python/JS samples where patch generation possible without Docker). 406 samples stopped at sandbox/compilation stages with NOT_AVAILABLE provenance. No proxy ACE formulas used; real ConfidenceEngine output used where available."
+}

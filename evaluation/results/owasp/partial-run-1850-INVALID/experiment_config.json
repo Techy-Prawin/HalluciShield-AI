@@ -1,0 +1,31 @@
+{
+  "experiment_name": "owasp-benchmark-evaluation",
+  "timestamp": "2026-10-05T07:56:56.498654+00:00",
+  "benchmark_project": "OWASP Benchmark for Java (v1.2)",
+  "benchmark_repository": "https://github.com/OWASP-Benchmark/BenchmarkJava",
+  "benchmark_commit": "8b67a88d73b2594570fc21150705283de884620b",
+  "oracle_file": "expectedresults-1.2.csv",
+  "oracle_columns": "name | category | real_vulnerability | cwe",
+  "benchmark_available": true,
+  "benchmark_path": "evaluation\\owasp\\BenchmarkJava",
+  "execution_status": "COMPLETED",
+  "status_reason": "OWASP Benchmark executed",
+  "pipeline": [
+    "HallucinationDetectionAgent",
+    "DependencyAnalysisAgent",
+    "SecurityAnalysisAgent",
+    "RiskEngine",
+    "PatchGenerationAgent",
+    "ValidationAgent",
+    "ConfidenceEngine"
+  ],
+  "mapping_layer": "OWASP Top 10:2021",
+  "scanner": "semgrep-fallback (pattern-based)",
+  "ground_truth_leakage": false,
+  "fabricated_values": false,
+  "total_test_cases": 2740,
+  "oracle_positive": 1415,
+  "oracle_negative": 1325,
+  "integrity_audit_timestamp": "2026-10-05T11:34:53.751882Z",
+  "field_correction": "predicted_label (corrected from 'prediction')"
+}

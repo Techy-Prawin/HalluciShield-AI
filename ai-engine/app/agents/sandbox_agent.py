@@ -37,6 +37,7 @@ from app.agents.models import (
     SandboxConfig,
     SandboxValidationRequest,
     SandboxValidationResponse,
+    SandboxStatus,
     SecurityScanResult,
     TestResult,
 )
@@ -45,6 +46,8 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_SANDBOX_IMAGE = os.getenv("SANDBOX_IMAGE", "hallucishield-sandbox:latest")
 SANDBOX_DIR = Path(__file__).parent.parent.parent / "sandbox"
+MAX_VALIDATION_WORKSPACE_FILES = 5000
+MAX_VALIDATION_WORKSPACE_BYTES = 100 * 1024 * 1024
 
 
 class SandboxAgent:
@@ -67,14 +70,15 @@ class SandboxAgent:
                 import docker
                 self._docker = docker.from_env()
             except Exception as e:
-                logger.error(f"[Sandbox] Docker client initialization failed: {e}")
-                raise RuntimeError(
-                    "Docker is not available. Please install Docker and ensure it is running."
-                )
+                logger.warning(f"[Sandbox] Docker not available: {e}")
+                self._docker = None
         return self._docker
 
     def is_available(self) -> bool:
         """Probe whether the Docker sandbox can be created right now."""
+        if self._docker is None:
+            logger.info("[Sandbox] Sandbox unavailable: Docker client not available")
+            return False
         try:
             self._get_docker()
             return True
@@ -122,6 +126,26 @@ class SandboxAgent:
         """
         logger.info(f"[Sandbox] Starting validation for patch {request.patch.patch_id}")
         overall_start = time.time()
+        
+        # Check Docker availability first
+        if not self.is_available():
+            logger.info("[Sandbox] Docker unavailable - recording NOT_AVAILABLE status")
+            return SandboxValidationResponse(
+                patch_id=request.patch.patch_id,
+                compilation=CompilationResult(success=False, error="Docker sandbox unavailable"),
+                tests=TestResult(success=False, error="Docker sandbox unavailable"),
+                security_scan=SecurityScanResult(success=False, error="Docker sandbox unavailable"),
+                performance=PerformanceResult(),
+                overall_success=False,
+                validation_duration_ms=0,
+                sandbox_status=SandboxStatus.NOT_AVAILABLE,
+                sandbox_security_notes=[
+                    "Docker sandbox is not available on this host. "
+                    "Sandbox validation cannot be performed. "
+                    "AECE will mark evidence as NOT_AVAILABLE for sandbox dimension."
+                ],
+            )
+        
         config = request.sandbox_config or SandboxConfig()
         container = None
         workspace_dir = None
@@ -204,6 +228,33 @@ class SandboxAgent:
         # --- End security check ---
 
         workspace = tempfile.mkdtemp(prefix="hallucishield_sandbox_")
+
+        if request.workspace_path:
+            source_root = Path(request.workspace_path).resolve()
+            if not source_root.is_dir():
+                raise ValueError("Candidate workspace is unavailable")
+            work_dir = Path(workspace) / "workspace"
+            work_dir.mkdir(parents=True, exist_ok=True)
+            copied_files = 0
+            copied_bytes = 0
+            for current, dirs, files in os.walk(source_root, followlinks=False):
+                dirs[:] = [name for name in dirs if name not in {".git", ".venv", "venv", "__pycache__", ".pytest_cache"}]
+                for name in files:
+                    source_file = Path(current) / name
+                    if source_file.is_symlink():
+                        raise ValueError("Candidate workspace contains a symlink; validation is unverified")
+                    stat = source_file.stat()
+                    copied_files += 1
+                    copied_bytes += stat.st_size
+                    if copied_files > MAX_VALIDATION_WORKSPACE_FILES or copied_bytes > MAX_VALIDATION_WORKSPACE_BYTES:
+                        raise ValueError("Candidate workspace exceeds the sandbox validation size limit")
+                    relative = source_file.relative_to(source_root)
+                    target_file_path = work_dir / relative
+                    target_file_path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(source_file, target_file_path)
+
+            if request.candidate_workspace_ready:
+                (Path(workspace) / "candidate_workspace_ready").write_text("true", encoding="utf-8")
 
         # Write patch code
         patch_file = Path(workspace) / "patch.py"
@@ -396,20 +447,32 @@ class SandboxAgent:
 
         compilation = CompilationResult(
             success=comp_data.get("success", False),
+            status=comp_data.get("status", "UNVERIFIED"),
             language=comp_data.get("language", request.language),
             output=comp_data.get("output", "")[:5000],
+            command=comp_data.get("command") or [],
+            exit_code=comp_data.get("exit_code"),
+            timed_out=bool(comp_data.get("timed_out", False)),
+            stdout_summary=comp_data.get("stdout", "")[-5000:],
+            stderr_summary=comp_data.get("stderr", "")[-5000:],
             duration_ms=comp_data.get("duration_ms", 0),
             error=comp_data.get("error"),
         )
 
         tests = TestResult(
             success=test_data.get("success", False),
+            status=test_data.get("status", "UNVERIFIED"),
             framework=test_data.get("framework", ""),
             total_tests=test_data.get("total_tests", 0),
             passed=test_data.get("passed", 0),
             failed=test_data.get("failed", 0),
             skipped=test_data.get("skipped", 0),
             output=test_data.get("output", "")[:5000],
+            command=test_data.get("command") or [],
+            exit_code=test_data.get("exit_code"),
+            timed_out=bool(test_data.get("timed_out", False)),
+            stdout_summary=test_data.get("output", "")[-5000:],
+            stderr_summary=test_data.get("stderr", "")[-5000:],
             duration_ms=test_data.get("duration_ms", 0),
             failures=test_data.get("failures", []),
             error=test_data.get("error"),
@@ -417,10 +480,16 @@ class SandboxAgent:
 
         security_scan = SecurityScanResult(
             success=scan_data.get("success", False),
+            status=scan_data.get("status", "UNVERIFIED"),
             scanner=scan_data.get("scanner", "none"),
             vulnerabilities_found=scan_data.get("vulnerabilities_found", 0),
             findings=scan_data.get("findings", []),
             output=scan_data.get("output", "")[:5000],
+            command=scan_data.get("command") or [],
+            exit_code=scan_data.get("exit_code"),
+            timed_out=bool(scan_data.get("timed_out", False)),
+            stdout_summary=scan_data.get("output", "")[-5000:],
+            stderr_summary=scan_data.get("stderr", "")[-5000:],
             duration_ms=scan_data.get("duration_ms", 0),
             error=scan_data.get("error"),
         )

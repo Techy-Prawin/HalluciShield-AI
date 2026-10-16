@@ -1,0 +1,1 @@
+cursor.execute("UPDATE users SET role='" + new_role + "' WHERE id=" + uid)

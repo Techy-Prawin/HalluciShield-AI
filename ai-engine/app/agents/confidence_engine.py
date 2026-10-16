@@ -4,15 +4,24 @@ Adaptive Confidence Engine for HalluciShield AI.
 This is the primary research contribution of HalluciShield AI.
 Ranks candidate security patches using independently measured evidence.
 
-Confidence = Σ(weight × normalized_feature)
+Production ACE Equation (from paper):
+    ACE = 100 × π_comp × π_crit × (0.25 f1 + 0.20 f2 + 0.20 f3 + 0.10 f4 + 0.10 f5 + 0.15 f6)
 
-Features:
-- Static Security Improvement (25%)
-- Unit Test Success (20%)
-- Regression Test Success (20%)
-- Compilation Success (10%)
-- Performance (10%)
-- Historical Success (15%)
+Where:
+    f1 = Static Security Evidence (post-patch security state)
+    f2 = Unit Test Success (passed/total)
+    f3 = Regression Test Success (independent from f2)
+    f4 = Compilation Status (1.0 = compiles, 0.0 = fails, NOT_APPLICABLE for interpreted)
+    f5 = Performance (within acceptable range)
+    f6 = Historical Success (from Adaptive Learning engine)
+
+    π_comp = Compilation/Completeness Gate:
+        1.0 if compilation successful or NOT_APPLICABLE (interpreted language)
+        0.0 if compilation fails
+    
+    π_crit = Critical Vulnerability Gate:
+        1.0 if no critical vulnerabilities remain after patch
+        0.0 if any critical vulnerability remains after patch
 
 Design principles:
 1. Every feature is stored
@@ -21,7 +30,7 @@ Design principles:
 4. Final confidence score is reproducible
 5. System explains why a patch received its score
 6. LLM reasoning stored as evidence only, never influences score directly
-7. Compilation failure or new critical vulnerabilities are heavily penalized
+7. π_comp and π_crit are MULTIPLICATIVE GATES (not feature penalties)
 8. Confidence history is stored for research experiments
 """
 
@@ -49,9 +58,52 @@ logger = logging.getLogger(__name__)
 DEFAULT_WEIGHTS = WeightConfig()
 ALGORITHM_VERSION = "v1.0"
 
-# Penalty multipliers for critical failures
-COMPILATION_FAILURE_PENALTY = 0.3
-CRITICAL_VULNERABILITY_PENALTY = 0.4
+# Cold-start prior for historical success when no data available
+HISTORICAL_COLD_START_PRIOR = 0.5
+
+# ============================================================
+# ACE Gating Factors (Multiplicative, NOT feature penalties)
+# ============================================================
+
+def calculate_pi_comp(validation_result: PatchValidationResult) -> float:
+    """
+    π_comp — Compilation/Completeness Gate.
+    
+    Returns 1.0 if:
+    - Compilation successful, OR
+    - Compilation NOT_APPLICABLE (interpreted language, score=1.0, success=True, no error)
+    
+    Returns 0.0 if:
+    - Compilation fails (success=False)
+    """
+    comp = validation_result.compilation_score
+    if not comp.success:
+        logger.info(
+            f"[Confidence] π_comp = 0.0 (compilation failed: {comp.error})"
+        )
+        return 0.0
+    # Compilation successful or not applicable (interpreted language)
+    logger.info(f"[Confidence] π_comp = 1.0")
+    return 1.0
+
+
+def calculate_pi_crit(validation_result: PatchValidationResult) -> float:
+    """
+    π_crit — Critical Vulnerability Gate.
+    
+    Returns 1.0 if NO critical vulnerabilities remain after patch.
+    Returns 0.0 if ANY critical vulnerability remains after patch.
+    
+    This is a HARD GATE: any critical vulnerability zeroes the ACE.
+    """
+    sec = validation_result.security_score
+    if sec.critical > 0:
+        logger.info(
+            f"[Confidence] π_crit = 0.0 ({sec.critical} critical vulnerability(ies) remain)"
+        )
+        return 0.0
+    logger.info(f"[Confidence] π_crit = 1.0")
+    return 1.0
 
 
 class ConfidenceEngine:
@@ -60,6 +112,9 @@ class ConfidenceEngine:
 
     Calculates confidence scores for candidate patches using
     deterministic weighted scoring of independent features.
+
+    Implements the production ACE equation from the paper:
+        ACE = 100 × π_comp × π_crit × Σ(weight_i × feature_i)
 
     The engine is deterministic: same inputs always produce same outputs.
     LLM reasoning is stored as supporting evidence only.
@@ -87,14 +142,15 @@ class ConfidenceEngine:
     def calculate_confidence(
         self,
         validation_result: PatchValidationResult,
-        historical_success_rate: float = 0.5,
+        historical_success_rate: float = HISTORICAL_COLD_START_PRIOR,
     ) -> ConfidenceResult:
         """
         Calculate confidence score for a single patch.
 
         Args:
             validation_result: PatchValidationResult from ValidationAgent
-            historical_success_rate: Historical success rate for this patch type (0.0-1.0)
+            historical_success_rate: Historical success rate for this patch type (0.0-1.0).
+                                     Defaults to cold-start prior (0.5) when no data.
 
         Returns:
             ConfidenceResult with score, features, evidence, and recommendation
@@ -109,14 +165,18 @@ class ConfidenceEngine:
         # Extract feature values from validation result
         features = self._extract_features(validation_result, historical_success_rate)
 
-        # Apply penalties for critical failures
-        features = self._apply_penalties(features, validation_result)
+        # Calculate weighted sum of features (no penalties applied here)
+        weighted_sum = sum(f.weighted_score for f in features)
 
-        # Calculate weighted score
-        total_score = sum(f.weighted_score for f in features)
+        # Apply multiplicative gates (π_comp and π_crit)
+        pi_comp = calculate_pi_comp(validation_result)
+        pi_crit = calculate_pi_crit(validation_result)
+
+        # Final ACE calculation
+        ace = 100.0 * pi_comp * pi_crit * weighted_sum
 
         # Clamp to 0-100
-        confidence_score = max(0.0, min(100.0, total_score * 100.0))
+        confidence_score = max(0.0, min(100.0, ace))
 
         # Collect evidence
         positive_evidence = self._collect_positive_evidence(features, validation_result)
@@ -145,10 +205,26 @@ class ConfidenceEngine:
 
         logger.info(
             f"[Confidence] Patch {validation_result.patch_id}: "
-            f"{confidence_score:.1f}% confidence"
+            f"ACE={confidence_score:.1f}% "
+            f"(pi_comp={pi_comp}, pi_crit={pi_crit}, weighted_sum={weighted_sum:.4f})"
         )
 
         return result
+
+    def calculate_aece(
+        self,
+        validation_result: PatchValidationResult,
+        historical_success_rate: float = HISTORICAL_COLD_START_PRIOR,
+        historical_sample_count: int = 0,
+    ):
+        """Calculate evidence-aware confidence (AECE)."""
+        from app.agents.aece_engine import AECEngine
+        engine = AECEngine(weights=self.weights)
+        return engine.calculate_aece(
+            validation_result=validation_result,
+            historical_success_rate=historical_success_rate,
+            historical_sample_count=historical_sample_count,
+        )
 
     def rank_patches(
         self,
@@ -178,10 +254,10 @@ class ConfidenceEngine:
         rankings = []
         for vr in request.validation_results:
             # Get historical success rate if available
-            hist_rate = 0.5
+            hist_rate = HISTORICAL_COLD_START_PRIOR
             if request.historical_success_rates:
                 hist_rate = request.historical_success_rates.get(
-                    vr.patch_id, 0.5
+                    vr.patch_id, HISTORICAL_COLD_START_PRIOR
                 )
 
             result = self.calculate_confidence(vr, hist_rate)
@@ -291,6 +367,10 @@ class ConfidenceEngine:
 
         Unverified dimensions (e.g., sandbox unavailable) contribute zero
         weighted score so no unmeasured evidence inflates confidence.
+
+        NOTE: Penalties are NO LONGER applied here. The paper defines
+        π_comp and π_crit as MULTIPLICATIVE GATES applied to the final
+        weighted sum, not as feature-level penalties.
         """
         verified = getattr(score_model, "verified", True)
         raw = score_model.score if verified else 0.0
@@ -308,33 +388,6 @@ class ConfidenceEngine:
             evidence=evidence,
         )
 
-    def _apply_penalties(
-        self,
-        features: List[FeatureScore],
-        vr: PatchValidationResult,
-    ) -> List[FeatureScore]:
-        """Apply penalties for critical failures."""
-        # Penalty for compilation failure
-        if not vr.compilation_score.success and vr.compilation_score.error:
-            for f in features:
-                if f.feature == FeatureName.COMPILATION_SUCCESS:
-                    f.is_penalty = True
-                    f.penalty_reason = f"Compilation failed: {vr.compilation_score.error}"
-                    f.weighted_score *= (1.0 - COMPILATION_FAILURE_PENALTY)
-
-        # Penalty for critical security vulnerabilities
-        if vr.security_score.critical > 0:
-            for f in features:
-                if f.feature == FeatureName.STATIC_SECURITY:
-                    f.is_penalty = True
-                    f.penalty_reason = (
-                        f"Introduces {vr.security_score.critical} critical "
-                        f"vulnerabilit{'y' if vr.security_score.critical == 1 else 'ies'}"
-                    )
-                    f.weighted_score *= (1.0 - CRITICAL_VULNERABILITY_PENALTY)
-
-        return features
-
     def _collect_positive_evidence(
         self,
         features: List[FeatureScore],
@@ -344,7 +397,7 @@ class ConfidenceEngine:
         evidence = []
 
         for f in features:
-            if f.normalized_value >= 0.8 and not f.is_penalty:
+            if f.normalized_value >= 0.8:
                 evidence.append(f"[+] {f.feature.value}: {f.evidence}")
 
         if vr.functional_score.behavior_preserved:
@@ -352,6 +405,14 @@ class ConfidenceEngine:
 
         if vr.validation_status == ValidationStatus.PASS:
             evidence.append("[+] Validation status: PASS")
+
+        # Explicitly note when gates are open
+        pi_comp = calculate_pi_comp(vr)
+        pi_crit = calculate_pi_crit(vr)
+        if pi_comp == 1.0:
+            evidence.append("[+] π_comp = 1.0 (compilation gate open)")
+        if pi_crit == 1.0:
+            evidence.append("[+] π_crit = 1.0 (no critical vulnerabilities)")
 
         return evidence
 
@@ -364,9 +425,7 @@ class ConfidenceEngine:
         evidence = []
 
         for f in features:
-            if f.is_penalty:
-                evidence.append(f"[-] {f.feature.value}: {f.penalty_reason}")
-            elif f.normalized_value < 0.5:
+            if f.normalized_value < 0.5:
                 evidence.append(f"[-] {f.feature.value}: {f.evidence}")
 
         if vr.security_score.high > 0:
@@ -378,6 +437,14 @@ class ConfidenceEngine:
             evidence.append(
                 f"[-] Regressions found: {vr.regression_score.regressions_found}"
             )
+
+        # Explicitly note when gates are closed
+        pi_comp = calculate_pi_comp(vr)
+        pi_crit = calculate_pi_crit(vr)
+        if pi_comp == 0.0:
+            evidence.append("[-] π_comp = 0.0 (compilation failed)")
+        if pi_crit == 0.0:
+            evidence.append(f"[-] π_crit = 0.0 ({vr.security_score.critical} critical vulnerability(ies) remain)")
 
         return evidence
 

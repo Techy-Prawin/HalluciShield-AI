@@ -11,3 +11,4 @@ slowapi==0.1.9
 asyncpg==0.31.0
 psycopg2-binary>=2.9.9
 SQLAlchemy[asyncio]==2.0.52
+semgrep==1.179.0

@@ -1,0 +1,117 @@
+{
+  "bins": [
+    {
+      "bin_index": 0,
+      "range": [
+        0.0,
+        0.1
+      ],
+      "sample_count": 3,
+      "mean_confidence": 0.0,
+      "observed_accuracy": 0.0,
+      "calibration_gap": 0.0
+    },
+    {
+      "bin_index": 1,
+      "range": [
+        0.1,
+        0.2
+      ],
+      "sample_count": 1,
+      "mean_confidence": 0.1038,
+      "observed_accuracy": 0.0,
+      "calibration_gap": 0.1038
+    },
+    {
+      "bin_index": 2,
+      "range": [
+        0.2,
+        0.3
+      ],
+      "sample_count": 0,
+      "mean_confidence": 0.25,
+      "observed_accuracy": 0.0,
+      "calibration_gap": 0.0
+    },
+    {
+      "bin_index": 3,
+      "range": [
+        0.3,
+        0.4
+      ],
+      "sample_count": 3,
+      "mean_confidence": 0.33,
+      "observed_accuracy": 0.0,
+      "calibration_gap": 0.33
+    },
+    {
+      "bin_index": 4,
+      "range": [
+        0.4,
+        0.5
+      ],
+      "sample_count": 1,
+      "mean_confidence": 0.4958,
+      "observed_accuracy": 0.0,
+      "calibration_gap": 0.4958
+    },
+    {
+      "bin_index": 5,
+      "range": [
+        0.5,
+        0.6
+      ],
+      "sample_count": 1,
+      "mean_confidence": 0.5334,
+      "observed_accuracy": 1.0,
+      "calibration_gap": 0.4666
+    },
+    {
+      "bin_index": 6,
+      "range": [
+        0.6,
+        0.7
+      ],
+      "sample_count": 2,
+      "mean_confidence": 0.6281,
+      "observed_accuracy": 0.0,
+      "calibration_gap": 0.6281
+    },
+    {
+      "bin_index": 7,
+      "range": [
+        0.7,
+        0.8
+      ],
+      "sample_count": 3,
+      "mean_confidence": 0.7215,
+      "observed_accuracy": 1.0,
+      "calibration_gap": 0.2785
+    },
+    {
+      "bin_index": 8,
+      "range": [
+        0.8,
+        0.9
+      ],
+      "sample_count": 1,
+      "mean_confidence": 0.85,
+      "observed_accuracy": 1.0,
+      "calibration_gap": 0.15
+    },
+    {
+      "bin_index": 9,
+      "range": [
+        0.9,
+        1.0
+      ],
+      "sample_count": 5,
+      "mean_confidence": 0.9504,
+      "observed_accuracy": 1.0,
+      "calibration_gap": 0.0496
+    }
+  ],
+  "brier_score": 0.0932,
+  "ece": 0.2273,
+  "mce": 0.6281
+}

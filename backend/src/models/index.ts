@@ -9,3 +9,5 @@ export * from './validation_result.model';
 export * from './confidence_score.model';
 export * from './developer_feedback.model';
 export * from './runtime_event.model';
+export * from './research.model';
+

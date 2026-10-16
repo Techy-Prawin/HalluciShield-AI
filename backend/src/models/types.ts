@@ -188,23 +188,37 @@ export interface CreateValidationResultInput {
 }
 
 export interface ConfidenceScoreComponents {
-  static_analysis_score: number;
-  hallucination_score: number;
-  sandbox_validation_score: number;
-  runtime_event_score: number;
-  historical_feedback_score: number;
+  // AI Engine ACE 6 features
+  static_security_score: number;
+  unit_test_success_score: number;
+  regression_success_score: number;
+  compilation_score: number;
+  performance_score: number;
+  historical_success_score: number;
+  // Gates
+  pi_comp: number;
+  pi_crit: number;
+  // Weighted sum before gates
+  weighted_sum: number;
 }
 
 export interface ConfidenceScore {
   id: string;
   patch_id: string;
   validation_result_id?: string | null;
-  final_score: number;
-  static_analysis_score: number;
-  hallucination_score: number;
-  sandbox_validation_score: number;
-  runtime_event_score: number;
-  historical_feedback_score: number;
+  final_score: number; // Final ACE (0-100)
+  // Individual features
+  static_security_score: number;
+  unit_test_success_score: number;
+  regression_success_score: number;
+  compilation_score: number;
+  performance_score: number;
+  historical_success_score: number;
+  // Gates
+  pi_comp: number;
+  pi_crit: number;
+  // Intermediate
+  weighted_sum: number;
   weights_applied: Record<string, number>;
   explanation?: string | null;
   metadata: Record<string, any>;
@@ -216,11 +230,18 @@ export interface CreateConfidenceScoreInput {
   patch_id: string;
   final_score?: number;
   validation_result_id?: string | null;
-  static_analysis_score?: number;
-  hallucination_score?: number;
-  sandbox_validation_score?: number;
-  runtime_event_score?: number;
-  historical_feedback_score?: number;
+  // Individual features
+  static_security_score?: number;
+  unit_test_success_score?: number;
+  regression_success_score?: number;
+  compilation_score?: number;
+  performance_score?: number;
+  historical_success_score?: number;
+  // Gates
+  pi_comp?: number;
+  pi_crit?: number;
+  // Intermediate
+  weighted_sum?: number;
   weights_applied?: Record<string, number>;
   explanation?: string | null;
   metadata?: Record<string, any>;
@@ -274,4 +295,29 @@ export interface CreateRuntimeEventInput {
   stack_trace?: string | null;
   payload?: Record<string, any>;
   timestamp?: Date;
+}
+
+/** Download eligibility decision: whether a candidate can be downloaded.
+ * Distinct from securityVerdict (whether the candidate passed security checks). */
+export interface DownloadEligibility {
+  eligible: boolean;
+  level: 'AUTHORIZED' | 'UNVERIFIED_DOWNLOAD' | 'INELIGIBLE';
+  reason: string;
+  /** Authoritative ACE score (0-100) used for the decision, or null when missing/invalid. */
+  aceScore: number | null;
+  aceScale: { min: number; max: number };
+  /** Whether the user must explicitly acknowledge the risk before download. */
+  acknowledgementRequired: boolean;
+  /** Whether all mandatory security gates passed for this candidate. */
+  securityGatesPassed: boolean;
+  thresholds: { authorized: number; unverified: number };
+}
+
+/** Auditable explicit user acknowledgement for an unverified download. */
+export interface DownloadAcknowledgement {
+  acknowledgedAt: string;
+  acknowledgedBy?: string;
+  userId?: string;
+  ip?: string;
+  level: 'UNVERIFIED_DOWNLOAD';
 }

@@ -1,0 +1,12 @@
+{
+  "total_evaluations": 20,
+  "mean_legacy_ace_score": 63.97,
+  "mean_evidence_completeness": 0.792,
+  "mean_evidence_aware_confidence": 55.73,
+  "decisions": {
+    "AUTO_APPLY": 6,
+    "HUMAN_REVIEW": 6,
+    "INSUFFICIENT_EVIDENCE": 0,
+    "REJECT": 8
+  }
+}

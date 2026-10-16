@@ -13,7 +13,7 @@ Provides HTTP endpoints for:
 - GET /api/v1/learning/records
 """
 
-from fastapi import APIRouter, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.agents.adaptive_learning import AdaptiveLearningEngine
 from app.agents.models import (
@@ -25,8 +25,13 @@ from app.agents.models import (
     WeightAdjustment,
     WeightConfig,
 )
+from app.security import require_api_key
 
-router = APIRouter(prefix="/api/v1/learning", tags=["Adaptive Learning Engine"])
+router = APIRouter(
+    prefix="/api/v1/learning",
+    tags=["Adaptive Learning Engine"],
+    dependencies=[Depends(require_api_key)],
+)
 
 engine = AdaptiveLearningEngine()
 

@@ -13,8 +13,9 @@ from app.agents.confidence_engine import (
     ConfidenceService,
     DEFAULT_WEIGHTS,
     ALGORITHM_VERSION,
-    COMPILATION_FAILURE_PENALTY,
-    CRITICAL_VULNERABILITY_PENALTY,
+    calculate_pi_comp,
+    calculate_pi_crit,
+    HISTORICAL_COLD_START_PRIOR,
 )
 from app.agents.models import (
     CompilationScore,
@@ -292,71 +293,93 @@ class TestFeatureExtraction:
 
 
 # ============================================================
-# Test: Penalty Application
+# Test: ACE Gates (π_comp, π_crit)
 # ============================================================
 
-class TestPenaltyApplication:
-    def test_compilation_failure_penalty(self, engine, failing_validation):
-        features = engine._extract_features(failing_validation, 0.5)
-        features = engine._apply_penalties(features, failing_validation)
-        comp_feature = next(f for f in features if f.feature == FeatureName.COMPILATION_SUCCESS)
-        assert comp_feature.is_penalty is True
-        assert comp_feature.penalty_reason is not None
-        assert "Compilation failed" in comp_feature.penalty_reason
+class TestACEGates:
+    def test_pi_comp_one_when_compilation_success(self, engine, perfect_validation):
+        pi_comp = calculate_pi_comp(perfect_validation)
+        assert pi_comp == 1.0
 
-    def test_critical_vulnerability_penalty(self, engine, critical_security_validation):
-        features = engine._extract_features(critical_security_validation, 0.5)
-        features = engine._apply_penalties(features, critical_security_validation)
-        sec_feature = next(f for f in features if f.feature == FeatureName.STATIC_SECURITY)
-        assert sec_feature.is_penalty is True
-        assert "critical" in sec_feature.penalty_reason.lower()
-
-    def test_penalty_reduces_score(self, engine, critical_security_validation):
-        features_before = engine._extract_features(critical_security_validation, 0.5)
-        sec_before_score = next(f for f in features_before if f.feature == FeatureName.STATIC_SECURITY).weighted_score
-        features_after = engine._apply_penalties(features_before, critical_security_validation)
-        sec_after_score = next(f for f in features_after if f.feature == FeatureName.STATIC_SECURITY).weighted_score
-        assert sec_after_score < sec_before_score
-
-    def test_no_penalty_for_passing(self, engine, perfect_validation):
-        features = engine._extract_features(perfect_validation, 0.5)
-        features = engine._apply_penalties(features, perfect_validation)
-        for f in features:
-            assert f.is_penalty is False
-
-    def test_compilation_penalty_magnitude(self, engine):
+    def test_pi_comp_one_when_compilation_not_applicable(self, engine):
+        """Interpreted language (e.g., Python) with no compilation needed."""
         vr = PatchValidationResult(
             patch_id="p1", vulnerability_id="v1",
-            compilation_score=CompilationScore(score=1.0, success=False, error="err"),
+            compilation_score=CompilationScore(score=1.0, success=True, language="python", output="No compilation required"),
             unit_test_score=UnitTestScore(score=1.0),
             regression_score=RegressionScore(score=1.0),
             security_score=SecurityValidationScore(score=1.0),
             functional_score=FunctionalBehaviorScore(score=1.0),
             performance_score=PerformanceImpactScore(score=1.0),
         )
-        features = engine._extract_features(vr, 0.5)
-        before = next(f for f in features if f.feature == FeatureName.COMPILATION_SUCCESS).weighted_score
-        features = engine._apply_penalties(features, vr)
-        after = next(f for f in features if f.feature == FeatureName.COMPILATION_SUCCESS).weighted_score
-        expected = before * (1.0 - COMPILATION_FAILURE_PENALTY)
-        assert after == pytest.approx(expected)
+        pi_comp = calculate_pi_comp(vr)
+        assert pi_comp == 1.0
 
-    def test_critical_penalty_magnitude(self, engine):
+    def test_pi_comp_zero_when_compilation_fails(self, engine, failing_validation):
+        pi_comp = calculate_pi_comp(failing_validation)
+        assert pi_comp == 0.0
+
+    def test_pi_crit_one_when_no_critical_vulns(self, engine, perfect_validation):
+        pi_crit = calculate_pi_crit(perfect_validation)
+        assert pi_crit == 1.0
+
+    def test_pi_crit_one_when_high_vulns_only(self, engine):
         vr = PatchValidationResult(
             patch_id="p1", vulnerability_id="v1",
             compilation_score=CompilationScore(score=1.0, success=True),
             unit_test_score=UnitTestScore(score=1.0),
             regression_score=RegressionScore(score=1.0),
-            security_score=SecurityValidationScore(score=1.0, critical=1),
+            security_score=SecurityValidationScore(score=0.5, vulnerabilities_found=2, high=2),
             functional_score=FunctionalBehaviorScore(score=1.0),
             performance_score=PerformanceImpactScore(score=1.0),
         )
-        features = engine._extract_features(vr, 0.5)
-        before = next(f for f in features if f.feature == FeatureName.STATIC_SECURITY).weighted_score
-        features = engine._apply_penalties(features, vr)
-        after = next(f for f in features if f.feature == FeatureName.STATIC_SECURITY).weighted_score
-        expected = before * (1.0 - CRITICAL_VULNERABILITY_PENALTY)
-        assert after == pytest.approx(expected)
+        pi_crit = calculate_pi_crit(vr)
+        assert pi_crit == 1.0
+
+    def test_pi_crit_zero_when_critical_vuln_remains(self, engine, critical_security_validation):
+        pi_crit = calculate_pi_crit(critical_security_validation)
+        assert pi_crit == 0.0
+
+    def test_pi_crit_zero_with_multiple_critical(self, engine):
+        vr = PatchValidationResult(
+            patch_id="p1", vulnerability_id="v1",
+            compilation_score=CompilationScore(score=1.0, success=True),
+            unit_test_score=UnitTestScore(score=1.0),
+            regression_score=RegressionScore(score=1.0),
+            security_score=SecurityValidationScore(score=0.0, vulnerabilities_found=3, critical=3),
+            functional_score=FunctionalBehaviorScore(score=1.0),
+            performance_score=PerformanceImpactScore(score=1.0),
+        )
+        pi_crit = calculate_pi_crit(vr)
+        assert pi_crit == 0.0
+
+    def test_gate_multiplication_zeroes_ace(self, engine, critical_security_validation):
+        """ACE = 100 * π_comp * π_crit * weighted_sum = 0 when π_crit = 0"""
+        result = engine.calculate_confidence(critical_security_validation, historical_success_rate=1.0)
+        assert result.confidence_score == 0.0
+
+    def test_gate_compilation_zeroes_ace(self, engine, failing_validation):
+        """ACE = 100 * π_comp * π_crit * weighted_sum = 0 when π_comp = 0"""
+        result = engine.calculate_confidence(failing_validation, historical_success_rate=1.0)
+        assert result.confidence_score == 0.0
+
+    def test_perfect_gates_give_max_ace(self, engine, perfect_validation):
+        """ACE = 100 * 1.0 * 1.0 * 1.0 = 100 when all perfect"""
+        result = engine.calculate_confidence(perfect_validation, historical_success_rate=1.0)
+        assert result.confidence_score == pytest.approx(100.0, abs=0.1)
+
+    def test_gates_documented_in_evidence(self, engine, perfect_validation):
+        result = engine.calculate_confidence(perfect_validation)
+        # Gates should be mentioned in positive evidence
+        pi_comp_evidence = any("π_comp" in e and "1.0" in e for e in result.positive_evidence)
+        pi_crit_evidence = any("π_crit" in e and "1.0" in e for e in result.positive_evidence)
+        assert pi_comp_evidence
+        assert pi_crit_evidence
+
+    def test_gates_documented_when_closed(self, engine, critical_security_validation):
+        result = engine.calculate_confidence(critical_security_validation)
+        pi_crit_evidence = any("π_crit" in e and "0.0" in e for e in result.negative_evidence)
+        assert pi_crit_evidence
 
 
 # ============================================================
@@ -372,7 +395,6 @@ class TestEvidenceCollection:
 
     def test_negative_evidence_for_failing(self, engine, failing_validation):
         features = engine._extract_features(failing_validation, 0.5)
-        features = engine._apply_penalties(features, failing_validation)
         evidence = engine._collect_negative_evidence(features, failing_validation)
         assert len(evidence) > 0
         assert any("[-]" in e for e in evidence)
@@ -392,6 +414,15 @@ class TestEvidenceCollection:
     def test_security_failure_in_evidence(self, engine, critical_security_validation):
         failures = engine._collect_validation_failures(critical_security_validation)
         assert any("Critical" in f for f in failures)
+
+    def test_gates_in_positive_evidence(self, engine, perfect_validation):
+        result = engine.calculate_confidence(perfect_validation)
+        assert any("π_comp = 1.0" in e for e in result.positive_evidence)
+        assert any("π_crit = 1.0" in e for e in result.positive_evidence)
+
+    def test_gates_in_negative_evidence(self, engine, critical_security_validation):
+        result = engine.calculate_confidence(critical_security_validation)
+        assert any("π_crit = 0.0" in e for e in result.negative_evidence)
 
     def test_unit_test_failure_in_evidence(self, engine, failing_validation):
         failures = engine._collect_validation_failures(failing_validation)
@@ -765,7 +796,28 @@ class TestRankingEndpoint:
 # ============================================================
 
 class TestEdgeCases:
-    def test_single_feature_dominates(self):
+    def test_single_feature_dominates_with_gates_open(self):
+        """When all gates are open, a single feature with weight 1.0 gives 100% ACE."""
+        weights = WeightConfig(
+            static_security=1.0, unit_test_success=0.0,
+            regression_success=0.0, compilation_success=0.0,
+            performance=0.0, historical_success=0.0,
+        )
+        engine = ConfidenceEngine(weights=weights)
+        vr = PatchValidationResult(
+            patch_id="p1",
+            compilation_score=CompilationScore(score=1.0, success=True),
+            unit_test_score=UnitTestScore(score=0.0),
+            regression_score=RegressionScore(score=0.0),
+            security_score=SecurityValidationScore(score=1.0),
+            functional_score=FunctionalBehaviorScore(score=0.0),
+            performance_score=PerformanceImpactScore(score=0.0),
+        )
+        result = engine.calculate_confidence(vr, historical_success_rate=0.0)
+        assert result.confidence_score == pytest.approx(100.0, abs=0.1)
+
+    def test_single_feature_dominates_but_compilation_fails_gives_zero(self):
+        """Even with weight 1.0 on one feature, π_comp = 0 gives ACE = 0."""
         weights = WeightConfig(
             static_security=1.0, unit_test_success=0.0,
             regression_success=0.0, compilation_success=0.0,
@@ -782,7 +834,7 @@ class TestEdgeCases:
             performance_score=PerformanceImpactScore(score=0.0),
         )
         result = engine.calculate_confidence(vr, historical_success_rate=0.0)
-        assert result.confidence_score == pytest.approx(100.0, abs=0.1)
+        assert result.confidence_score == pytest.approx(0.0, abs=0.1)
 
     def test_all_zero_weights(self):
         weights = WeightConfig(

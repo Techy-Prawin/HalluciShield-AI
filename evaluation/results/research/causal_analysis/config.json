@@ -1,0 +1,22 @@
+{
+  "experiment_id": "exp-causal-analysis-001",
+  "timestamp": "2026-10-06T00:43:30.440329+00:00",
+  "categories": [
+    "API_HALLUCINATION",
+    "PACKAGE_HALLUCINATION",
+    "DOCUMENTATION_HALLUCINATION",
+    "SECURITY_PROPERTY_HALLUCINATION",
+    "SEMANTIC_HALLUCINATION",
+    "NO_HALLUCINATION_EVIDENCE",
+    "UNKNOWN"
+  ],
+  "statuses": [
+    "CAUSAL_SUPPORTED",
+    "CAUSAL_PLAUSIBLE",
+    "NO_CAUSAL_EVIDENCE",
+    "UNKNOWN"
+  ],
+  "evaluation_mode": "CONTROLLED_PILOT",
+  "provenance": "SYNTHETIC_TEST",
+  "note": "This causal analysis experiment uses controlled profiles (seed=42) for implementation verification only. Results are not real empirical findings. Hallucination-to-vulnerability rate of 75% is not a generalizable empirical finding. Causal attribution precision of 100% is not a validated general performance result. Classified as CONTROLLED_PILOT synthetic test fixture."
+}

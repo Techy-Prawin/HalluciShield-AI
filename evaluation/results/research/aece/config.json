@@ -1,0 +1,21 @@
+{
+  "experiment_id": "exp-aece-calibration-001",
+  "timestamp": "2026-10-06T00:43:24.090398+00:00",
+  "version": "AECE v2.0",
+  "dimensions": [
+    "static_security",
+    "unit_testing",
+    "regression_testing",
+    "compilation",
+    "performance",
+    "historical_reliability"
+  ],
+  "thresholds": {
+    "auto_apply_confidence_threshold": 80.0,
+    "auto_apply_completeness_threshold": 0.8,
+    "human_review_confidence_threshold": 50.0,
+    "human_review_completeness_threshold": 0.5,
+    "min_completeness_threshold": 0.5,
+    "min_historical_samples": 3
+  }
+}

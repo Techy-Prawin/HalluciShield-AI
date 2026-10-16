@@ -1,0 +1,27 @@
+[
+  {
+    "sample_id": "DS-B-0002",
+    "language": "python",
+    "cwe": "CWE-79",
+    "category": "cwe79",
+    "label": "positive",
+    "generator_model": "qwen/qwen3.8-27b",
+    "generation_prompt": "test",
+    "ground_truth": "Test CROSS_SITE_SCRIPTING at line 7: Unescaped user input from query parameter 'q' is directly interpolated into HTML output, allowing potential XSS attacks.",
+    "file_path": "positive/cwe79/test_persist_002.py",
+    "sha256": "7d6b25d984db60fc3b528d5826d797164c5d5e3bda9855f81f9e92568fd6f505",
+    "generator_provider": "groq",
+    "temperature": 0.2,
+    "top_p": 0.95,
+    "max_tokens": 1024,
+    "prompt_version": "v1.0",
+    "timestamp": "2026-09-22T10:21:50.594507Z",
+    "generation_method": "llm_generation",
+    "dataset_version": "v1.0",
+    "vulnerability_type": "CROSS_SITE_SCRIPTING",
+    "severity": "HIGH",
+    "description": "Unescaped user input from query parameter 'q' is directly interpolated into HTML output, allowing potential XSS attacks.",
+    "expected_detection": true,
+    "expected_patch_types": []
+  }
+]

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { BACKEND_URL } from '@/lib/api';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
   ScatterChart, Scatter, RadarChart, Radar, PolarGrid,
@@ -117,11 +118,9 @@ export function ExperimentAnalytics() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const aiUrl = process.env.NEXT_PUBLIC_AI_ENGINE_URL || 'http://localhost:8000';
-
     async function fetchData() {
       try {
-        const res = await fetch(`${aiUrl}/api/analytics/latest/charts`);
+        const res = await fetch(`${BACKEND_URL}/api/analytics/latest`);
         if (res.status === 404) {
           setError('no_experiment');
           setLoading(false);

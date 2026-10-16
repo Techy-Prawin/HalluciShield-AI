@@ -1,0 +1,16 @@
+{
+  "total_vulnerabilities_analyzed": 4,
+  "total_hallucinations_detected": 3,
+  "causal_supported_count": 3,
+  "causal_plausible_count": 0,
+  "no_causal_evidence_count": 1,
+  "hallucination_detection_rate": 1.0,
+  "hallucination_to_vulnerability_rate": 0.75,
+  "causal_attribution_precision": 1.0,
+  "causal_attribution_coverage": 1.0,
+  "category_breakdown": {
+    "API_HALLUCINATION": 2,
+    "PACKAGE_HALLUCINATION": 1,
+    "NO_HALLUCINATION_EVIDENCE": 1
+  }
+}

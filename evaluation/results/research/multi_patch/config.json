@@ -1,0 +1,16 @@
+{
+  "experiment_id": "exp-multi-patch-001",
+  "timestamp": "2026-10-06T00:43:30.430784+00:00",
+  "candidate_count": 5,
+  "strategies": [
+    "minimal_fix",
+    "defensive_validation",
+    "secure_api_replacement",
+    "parameterized_implementation",
+    "dependency_replacement"
+  ],
+  "vulnerabilities_evaluated": 5,
+  "evaluation_mode": "SYNTHETIC_TEST_FIXTURE",
+  "provenance": "SYNTHETIC_TEST",
+  "note": "Per-strategy validation profiles are deterministic (seed=42) to ensure reproducibility in sandbox-less environment. This is a synthetic test fixture for implementation verification only. Not real validation evidence. Not real sandbox evidence. Not real compilation evidence. Not an empirical result. Not a benchmark result."
+}

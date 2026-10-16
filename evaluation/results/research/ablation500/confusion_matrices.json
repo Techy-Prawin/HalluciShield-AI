@@ -1,0 +1,132 @@
+{
+  "A": {
+    "config_name": "FULL",
+    "confusion_matrix": {
+      "tp": 95,
+      "fp": 0,
+      "tn": 38,
+      "fn": 367
+    },
+    "precision": 1.0,
+    "recall": 0.2056,
+    "f1": 0.3411,
+    "accuracy": 0.266
+  },
+  "B": {
+    "config_name": "HALLUCINATION_OFF",
+    "confusion_matrix": {
+      "tp": 102,
+      "fp": 0,
+      "tn": 38,
+      "fn": 360
+    },
+    "precision": 1.0,
+    "recall": 0.2208,
+    "f1": 0.3617,
+    "accuracy": 0.28
+  },
+  "C": {
+    "config_name": "DEPENDENCY_OFF",
+    "confusion_matrix": {
+      "tp": 114,
+      "fp": 0,
+      "tn": 38,
+      "fn": 348
+    },
+    "precision": 1.0,
+    "recall": 0.2468,
+    "f1": 0.3959,
+    "accuracy": 0.304
+  },
+  "D": {
+    "config_name": "SECURITY_OFF",
+    "confusion_matrix": {
+      "tp": 25,
+      "fp": 0,
+      "tn": 38,
+      "fn": 437
+    },
+    "precision": 1.0,
+    "recall": 0.0541,
+    "f1": 0.1026,
+    "accuracy": 0.126
+  },
+  "E": {
+    "config_name": "RISK_OFF",
+    "confusion_matrix": {
+      "tp": 129,
+      "fp": 0,
+      "tn": 38,
+      "fn": 333
+    },
+    "precision": 1.0,
+    "recall": 0.2792,
+    "f1": 0.4365,
+    "accuracy": 0.334
+  },
+  "F": {
+    "config_name": "PATCH_OFF",
+    "confusion_matrix": {
+      "tp": 146,
+      "fp": 0,
+      "tn": 38,
+      "fn": 316
+    },
+    "precision": 1.0,
+    "recall": 0.316,
+    "f1": 0.4802,
+    "accuracy": 0.368
+  },
+  "G": {
+    "config_name": "VALIDATION_OFF",
+    "confusion_matrix": {
+      "tp": 95,
+      "fp": 0,
+      "tn": 38,
+      "fn": 367
+    },
+    "precision": 1.0,
+    "recall": 0.2056,
+    "f1": 0.3411,
+    "accuracy": 0.266
+  },
+  "H": {
+    "config_name": "LEGACY_ACE_OFF",
+    "confusion_matrix": {
+      "tp": 138,
+      "fp": 0,
+      "tn": 38,
+      "fn": 324
+    },
+    "precision": 1.0,
+    "recall": 0.2987,
+    "f1": 0.46,
+    "accuracy": 0.352
+  },
+  "I": {
+    "config_name": "AECE_OFF",
+    "confusion_matrix": {
+      "tp": 144,
+      "fp": 0,
+      "tn": 38,
+      "fn": 318
+    },
+    "precision": 1.0,
+    "recall": 0.3117,
+    "f1": 0.4753,
+    "accuracy": 0.364
+  },
+  "J": {
+    "config_name": "MULTI_PATCH_OFF",
+    "confusion_matrix": {
+      "tp": 138,
+      "fp": 0,
+      "tn": 38,
+      "fn": 324
+    },
+    "precision": 1.0,
+    "recall": 0.2987,
+    "f1": 0.46,
+    "accuracy": 0.352
+  }
+}

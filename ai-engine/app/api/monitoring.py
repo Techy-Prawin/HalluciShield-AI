@@ -4,7 +4,7 @@ Runtime Security Monitoring API Endpoints.
 Provides endpoints for recording events, querying alerts,
 simulating security events, and viewing the monitoring dashboard.
 """
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import HTMLResponse
 from typing import List
 
@@ -17,8 +17,13 @@ from app.agents.models import (
     SimulateEventsResponse,
 )
 from app.agents.runtime_monitor import RuntimeMonitor
+from app.security import require_api_key
 
-router = APIRouter(prefix="/api/v1/monitoring", tags=["monitoring"])
+router = APIRouter(
+    prefix="/api/v1/monitoring",
+    tags=["monitoring"],
+    dependencies=[Depends(require_api_key)],
+)
 
 _monitor = RuntimeMonitor()
 

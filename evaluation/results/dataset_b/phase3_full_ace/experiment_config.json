@@ -1,0 +1,27 @@
+{
+  "experiment_name": "phase-3-dataset-b-ace-evaluation",
+  "experiment_version": "v2.0",
+  "timestamp": "2026-10-05T07:26:35.185828+00:00",
+  "dataset": {
+    "total_records": 500,
+    "positive_samples": 387,
+    "negative_samples": 113,
+    "manifest_hash": "e4489ccc0ca5b9c2"
+  },
+  "sandbox_oracle": {
+    "status": "NOT_APPLICABLE",
+    "reason": "Dataset B samples are standalone code snippets without execution harnesses. A valid sandbox oracle requires: (1) a driver that exercises the vulnerable code path with adversarial input, (2) an assertion that detects the security-relevant outcome (e.g. tainted SQL executed, shell command injected). Without (1) and (2), running code and inspecting stdout/stderr cannot distinguish vulnerable from safe code."
+  },
+  "status_model": [
+    "COMPLETED",
+    "FAILED",
+    "NOT_RUN",
+    "NOT_APPLICABLE",
+    "TIMEOUT"
+  ],
+  "llm_configuration": {
+    "provider": "groq",
+    "model": "qwen/qwen3.8-27b",
+    "base_url": "https://api.groq.com/openai/v1"
+  }
+}

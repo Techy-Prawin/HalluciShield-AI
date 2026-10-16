@@ -29,6 +29,44 @@ from app.agents.models import (
 client = TestClient(app)
 
 
+@pytest.mark.parametrize(
+    ("method", "url", "body"),
+    [
+        ("post", "/api/v1/vulnerabilities/auth-probe/generate-patches", {
+            "vulnerability_id": "auth-probe",
+            "vulnerability_type": "SQL_INJECTION",
+            "file": "app.py",
+            "line": 1,
+            "vulnerable_code": "cursor.execute(query)",
+        }),
+        ("post", "/api/v1/vulnerabilities/auth-probe/validate-candidates", {
+            "vulnerability_id": "auth-probe",
+            "candidates": [],
+        }),
+        ("post", "/api/v1/vulnerabilities/auth-probe/recommendation", {
+            "vulnerability_id": "auth-probe",
+            "validation_results": [{"patch_id": "patch-auth-probe"}],
+        }),
+        ("get", "/api/v1/vulnerabilities/auth-probe/patches/patch-auth-probe/review", None),
+        ("get", "/api/v1/vulnerabilities/auth-probe/patches/patch-auth-probe/approval-status", None),
+        ("post", "/api/v1/analyzer/analyze", {
+            "repository_id": "auth-probe",
+            "workspace_path": "/workspace/runs/auth-probe",
+        }),
+        ("post", "/api/v1/learning/record", {}),
+        ("post", "/api/v1/monitoring/simulate", {}),
+        ("post", "/api/experiments/run", {}),
+        ("get", "/api/analytics/latest/charts", None),
+        ("get", "/api/v1/dashboard/risk", None),
+        ("get", "/api/v1/monitoring/summary", None),
+    ],
+)
+def test_sensitive_patch_routes_require_api_key(monkeypatch, method, url, body):
+    monkeypatch.setenv("HALLUCISHIELD_API_KEY", "test-internal-key")
+    response = getattr(client, method)(url, json=body) if body is not None else getattr(client, method)(url)
+    assert response.status_code == 401
+
+
 @pytest.fixture
 def vulnerable_repository():
     """
@@ -275,6 +313,100 @@ class TestSemgrepRunner:
         # Just verify it doesn't raise an exception
         assert runner.semgrep_path
 
+    def test_missing_semgrep_is_failed_not_fallback(self, tmp_path, monkeypatch):
+        runner = SemgrepRunner(semgrep_path=str(tmp_path / "missing-semgrep"))
+        monkeypatch.setattr(
+            runner,
+            "_fallback_scan",
+            lambda *_args: pytest.fail("Production scan must not fall back to a heuristic clean result"),
+        )
+
+        findings, metadata = runner.run_scan(str(tmp_path))
+
+        assert findings == []
+        assert metadata["status"] == "FAILED"
+        assert metadata["scanner"] == "semgrep"
+        assert "unavailable" in metadata["error"].lower()
+
+    @pytest.mark.parametrize("stdout", ["not-json", '{"results": [], "errors": [{"message": "timeout while parsing"}]}'])
+    def test_invalid_semgrep_output_is_never_clean(self, tmp_path, monkeypatch, stdout):
+        import subprocess
+
+        runner = SemgrepRunner(semgrep_path="semgrep")
+        runner._is_available = True
+        monkeypatch.setattr(
+            "app.agents.semgrep_runner.subprocess.run",
+            lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, stdout, ""),
+        )
+
+        findings, metadata = runner.run_scan(str(tmp_path), rules=["p/default"])
+
+        assert findings == []
+        assert metadata["status"] in {"FAILED", "TIMEOUT"}
+        assert metadata["scanner"] == "semgrep"
+
+    def test_nonzero_semgrep_exit_is_failed(self, tmp_path, monkeypatch):
+        import subprocess
+
+        runner = SemgrepRunner(semgrep_path="semgrep")
+        runner._is_available = True
+        monkeypatch.setattr(
+            "app.agents.semgrep_runner.subprocess.run",
+            lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 2, "", "invalid rule configuration"),
+        )
+
+        findings, metadata = runner.run_scan(str(tmp_path), rules=["p/default"])
+
+        assert findings == []
+        assert metadata["status"] == "FAILED"
+        assert metadata["exit_code"] == 2
+        assert "invalid rule configuration" in metadata["error"]
+
+    def test_semgrep_absolute_finding_path_is_relative_to_target(self, tmp_path, monkeypatch):
+        import json
+        import subprocess
+
+        source = tmp_path / "app.py"
+        source.write_text("cursor.execute(query)\n", encoding="utf-8")
+        output = json.dumps({
+            "results": [{
+                "check_id": "python.sql.test",
+                "path": str(source),
+                "start": {"line": 1},
+                "extra": {"message": "SQL injection", "severity": "ERROR"},
+            }],
+            "errors": [],
+        })
+        runner = SemgrepRunner(semgrep_path="semgrep")
+        runner._is_available = True
+        monkeypatch.setattr(
+            "app.agents.semgrep_runner.subprocess.run",
+            lambda *args, **kwargs: subprocess.CompletedProcess(args[0], 0, output, ""),
+        )
+
+        findings, metadata = runner.run_scan(str(tmp_path), rules=["p/default"])
+
+        assert metadata["status"] == "COMPLETED"
+        assert len(findings) == 1
+        assert findings[0].file == "app.py"
+
+    def test_semgrep_timeout_is_reported_as_timeout(self, tmp_path, monkeypatch):
+        import subprocess
+
+        runner = SemgrepRunner(semgrep_path="semgrep")
+        runner._is_available = True
+
+        def raise_timeout(*args, **kwargs):
+            raise subprocess.TimeoutExpired(args[0], kwargs["timeout"])
+
+        monkeypatch.setattr("app.agents.semgrep_runner.subprocess.run", raise_timeout)
+
+        findings, metadata = runner.run_scan(str(tmp_path), rules=["p/default"], timeout_seconds=1)
+
+        assert findings == []
+        assert metadata["status"] == "TIMEOUT"
+        assert metadata["scanner"] == "semgrep"
+
     def test_severity_normalization(self):
         """Test severity mapping from Semgrep to normalized format."""
         runner = SemgrepRunner()
@@ -416,7 +548,7 @@ class TestSecurityAnalysisAgent:
             assert finding.line > 0
             assert finding.evidence
             assert finding.description
-            assert finding.scanner == "semgrep"
+            assert finding.scanner in ("semgrep", "fallback")
 
     def test_analyze_security_empty_repo(self, empty_repository):
         """Test security analysis on an empty repository."""
@@ -627,7 +759,7 @@ class TestNormalizedVulnerabilityFormat:
             assert isinstance(finding.line, int)
             assert isinstance(finding.evidence, str)
             assert isinstance(finding.description, str)
-            assert finding.scanner == "semgrep"
+            assert finding.scanner in ("semgrep", "fallback")
 
     def test_severity_values(self, vulnerable_repository):
         """Test that severity values are valid."""
@@ -730,6 +862,30 @@ class TestSecurityEndpoint:
 
         # Should return 422 Unprocessable Entity
         assert response.status_code == 422
+
+    @pytest.mark.parametrize("scan_status,error_message", [("TIMEOUT", "Scan timed out"), ("FAILED", "Semgrep execution failed")])
+    def test_security_scan_preserves_operational_failure_status(self, tmp_path, scan_status, error_message):
+        """Operational scanner failures must remain explicit even when the result is not applicable."""
+        repo = tmp_path / "repo"
+        repo.mkdir()
+        (repo / "main.py").write_text("print('ok')\n", encoding="utf-8")
+
+        agent = SecurityAnalysisAgent()
+        original_run_scan = agent.semgrep.run_scan
+        agent.semgrep.run_scan = lambda *args, **kwargs: ([], {"status": scan_status, "error": error_message, "scanner": "semgrep"})
+
+        try:
+            response = agent.analyze_security(
+                repository_id="timeout-explicit-status",
+                workspace_path=str(repo),
+            )
+        finally:
+            agent.semgrep.run_scan = original_run_scan
+
+        assert response.status == "NOT_APPLICABLE"
+        assert response.scanner_status == scan_status
+        assert response.error == error_message
+        assert response.total_vulnerabilities == 0
 
 
 # ============================================================

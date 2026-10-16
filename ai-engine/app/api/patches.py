@@ -8,7 +8,8 @@ Provides HTTP endpoints for:
 - Adaptive Confidence Engine (patch ranking)
 """
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
+from pathlib import Path
 
 from app.agents.patch_agent import PatchGenerationAgent
 from app.agents.sandbox_agent import SandboxAgent
@@ -27,8 +28,14 @@ from app.agents.models import (
     RankPatchesRequest,
     RankPatchesResponse,
 )
+from app.security import require_api_key
+from app.security import validate_workspace_path
 
-router = APIRouter(prefix="/api/v1/vulnerabilities", tags=["Patch Generation Agent"])
+router = APIRouter(
+    prefix="/api/v1/vulnerabilities",
+    tags=["Patch Generation Agent"],
+    dependencies=[Depends(require_api_key)],
+)
 
 agent_instance = PatchGenerationAgent()
 sandbox_instance = None
@@ -177,6 +184,19 @@ async def validate_candidates_endpoint(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="At least one candidate patch is required",
         )
+
+    if request.workspace_path:
+        request.workspace_path = validate_workspace_path(request.workspace_path)
+        if not Path(request.workspace_path).is_dir():
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Candidate workspace is unavailable")
+    if request.baseline_workspace_path:
+        request.baseline_workspace_path = validate_workspace_path(request.baseline_workspace_path)
+        if not Path(request.baseline_workspace_path).is_dir():
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Baseline workspace is unavailable")
+    if request.file_path:
+        file_parts = Path(request.file_path).parts
+        if Path(request.file_path).is_absolute() or ".." in file_parts:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="file_path must be relative to the workspace")
 
     try:
         # Run validation

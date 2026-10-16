@@ -1,0 +1,9 @@
+{
+  "dataset_b_version": "v1.0 (500 samples, audited intact)",
+  "dataset_b_records_checked": 500,
+  "immutability_check_passed": true,
+  "owasp_2740_cases_untouched": true,
+  "previous_artifacts_unchanged": true,
+  "check_timestamp": "2026-10-06T14:55:43Z",
+  "pilot20_environment": "Windows host, Docker unavailable"
+}

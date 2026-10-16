@@ -15,6 +15,7 @@ All tests use mock Docker client to avoid requiring Docker daemon.
 """
 
 import json
+import importlib.util
 import os
 import shutil
 import tempfile
@@ -38,6 +39,11 @@ from app.agents.models import (
 from app.agents.sandbox_agent import SandboxAgent, DEFAULT_SANDBOX_IMAGE
 
 client = TestClient(app)
+_sandbox_runner_path = Path(__file__).resolve().parents[2] / "sandbox" / "runner.py"
+_sandbox_runner_spec = importlib.util.spec_from_file_location("hallucishield_sandbox_runner", _sandbox_runner_path)
+assert _sandbox_runner_spec and _sandbox_runner_spec.loader
+sandbox_runner = importlib.util.module_from_spec(_sandbox_runner_spec)
+_sandbox_runner_spec.loader.exec_module(sandbox_runner)
 
 
 # ============================================================
@@ -67,12 +73,14 @@ def sample_patch():
 
 
 @pytest.fixture
-def sample_request(sample_patch):
+def sample_request(sample_patch, tmp_path):
     """Create a sample SandboxValidationRequest."""
+    ws = tmp_path / "test-repo"
+    ws.mkdir(parents=True, exist_ok=True)
     return SandboxValidationRequest(
         patch=sample_patch,
         repository_id="repo-1",
-        workspace_path="/tmp/test-repo",
+        workspace_path=str(ws),
         file_path="app/db.py",
         original_code="def vulnerable_query(username):\n    cursor.execute('SELECT * FROM users WHERE id = ' + username)",
         language="python",
@@ -339,6 +347,47 @@ class TestWorkspacePreparation:
         finally:
             shutil.rmtree(workspace)
 
+
+class TestIsolatedRunnerCommandPolicy:
+    def test_command_arguments_allow_fixed_argv_without_shell(self):
+        assert sandbox_runner.command_arguments("python -m pytest -q") == ["python", "-m", "pytest", "-q"]
+
+    @pytest.mark.parametrize("command", ["python -m pytest; curl example.invalid", "sh -c id", "curl example.invalid"])
+    def test_command_arguments_reject_shell_and_unapproved_executables(self, command):
+        with pytest.raises(ValueError):
+            sandbox_runner.command_arguments(command)
+
+    def test_missing_test_and_security_commands_are_unverified(self):
+        tests = sandbox_runner.run_tests("")
+        scan = sandbox_runner.run_security_scan("")
+
+        assert tests["status"] == "UNVERIFIED"
+        assert tests["success"] is False
+        assert scan["status"] == "UNVERIFIED"
+        assert scan["success"] is False
+
+    def test_prepared_candidate_is_not_overwritten(self, tmp_path, monkeypatch):
+        work_dir = tmp_path / "workspace"
+        work_dir.mkdir()
+        source_file = work_dir / "app.py"
+        source_file.write_text("def safe(): return True\n", encoding="utf-8")
+        target_file = tmp_path / "target_file"
+        target_file.write_text("app.py", encoding="utf-8")
+        ready_file = tmp_path / "candidate_workspace_ready"
+        ready_file.write_text("true", encoding="utf-8")
+        patch_file = tmp_path / "patch.py"
+        patch_file.write_text("def unsafe(): return False\n", encoding="utf-8")
+
+        monkeypatch.setattr(sandbox_runner, "WORK_DIR", work_dir)
+        monkeypatch.setattr(sandbox_runner, "TARGET_FILE", target_file)
+        monkeypatch.setattr(sandbox_runner, "CANDIDATE_READY_FILE", ready_file)
+        monkeypatch.setattr(sandbox_runner, "PATCH_FILE", patch_file)
+
+        result = sandbox_runner.apply_patch()
+
+        assert result["success"] is True
+        assert source_file.read_text(encoding="utf-8") == "def safe(): return True\n"
+
     def test_prepare_workspace_with_compile_command(self, mock_docker_client):
         agent = SandboxAgent(docker_client=mock_docker_client)
         request = SandboxValidationRequest(
@@ -380,6 +429,35 @@ class TestWorkspacePreparation:
             assert not os.path.exists(os.path.join(workspace, "compile_cmd"))
             assert not os.path.exists(os.path.join(workspace, "test_cmd"))
             assert not os.path.exists(os.path.join(workspace, "scan_cmd"))
+        finally:
+            shutil.rmtree(workspace)
+
+    def test_prepare_workspace_copies_prepared_candidate_tree(self, mock_docker_client, tmp_path):
+        source = tmp_path / "candidate"
+        (source / "tests").mkdir(parents=True)
+        (source / "app.py").write_text("def fixed(): return True\n", encoding="utf-8")
+        (source / "tests" / "test_app.py").write_text("def test_fixed(): assert True\n", encoding="utf-8")
+        agent = SandboxAgent(docker_client=mock_docker_client)
+        request = SandboxValidationRequest(
+            patch=PatchCandidate(
+                patch_id="prepared-candidate",
+                modified_code="def fixed(): return True\n",
+                explanation="test",
+                security_strategy="test",
+                expected_effect="test",
+            ),
+            workspace_path=str(source),
+            candidate_workspace_ready=True,
+            file_path="app.py",
+            original_code="def fixed(): return False\n",
+            language="python",
+        )
+
+        workspace = agent._prepare_workspace(request)
+        try:
+            assert (Path(workspace) / "workspace" / "app.py").read_text(encoding="utf-8") == "def fixed(): return True\n"
+            assert (Path(workspace) / "workspace" / "tests" / "test_app.py").is_file()
+            assert (Path(workspace) / "candidate_workspace_ready").read_text(encoding="utf-8") == "true"
         finally:
             shutil.rmtree(workspace)
 

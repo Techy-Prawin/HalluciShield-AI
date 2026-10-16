@@ -1,0 +1,242 @@
+{
+  "1_FULL_vs_HALLUCINATION_OFF": {
+    "description": "FULL vs Hallucination Detection Disabled",
+    "baseline_config": "A",
+    "ablation_config": "B",
+    "sample_count": 500,
+    "cm_difference": {
+      "tp_diff": 7,
+      "fp_diff": 0,
+      "tn_diff": 0,
+      "fn_diff": -7
+    },
+    "absolute_differences": {
+      "precision_diff": 0.0,
+      "recall_diff": 0.0152,
+      "f1_diff": 0.0206,
+      "accuracy_diff": 0.014
+    },
+    "relative_percentage_changes": {
+      "f1_change_pct": 6.04,
+      "recall_change_pct": 7.39
+    },
+    "evidence_availability": {
+      "A_real_evidence": 285,
+      "B_real_evidence": 306,
+      "A_not_available": 285,
+      "B_not_available": 306
+    },
+    "statistically_interpretable": true,
+    "interpretation_note": "Measured change: F1 delta = +0.0206, Recall delta = +0.0152. Detection metrics identical or downstream-focused ablation stage."
+  },
+  "2_FULL_vs_DEPENDENCY_OFF": {
+    "description": "FULL vs Dependency Analysis Disabled",
+    "baseline_config": "A",
+    "ablation_config": "C",
+    "sample_count": 500,
+    "cm_difference": {
+      "tp_diff": 19,
+      "fp_diff": 0,
+      "tn_diff": 0,
+      "fn_diff": -19
+    },
+    "absolute_differences": {
+      "precision_diff": 0.0,
+      "recall_diff": 0.0412,
+      "f1_diff": 0.0548,
+      "accuracy_diff": 0.038
+    },
+    "relative_percentage_changes": {
+      "f1_change_pct": 16.07,
+      "recall_change_pct": 20.04
+    },
+    "evidence_availability": {
+      "A_real_evidence": 285,
+      "C_real_evidence": 342,
+      "A_not_available": 285,
+      "C_not_available": 342
+    },
+    "statistically_interpretable": true,
+    "interpretation_note": "Measured change: F1 delta = +0.0548, Recall delta = +0.0412. Statistically significant shift in vulnerability detection."
+  },
+  "3_FULL_vs_SECURITY_OFF": {
+    "description": "FULL vs Security Analysis Disabled",
+    "baseline_config": "A",
+    "ablation_config": "D",
+    "sample_count": 500,
+    "cm_difference": {
+      "tp_diff": -70,
+      "fp_diff": 0,
+      "tn_diff": 0,
+      "fn_diff": 70
+    },
+    "absolute_differences": {
+      "precision_diff": 0.0,
+      "recall_diff": -0.1515,
+      "f1_diff": -0.2385,
+      "accuracy_diff": -0.14
+    },
+    "relative_percentage_changes": {
+      "f1_change_pct": -69.92,
+      "recall_change_pct": -73.69
+    },
+    "evidence_availability": {
+      "A_real_evidence": 285,
+      "D_real_evidence": 252,
+      "A_not_available": 285,
+      "D_not_available": 450
+    },
+    "statistically_interpretable": true,
+    "interpretation_note": "Measured change: F1 delta = -0.2385, Recall delta = -0.1515. Statistically significant shift in vulnerability detection."
+  },
+  "4_FULL_vs_RISK_OFF": {
+    "description": "FULL vs Risk Assessment Disabled",
+    "baseline_config": "A",
+    "ablation_config": "E",
+    "sample_count": 500,
+    "cm_difference": {
+      "tp_diff": 34,
+      "fp_diff": 0,
+      "tn_diff": 0,
+      "fn_diff": -34
+    },
+    "absolute_differences": {
+      "precision_diff": 0.0,
+      "recall_diff": 0.0736,
+      "f1_diff": 0.0954,
+      "accuracy_diff": 0.068
+    },
+    "relative_percentage_changes": {
+      "f1_change_pct": 27.97,
+      "recall_change_pct": 35.8
+    },
+    "evidence_availability": {
+      "A_real_evidence": 285,
+      "E_real_evidence": 387,
+      "A_not_available": 285,
+      "E_not_available": 387
+    },
+    "statistically_interpretable": true,
+    "interpretation_note": "Measured change: F1 delta = +0.0954, Recall delta = +0.0736. Statistically significant shift in vulnerability detection."
+  },
+  "5_FULL_vs_PATCH_OFF": {
+    "description": "FULL vs Patch Generation Disabled",
+    "baseline_config": "A",
+    "ablation_config": "F",
+    "sample_count": 500,
+    "cm_difference": {
+      "tp_diff": 51,
+      "fp_diff": 0,
+      "tn_diff": 0,
+      "fn_diff": -51
+    },
+    "absolute_differences": {
+      "precision_diff": 0.0,
+      "recall_diff": 0.1104,
+      "f1_diff": 0.1391,
+      "accuracy_diff": 0.102
+    },
+    "relative_percentage_changes": {
+      "f1_change_pct": 40.78,
+      "recall_change_pct": 53.7
+    },
+    "evidence_availability": {
+      "A_real_evidence": 285,
+      "F_real_evidence": 177,
+      "A_not_available": 285,
+      "F_not_available": 375
+    },
+    "statistically_interpretable": true,
+    "interpretation_note": "Measured change: F1 delta = +0.1391, Recall delta = +0.1104. Statistically significant shift in vulnerability detection."
+  },
+  "6_FULL_vs_VALIDATION_OFF": {
+    "description": "FULL vs Validation Disabled",
+    "baseline_config": "A",
+    "ablation_config": "G",
+    "sample_count": 500,
+    "cm_difference": {
+      "tp_diff": 0,
+      "fp_diff": 0,
+      "tn_diff": 0,
+      "fn_diff": 0
+    },
+    "absolute_differences": {
+      "precision_diff": 0.0,
+      "recall_diff": 0.0,
+      "f1_diff": 0.0,
+      "accuracy_diff": 0.0
+    },
+    "relative_percentage_changes": {
+      "f1_change_pct": 0.0,
+      "recall_change_pct": 0.0
+    },
+    "evidence_availability": {
+      "A_real_evidence": 285,
+      "G_real_evidence": 0,
+      "A_not_available": 285,
+      "G_not_available": 0
+    },
+    "statistically_interpretable": false,
+    "interpretation_note": "Measured change: F1 delta = +0.0000, Recall delta = +0.0000. Detection metrics identical or downstream-focused ablation stage."
+  },
+  "7_LEGACY_ACE_vs_AECE": {
+    "description": "Legacy ACE Disabled (AECE active) vs AECE Disabled (Legacy ACE active)",
+    "baseline_config": "H",
+    "ablation_config": "I",
+    "sample_count": 500,
+    "cm_difference": {
+      "tp_diff": 6,
+      "fp_diff": 0,
+      "tn_diff": 0,
+      "fn_diff": -6
+    },
+    "absolute_differences": {
+      "precision_diff": 0.0,
+      "recall_diff": 0.013,
+      "f1_diff": 0.0153,
+      "accuracy_diff": 0.012
+    },
+    "relative_percentage_changes": {
+      "f1_change_pct": 3.33,
+      "recall_change_pct": 4.35
+    },
+    "evidence_availability": {
+      "H_real_evidence": 414,
+      "I_real_evidence": 0,
+      "H_not_available": 414,
+      "I_not_available": 0
+    },
+    "statistically_interpretable": true,
+    "interpretation_note": "Measured change: F1 delta = +0.0153, Recall delta = +0.0130. Detection metrics identical or downstream-focused ablation stage."
+  },
+  "8_MULTI_PATCH_ON_vs_OFF": {
+    "description": "Multi-Patch Candidate Selection ON vs OFF",
+    "baseline_config": "A",
+    "ablation_config": "J",
+    "sample_count": 500,
+    "cm_difference": {
+      "tp_diff": 43,
+      "fp_diff": 0,
+      "tn_diff": 0,
+      "fn_diff": -43
+    },
+    "absolute_differences": {
+      "precision_diff": 0.0,
+      "recall_diff": 0.0931,
+      "f1_diff": 0.1189,
+      "accuracy_diff": 0.086
+    },
+    "relative_percentage_changes": {
+      "f1_change_pct": 34.86,
+      "recall_change_pct": 45.28
+    },
+    "evidence_availability": {
+      "A_real_evidence": 285,
+      "J_real_evidence": 414,
+      "A_not_available": 285,
+      "J_not_available": 414
+    },
+    "statistically_interpretable": true,
+    "interpretation_note": "Measured change: F1 delta = +0.1189, Recall delta = +0.0931. Statistically significant shift in vulnerability detection."
+  }
+}

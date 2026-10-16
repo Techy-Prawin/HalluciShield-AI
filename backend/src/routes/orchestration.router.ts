@@ -5,7 +5,7 @@ import { Request, Response, NextFunction, Router } from 'express';
 import { RepositoryModel } from '../models';
 import { checkDatabaseHealth } from '../config/db';
 import { AiEngineClient, AiEngineConnectionError } from '../services/aiEngine.client';
-import { OrchestrationService } from '../services/orchestration.service';
+import { OrchestrationService, ScanRecord } from '../services/orchestration.service';
 import { WorkspaceService } from '../services/workspace.service';
 import { config } from '../config/env';
 
@@ -104,6 +104,19 @@ const AI_ENGINE_TIMEOUTS = {
   read: 10_000,
 };
 
+function isArtifactAuthorized(scan: Awaited<ReturnType<OrchestrationService['getScanAsync']>>): boolean {
+  return Boolean(
+    scan &&
+    scan.status === 'COMPLETED' &&
+    // Allow AUTHORIZED or UNVERIFIED_DOWNLOAD (with user acknowledgement)
+    (scan.artifactAuthorization === 'AUTHORIZED' ||
+     scan.artifactAuthorization === 'UNVERIFIED_DOWNLOAD') &&
+    scan.stages.security.state === 'COMPLETED' &&
+    scan.stages.security.details?.scannerStatus === 'COMPLETED' &&
+    scan.stages.securedFile?.state === 'COMPLETED'
+  );
+}
+
 // ---------------------------------------------------------------------------
 // 1. POST /api/repositories/:repositoryId/scan — start a scan
 // ---------------------------------------------------------------------------
@@ -199,7 +212,7 @@ router.get(
       fail(res, 404, 'Scan not found.');
       return;
     }
-    const hasOutputFile = Boolean(scan.outputFile && fs.existsSync(scan.outputFile));
+    const hasOutputFile = Boolean(isArtifactAuthorized(scan) && scan.outputFile && fs.existsSync(scan.outputFile));
     res.status(200).json({
       success: true,
       scanId: scan.id,
@@ -222,6 +235,11 @@ router.get(
       patches: scan.patches,
       validationResults: scan.results?.validation ?? null,
       remediation: scan.remediation ?? null,
+      remediationStatus: scan.remediationStatus,
+      artifactAuthorization: scan.artifactAuthorization,
+      securityVerdict: scan.securityVerdict,
+      downloadEligibility: scan.downloadEligibility ?? null,
+      downloadAcknowledgement: scan.downloadAcknowledgement ?? null,
       hasOutputFile,
       downloadUrl: hasOutputFile ? `/api/repositories/${scan.repositoryId}/scan/${scan.id}/download` : null,
       outputFile: scan.outputFile ? path.basename(scan.outputFile) : null,
@@ -257,7 +275,7 @@ router.get(
     }
 
     const successfulStages = Object.values(scan.stages).filter((s) => s.state === 'COMPLETED').length;
-    const hasOutputFile = Boolean(scan.outputFile && fs.existsSync(scan.outputFile));
+    const hasOutputFile = Boolean(isArtifactAuthorized(scan) && scan.outputFile && fs.existsSync(scan.outputFile));
     res.status(scan.status === 'FAILED' && successfulStages === 0 ? 502 : 200).json({
       success: scan.status === 'COMPLETED',
       scanId: scan.id,
@@ -274,6 +292,10 @@ router.get(
       riskLevel: scan.riskLevel,
       confidence: scan.confidence,
       remediation: scan.remediation ?? null,
+      remediationStatus: scan.remediationStatus,
+      artifactAuthorization: scan.artifactAuthorization,
+      securityVerdict: scan.securityVerdict,
+      downloadEligibility: scan.downloadEligibility ?? null,
       patches: scan.patches,
       validationResults: scan.results?.validation ?? null,
       hasOutputFile,
@@ -299,15 +321,112 @@ router.get(
       return;
     }
     if (!scan.outputFile || !fs.existsSync(scan.outputFile)) {
-      fail(res, 404, 'Secured output file is not available yet for this scan.');
+      // Provide more specific feedback based on authorization level
+      if (scan.artifactAuthorization === 'UNVERIFIED_DOWNLOAD') {
+        fail(res, 403, 'Download eligible with unverified status. Acknowledge the risk warning to proceed.');
+      } else {
+        fail(res, 404, 'Secured output file is not available yet for this scan.');
+      }
+      return;
+    }
+
+    // Blocked or pending artifacts are never downloadable, even if a file
+    // happens to exist on disk (e.g. a stale artifact placed by a test).
+    if (scan.artifactAuthorization === 'BLOCKED' || scan.artifactAuthorization === 'PENDING') {
+      fail(res, 404, 'Secured output is not authorized for download.');
+      return;
+    }
+
+    // Unverified downloads require an explicit, auditable acknowledgement.
+    if (
+      scan.artifactAuthorization === 'UNVERIFIED_DOWNLOAD' &&
+      scan.downloadEligibility?.acknowledgementRequired === true &&
+      !isUnverifiedDownloadAcknowledged(req, scan)
+    ) {
+      fail(res, 403, 'Download eligible with unverified status. Acknowledge the risk warning to proceed.', {
+        acknowledgementRequired: true,
+      });
+      return;
+    }
+
+    // Integrity check: the artifact on disk must match the scanned candidate's hash.
+    const actualHash = crypto.createHash('sha256').update(fs.readFileSync(scan.outputFile)).digest('hex');
+    if (scan.outputFileHash && actualHash !== scan.outputFileHash) {
+      fail(res, 409, 'Artifact integrity check failed: secured output does not match the scanned candidate. Download blocked.', {
+        code: 'ARTIFACT_TAMPERED',
+      });
       return;
     }
 
     const filename = path.basename(scan.outputFile);
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('X-Content-SHA256', actualHash);
     const stream = fs.createReadStream(scan.outputFile);
     stream.pipe(res);
+  })
+);
+
+/** True when the request carries an explicit acknowledgement for an
+ * unverified download (query param, header, or a previously recorded
+ * acknowledgement on the scan record). */
+function isUnverifiedDownloadAcknowledged(req: Request, scan: ScanRecord): boolean {
+  if (scan.downloadAcknowledgement) return true;
+  if (req.query.acknowledge === 'true') return true;
+  return req.headers['x-acknowledge-unverified-risk'] === 'true';
+}
+
+// ---------------------------------------------------------------------------
+// 3c. POST /api/repositories/:repositoryId/scan/:scanId/acknowledge-download — record explicit acknowledgement
+// ---------------------------------------------------------------------------
+router.post(
+  '/repositories/:repositoryId/scan/:scanId/acknowledge-download',
+  asyncHandler(async (req: Request, res: Response) => {
+    const scan = await getService().getScanAsync(req.params.scanId);
+    if (!scan || scan.repositoryId !== req.params.repositoryId) {
+      fail(res, 404, 'Scan not found.');
+      return;
+    }
+    if (scan.artifactAuthorization !== 'UNVERIFIED_DOWNLOAD') {
+      fail(res, 400, 'Acknowledgement is only applicable to unverified downloads.');
+      return;
+    }
+    if (!scan.downloadEligibility?.acknowledgementRequired) {
+      fail(res, 400, 'Acknowledgement is not required for this scan.');
+      return;
+    }
+    if (!scan.outputFile || !fs.existsSync(scan.outputFile)) {
+      fail(res, 404, 'Secured output file is not available for this scan.');
+      return;
+    }
+
+    const body = req.body ?? {};
+    if (body.acknowledged !== true) {
+      fail(res, 400, 'Explicit acknowledgement is required.');
+      return;
+    }
+
+    const acknowledged = getService().acknowledgeDownload(scan.id, {
+      acknowledgedAt: new Date().toISOString(),
+      acknowledgedBy: typeof body.userId === 'string' && body.userId.trim() ? body.userId.trim() : undefined,
+      userId: typeof body.userId === 'string' && body.userId.trim() ? body.userId.trim() : undefined,
+      ip: req.ip,
+      level: 'UNVERIFIED_DOWNLOAD',
+    });
+    if (!acknowledged) {
+      fail(res, 404, 'Scan not found.');
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      scanId: scan.id,
+      acknowledged: true,
+      level: 'UNVERIFIED_DOWNLOAD',
+      acknowledgedAt: scan.downloadAcknowledgement?.acknowledgedAt,
+      message: 'Unverified download acknowledgement recorded. Proceed to the download endpoint.',
+      requestId: res.locals.requestId,
+    });
   })
 );
 
@@ -674,6 +793,61 @@ router.get(
           severity,
           limit: Number.isFinite(limit) && limit ? limit : undefined,
         },
+        timeoutMs: AI_ENGINE_TIMEOUTS.read,
+        requestId: res.locals.requestId,
+      });
+      res.status(r.status).json(r.data);
+    } catch (err) {
+      emitAiEngineFailure(err, res);
+    }
+  })
+);
+
+router.get(
+  '/monitoring/events',
+  asyncHandler(async (req: Request, res: Response) => {
+    const eventType = typeof req.query.event_type === 'string' ? req.query.event_type : undefined;
+    const severity = typeof req.query.severity === 'string' ? req.query.severity : undefined;
+    const limit = typeof req.query.limit === 'string' ? Number.parseInt(req.query.limit, 10) : undefined;
+    try {
+      const r = await getService().proxy({
+        method: 'GET',
+        path: '/api/v1/monitoring/events',
+        query: { event_type: eventType, severity, limit: Number.isFinite(limit) ? limit : undefined },
+        timeoutMs: AI_ENGINE_TIMEOUTS.read,
+        requestId: res.locals.requestId,
+      });
+      res.status(r.status).json(r.data);
+    } catch (err) {
+      emitAiEngineFailure(err, res);
+    }
+  })
+);
+
+router.get(
+  '/monitoring/summary',
+  asyncHandler(async (_req: Request, res: Response) => {
+    try {
+      const r = await getService().proxy({
+        method: 'GET',
+        path: '/api/v1/monitoring/summary',
+        timeoutMs: AI_ENGINE_TIMEOUTS.read,
+        requestId: res.locals.requestId,
+      });
+      res.status(r.status).json(r.data);
+    } catch (err) {
+      emitAiEngineFailure(err, res);
+    }
+  })
+);
+
+router.get(
+  '/learning/summary',
+  asyncHandler(async (_req: Request, res: Response) => {
+    try {
+      const r = await getService().proxy({
+        method: 'GET',
+        path: '/api/v1/learning/summary',
         timeoutMs: AI_ENGINE_TIMEOUTS.read,
         requestId: res.locals.requestId,
       });

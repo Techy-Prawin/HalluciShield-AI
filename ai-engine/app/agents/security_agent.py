@@ -87,6 +87,29 @@ class SecurityAnalysisAgent:
                 rules=scan_rules,
                 timeout_seconds=120,
             )
+
+            # Surface explicit scanner failures so they are never converted to clean/negative
+            scan_status = scan_metadata.get("status", "COMPLETED")
+            if scan_status in ("FAILED", "TIMEOUT"):
+                err_msg = scan_metadata.get("error", f"Scanner status {scan_status}")
+                logger.error(f"[SecurityAgent] Scan {scan_status}: {err_msg}")
+                # Return empty response instead of raising RuntimeError.
+                # This allows the pipeline to continue with NOT_APPLICABLE evidence;
+                # a timeout never becomes a negative prediction.
+                return SecurityAnalysisResponse(
+                    repository_id=repository_id,
+                    total_vulnerabilities=0,
+                    critical_count=0,
+                    high_count=0,
+                    medium_count=0,
+                    low_count=0,
+                    findings=[],
+                    scan_duration_ms=int((time.time() - start_time) * 1000),
+                    status="NOT_APPLICABLE",
+                    scanner_status=scan_status,
+                    error=err_msg,
+                )
+
             logger.info(
                 f"[SecurityAgent] Semgrep scan completed: {len(semgrep_findings)} raw findings"
             )
@@ -116,12 +139,9 @@ class SecurityAnalysisAgent:
 
             return response
 
-        except Exception as e:
-            logger.error(
-                f"[SecurityAgent] Analysis failed for {repository_id}: {e}",
-                exc_info=True,
-            )
-            # Return empty response on failure
+        except ValueError as e:
+            # Invalid path or argument: return empty response with NOT_APPLICABLE
+            logger.warning(f"[SecurityAgent] Validation error for {repository_id}: {e}")
             duration_ms = int((time.time() - start_time) * 1000)
             return SecurityAnalysisResponse(
                 repository_id=repository_id,
@@ -132,7 +152,17 @@ class SecurityAnalysisAgent:
                 low_count=0,
                 findings=[],
                 scan_duration_ms=duration_ms,
+                status="NOT_APPLICABLE",
+                scanner_status="FAILED",
+                error=str(e),
             )
+        except Exception as e:
+            logger.error(
+                f"[SecurityAgent] Analysis failed for {repository_id}: {e}",
+                exc_info=True,
+            )
+            # Re-raise so failures are not masked as clean/negative
+            raise
 
     def _normalize_findings(
         self,
@@ -174,8 +204,8 @@ class SecurityAnalysisAgent:
         # Determine severity
         severity = self._determine_severity(semgrep_finding.severity)
 
-        # Map to CWE
-        cwe = self._map_to_cwe(rule_lower)
+        # Map to CWE (checking finding metadata first, then rule pattern)
+        cwe = self._map_to_cwe(rule_lower, semgrep_finding.metadata)
 
         # Generate finding ID
         finding_id = f"sec-{uuid.uuid4().hex[:8]}"
@@ -195,6 +225,8 @@ class SecurityAnalysisAgent:
             "semgrep_extra": semgrep_finding.extra,
         }
 
+        scanner_name = "fallback" if semgrep_finding.metadata.get("fallback_scanner") else "semgrep"
+
         return SecurityFinding(
             finding_id=finding_id,
             type=vuln_type,
@@ -205,7 +237,7 @@ class SecurityAnalysisAgent:
             end_line=semgrep_finding.end_line,
             evidence=evidence,
             description=semgrep_finding.message,
-            scanner="semgrep",
+            scanner=scanner_name,
             rule_id=rule_id,
             confidence=0.95,
             fix_recommendation=fix_recommendation,
@@ -219,7 +251,7 @@ class SecurityAnalysisAgent:
                 return vuln_type
 
         # Additional heuristics
-        if "sql" in rule_id_lower or "query" in rule_id_lower:
+        if "sql" in rule_id_lower or "query" in rule_id_lower or "sqli" in rule_id_lower:
             return VulnerabilityType.SQL_INJECTION
         elif "xss" in rule_id_lower or "script" in rule_id_lower:
             return VulnerabilityType.CROSS_SITE_SCRIPTING
@@ -231,6 +263,14 @@ class SecurityAnalysisAgent:
             return VulnerabilityType.PATH_TRAVERSAL
         elif "jwt" in rule_id_lower or "token" in rule_id_lower:
             return VulnerabilityType.INSECURE_JWT
+        elif "deserial" in rule_id_lower or "objectinputstream" in rule_id_lower:
+            return VulnerabilityType.INSECURE_DESERIALIZATION
+        elif "xxe" in rule_id_lower or "xml" in rule_id_lower:
+            return VulnerabilityType.SECURITY_MISCONFIGURATION
+        elif any(k in rule_id_lower for k in ["crypto", "cipher", "hash", "md5", "sha1", "rand"]):
+            return VulnerabilityType.SECURITY_MISCONFIGURATION
+        elif any(k in rule_id_lower for k in ["ssl", "tls", "trust", "cert"]):
+            return VulnerabilityType.SECURITY_MISCONFIGURATION
 
         return VulnerabilityType.UNKNOWN
 
@@ -241,8 +281,24 @@ class SecurityAnalysisAgent:
             VulnerabilitySeverity.MEDIUM,
         )
 
-    def _map_to_cwe(self, rule_id_lower: str) -> Optional[str]:
-        """Map Semgrep rule ID to CWE identifier."""
+    def _map_to_cwe(
+        self, rule_id_lower: str, metadata: Optional[Dict[str, Any]] = None
+    ) -> Optional[str]:
+        """Map Semgrep rule ID and metadata to CWE identifier."""
+        import re
+
+        # First check metadata if provided by Semgrep
+        if metadata and "cwe" in metadata:
+            cwe_val = metadata["cwe"]
+            if isinstance(cwe_val, list) and cwe_val:
+                cwe_str = str(cwe_val[0])
+            else:
+                cwe_str = str(cwe_val)
+            match = re.search(r"CWE-\d+", cwe_str, re.IGNORECASE)
+            if match:
+                return match.group(0).upper()
+
+        # Check explicit CWE mappings
         for pattern, cwe in CWE_MAPPING.items():
             if pattern in rule_id_lower:
                 return cwe
@@ -318,6 +374,9 @@ class SecurityAnalysisAgent:
 
         duration_ms = int((time.time() - start_time) * 1000)
 
+        scanner_name = scan_metadata.get("scanner", "semgrep")
+        status_name = scan_metadata.get("status", "COMPLETED")
+
         return SecurityAnalysisResponse(
             repository_id=repository_id,
             total_vulnerabilities=len(findings),
@@ -327,5 +386,7 @@ class SecurityAnalysisAgent:
             low_count=low_count,
             findings=findings,
             scan_duration_ms=duration_ms,
-            scanner="semgrep",
+            scanner=scanner_name,
+            status=status_name,
+            scanner_status=status_name,
         )

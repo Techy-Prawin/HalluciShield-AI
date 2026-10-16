@@ -5,11 +5,16 @@ Serves the Risk Assessment Dashboard, Patch Recommendation Dashboard,
 Explainable Recommendation Dashboard, and Patch Approval Dashboard HTML pages.
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import HTMLResponse
 import os
+from app.security import require_api_key
 
-router = APIRouter(prefix="/api/v1/dashboard", tags=["Dashboard"])
+router = APIRouter(
+    prefix="/api/v1/dashboard",
+    tags=["Dashboard"],
+    dependencies=[Depends(require_api_key)],
+)
 
 _static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
 

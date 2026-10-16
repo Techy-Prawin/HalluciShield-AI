@@ -1,8 +1,8 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Request, status
 from pydantic import BaseModel
 from app.analyzer.engine import RepositoryAnalyzer
 from app.analyzer.models import AnalysisResult
-from app.security import validate_workspace_path
+from app.security import require_api_key, validate_workspace_path
 
 router = APIRouter(prefix="/api/v1/analyzer", tags=["Static Analyzer"])
 
@@ -15,11 +15,12 @@ class AnalyzeRequest(BaseModel):
 
 
 @router.post("/analyze", response_model=AnalysisResult, status_code=status.HTTP_200_OK)
-async def analyze_repository_endpoint(request: AnalyzeRequest):
+async def analyze_repository_endpoint(request: AnalyzeRequest, http_request: Request):
     """
     Statically analyze source code in workspace_path WITHOUT EXECUTING IT.
     Extracts programming languages, symbols, dependencies, and security-relevant constructs.
     """
+    require_api_key(http_request)
     # --- SECURITY (CRIT-3): validate workspace_path before file-walking ---
     try:
         safe_path = validate_workspace_path(request.workspace_path)

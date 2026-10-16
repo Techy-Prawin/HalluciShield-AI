@@ -1,0 +1,193 @@
+{
+  "experiment_id": "ablation500-empirical-evaluation",
+  "audit_timestamp": "2026-10-11T23:51:46.702038Z",
+  "dataset_version": "B v1.0",
+  "total_metadata_records": 500,
+  "identity_audit": {
+    "unique_by_sample_id": 361,
+    "unique_by_file_path": 483,
+    "unique_by_experiment_id": 483,
+    "unique_by_record_id_metadata_sha": 500,
+    "duplicate_experiment_id_groups": 17,
+    "description": "experiment_id = sha256(file_path + ':' + disk_sha256 using actual disk content"
+  },
+  "experimental_population": {
+    "task_specification": "489 unique record_ids \u00d7 10 configurations = 4,890 experimental units",
+    "actual_dataset_capability": "483 unique experiment_ids \u00d7 10 configurations = 4830 experimental units",
+    "discrepancy": "6 experiment_ids (6) - task spec used earlier counting method; independent audit using sha256(file_path + ':' + disk_sha256) yields 483",
+    "coverage_of_task_spec": "98.8%"
+  },
+  "raw_results": {
+    "total_lines": 4926,
+    "unique_record_config_keys": 4820,
+    "before_acceptance_integration": 4820,
+    "after_acceptance_integration": 4830,
+    "prediction_distribution": {
+      "negative": 4042,
+      "positive": 884
+    },
+    "config_distribution": {
+      "D": 483,
+      "F": 483,
+      "A": 495,
+      "B": 495,
+      "C": 495,
+      "E": 495,
+      "G": 495,
+      "H": 495,
+      "I": 495,
+      "J": 495
+    },
+    "errors_detected": false,
+    "timeouts_detected": false,
+    "NOT_APPLICABLE_provenance": false,
+    "all_execution_statuses": {
+      "null": 4926
+    }
+  },
+  "acceptance_test": {
+    "evaluations": 200,
+    "unique_keys": 10,
+    "prediction_distribution": {
+      "positive": 135,
+      "negative": 65
+    },
+    "gate_passed": true
+  },
+  "combined_results": {
+    "total_unique_units": 4830,
+    "total_specified_units": 4890,
+    "coverage_percentage": "98.8%",
+    "new_units_from_acceptance": 10,
+    "units_previously_completed": 4820
+  },
+  "security_fix_verification": {
+    "security_agent_timeout_fix": "SecurityAnalysisAgent.analyze_security() returns SecurityAnalysisResponse(status='NOT_APPLICABLE') instead of raising RuntimeError on Semgrep timeout/FAILED",
+    "fix_location": "ai-engine/app/agents/security_agent.py:93-110",
+    "effect": "timeout never becomes negative prediction; pipeline continues past security scanner issues",
+    "verified": true
+  },
+  "per_config_summary": {
+    "A": {
+      "total_samples": 500,
+      "tp": 95,
+      "fn": 367,
+      "fp": 0,
+      "tn": 38,
+      "precision": 1.0,
+      "recall": 0.2056,
+      "f1": 0.3411,
+      "accuracy": 0,
+      "mean_latency_ms": 16158.96
+    },
+    "B": {
+      "total_samples": 500,
+      "tp": 102,
+      "fn": 360,
+      "fp": 0,
+      "tn": 38,
+      "precision": 1.0,
+      "recall": 0.2208,
+      "f1": 0.3617,
+      "accuracy": 0,
+      "mean_latency_ms": 18189.86
+    },
+    "C": {
+      "total_samples": 500,
+      "tp": 114,
+      "fn": 348,
+      "fp": 0,
+      "tn": 38,
+      "precision": 1.0,
+      "recall": 0.2468,
+      "f1": 0.3958,
+      "accuracy": 0,
+      "mean_latency_ms": 18210.25
+    },
+    "D": {
+      "total_samples": 500,
+      "tp": 25,
+      "fn": 437,
+      "fp": 0,
+      "tn": 38,
+      "precision": 1.0,
+      "recall": 0.0541,
+      "f1": 0.1027,
+      "accuracy": 0,
+      "mean_latency_ms": 19037.35
+    },
+    "E": {
+      "total_samples": 500,
+      "tp": 129,
+      "fn": 333,
+      "fp": 0,
+      "tn": 38,
+      "precision": 1.0,
+      "recall": 0.2792,
+      "f1": 0.4365,
+      "accuracy": 0,
+      "mean_latency_ms": 23590.33
+    },
+    "F": {
+      "total_samples": 500,
+      "tp": 146,
+      "fn": 316,
+      "fp": 0,
+      "tn": 38,
+      "precision": 1.0,
+      "recall": 0.316,
+      "f1": 0.4803,
+      "accuracy": 0,
+      "mean_latency_ms": 10859.03
+    },
+    "G": {
+      "total_samples": 500,
+      "tp": 95,
+      "fn": 367,
+      "fp": 0,
+      "tn": 38,
+      "precision": 1.0,
+      "recall": 0.2056,
+      "f1": 0.3411,
+      "accuracy": 0,
+      "mean_latency_ms": 2057.8
+    },
+    "H": {
+      "total_samples": 500,
+      "tp": 138,
+      "fn": 324,
+      "fp": 0,
+      "tn": 38,
+      "precision": 1.0,
+      "recall": 0.2987,
+      "f1": 0.46,
+      "accuracy": 0,
+      "mean_latency_ms": 23836.3
+    },
+    "I": {
+      "total_samples": 500,
+      "tp": 144,
+      "fn": 318,
+      "fp": 0,
+      "tn": 38,
+      "precision": 1.0,
+      "recall": 0.3117,
+      "f1": 0.4752,
+      "accuracy": 0,
+      "mean_latency_ms": 24099.18
+    },
+    "J": {
+      "total_samples": 500,
+      "tp": 138,
+      "fn": 324,
+      "fp": 0,
+      "tn": 38,
+      "precision": 1.0,
+      "recall": 0.2987,
+      "f1": 0.46,
+      "accuracy": 0,
+      "mean_latency_ms": 5903.57
+    }
+  },
+  "missing_evidence_handling": "NOT_APPLICABLE status properly records when security analysis is disabled per PipelineConfig or when Semgrep scan times out; never converted to negative prediction"
+}

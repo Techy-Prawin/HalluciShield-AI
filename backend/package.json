@@ -9,7 +9,7 @@
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "db:migrate": "ts-node src/db/migrate.ts",
     "db:seed": "ts-node src/db/seed.ts",
-    "test": "jest --detectOpenHandles --forceExit"
+    "test": "jest --runInBand --detectOpenHandles --forceExit"
   },
   "dependencies": {
     "adm-zip": "^0.6.0",

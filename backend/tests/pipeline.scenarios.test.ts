@@ -398,12 +398,34 @@ describe('Remediation & resilience scenarios (Phases 9-14)', () => {
 
     const finalStatus = await pollScan(app, repoId, scanId);
     expect(finalStatus.status).toBe('COMPLETED');
+    // Validation reports UNVERIFIED honestly (sandbox unavailable) but does not
+    // fail the pipeline; the downstream ACE-based eligibility policy applies.
     expect(finalStatus.stages.validation.state).toBe('COMPLETED');
     expect(finalStatus.stages.validation.details).toBeDefined();
-    // Truly reports sandbox was unavailable rather than implying runtime proof.
-    expect(finalStatus.stages.validation.details.sandboxStatus).toBe('NOT_AVAILABLE');
-    expect(finalStatus.remediation.sandboxVerified).toBe(false);
+    expect(finalStatus.stages.validation.details.unverifiedResults).toBe(1);
+    expect(finalStatus.stages.confidence.state).toBe('COMPLETED');
     expect(finalStatus.confidence).toBe(85);
+    expect(finalStatus.stages.securedFile.state).toBe('COMPLETED');
+    // The CRITICAL finding was remediated and the re-scan is clean, so with
+    // ACE >= 80 and all gates passed the artifact is authorized for download.
+    expect(finalStatus.securityVerdict).toBe('PASSED');
+    expect(finalStatus.artifactAuthorization).toBe('AUTHORIZED');
+    expect(finalStatus.downloadEligibility).toMatchObject({
+      eligible: true,
+      level: 'AUTHORIZED',
+      acknowledgementRequired: false,
+      aceScore: 85,
+    });
+    expect(finalStatus.hasOutputFile).toBe(true);
+
+    const downloadRes = await request(app)
+      .get(`/api/repositories/${repoId}/scan/${scanId}/download`)
+      .buffer();
+
+    expect(downloadRes.status).toBe(200);
+    expect(downloadRes.headers['content-disposition']).toContain('attachment');
+    expect(downloadRes.body.toString('utf8')).toContain('cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))');
+    expect(downloadRes.body.toString('utf8')).not.toContain('cursor.execute("SELECT * FROM users WHERE id = " + user_id)');
   });
 
   it('Malformed ZIP upload is rejected at ingestion (400)', async () => {

@@ -1,0 +1,36 @@
+{
+  "verification_timestamp": "2026-10-07T13:14:39.268989+00:00",
+  "dataset_b": {
+    "total_samples": 500,
+    "positive_samples": 387,
+    "negative_samples": 113,
+    "manifest_sha256": "e4489ccc0ca5b9c2fb17b2b0bf3d5596802e3f8e6952505a851e905753269831",
+    "metadata_sha256": "263415aff6f7de922e84c373b488fe212f8d9d9fb7bd286e812ba165996dc344",
+    "unchanged": true
+  },
+  "phase_5_3_frozen_baseline": {
+    "directory": "C:\\Users\\PRAWINKUMAR\\OneDrive\\Desktop\\Halluci_antigravity\\evaluation\\results\\research\\real500",
+    "verified_files_count": 13,
+    "hashes_match_expected": true,
+    "frozen_hashes": {
+      "aece_metrics.json": "602faa30ab8b78cc37f425659f13037f380e0ea23040c04bb21578391c1d6494",
+      "causal_metrics.json": "cc44bb74ca62ae82cc05570df86abca7c5e3d285ee5e67882a31600e8b5c3f07",
+      "config.json": "ae11e67f65cf77cdf91fd55f44ca9b2571d4dfe62a1af855f3c2d088f132c86e",
+      "confusion_matrix.json": "3eb9df1a5e37223b6bbae72661c7ea1df31e3bd9ad953c5fd1ac10b41bf8849b",
+      "cwe_metrics.json": "618c1a083e0620815b582a7b1717c824ae7952286d3f2d35f6130ffd61fc3391",
+      "immutability_report.json": "5666dc14a0499cbbd7e32dadee40753742c1abad9bcb5c3a3185bcc4769f9e59",
+      "language_metrics.json": "10fba1811260642356ac75358b6d9f05418de53bee0eab0861853c61662fe2a6",
+      "metrics.json": "ebb9bb5ae6c81936343e7a0aaef0864c1a2693abff59c9bba717cdfdcbad1a33",
+      "multi_patch_metrics.json": "9bc3f6a0458cc348a46320f93e12ba92e7251cb15350b609b3ed58889fa71cd8",
+      "provenance_summary.json": "a0c854330f90d593ec09db6d9985fabaac9844b883279247304d4e395e67378e",
+      "raw_results.jsonl": "943725c065d4bc9872fc833bef23045a272b58c53a014b1da9d4d90b28e3d558",
+      "README.md": "db4d7ecdbd7b1fd83d16f9c20a98fe0ac3395b94c0bddc5562884308cd28c383",
+      "trace_summary.json": "e9e7124661f86a7bd5fde6ba19c88e0569788a3fd81629b3a68aa8790e2b7022"
+    }
+  },
+  "owasp_benchmark": {
+    "outputs_untouched": true,
+    "verified": true
+  },
+  "overall_immutability": "PASS"
+}

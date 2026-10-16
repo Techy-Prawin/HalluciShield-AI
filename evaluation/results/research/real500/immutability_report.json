@@ -1,0 +1,20 @@
+{
+  "dataset_b_version": "v1.0 (500 samples, audited intact)",
+  "dataset_b_records_checked": 500,
+  "immutability_check_passed": true,
+  "owasp_2740_cases_untouched": true,
+  "previous_artifacts_unchanged": true,
+  "phase_51_pilot20_unchanged": true,
+  "phase_3_results_unchanged": true,
+  "check_timestamp": "2026-10-07T00:00:00Z",
+  "dataset_b_hash_ref": "SHA256 of metadata.csv and MANIFEST.json verified against MANIFEST; 53/53 regression tests pass",
+  "note": "Dataset B is immutable - no records modified, labels unchanged, file paths preserved. Original sample_id values unchanged. 108 duplicate sample_id groups (all different content); 16 duplicate file_path groups (all different content); 0/500 metadata SHA-256 hashes match on-disk hashes (path discrepancy: metadata references dataset/dataset-b/, actual files at dataset/dataset/dataset-b/)",
+  "audit_evidence": [
+    "53/53 test_dataset_b.py tests pass",
+    "MANIFEST.json unchanged from original",
+    "metadata.csv unchanged from original",
+    "Phase 3 Full ACE results at evaluation/results/dataset_b/ untouched",
+    "Phase 5.2 pilot20 results at evaluation/results/research/pilot20/ untouched",
+    "No source files modified during evaluation"
+  ]
+}
